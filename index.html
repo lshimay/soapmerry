@@ -1215,7 +1215,9 @@ img {
       <p class="kicker">Enquiry</p>
       <h3 id="enqDlgTitle">Tell me what you&rsquo;d like<br>and I&rsquo;ll reply with what&rsquo;s available.</h3>
 
-      <form class="enquiry" id="enquiryForm">
+      <form class="enquiry" id="enquiryForm" name="enquiry" method="POST" data-netlify="true" netlify-honeypot="company">
+        <input type="hidden" name="form-name" value="enquiry">
+        <input type="hidden" name="soaps" value="">
         <!-- honeypot, kept out of view -->
         <div class="hp" aria-hidden="true">
           <label for="enqCompany">Company</label>
@@ -1634,11 +1636,10 @@ img {
 
   /* ------------------------------------------------------------------
      ENQUIRY POPUP: "Tell me what you'd like"
-     Submits to Formspree. Replace FORM_ENDPOINT with your own form's
-     endpoint from https://formspree.io once you've created one and
-     verified your email -- until then submissions will fail.
+     Submits to Netlify Forms — the form's data-netlify attribute gets it
+     registered when Netlify processes the deployed HTML. Notifications
+     are configured in the Netlify dashboard under Forms > Notifications.
      ------------------------------------------------------------------ */
-  var FORM_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';   // <-- replace after creating a Formspree form
   var enqDlg = document.getElementById('enquiryDialog');
   var enqForm = document.getElementById('enquiryForm');
   var enqFormView = document.getElementById('enqFormView');
@@ -1721,7 +1722,14 @@ img {
     var formData = new FormData(enqForm);
     formData.set('soaps', picked.join(', '));
 
-    fetch(FORM_ENDPOINT, { method: 'POST', body: formData, headers: { Accept: 'application/json' } })
+    var encoded = new URLSearchParams();
+    formData.forEach(function (value, key) { encoded.append(key, value); });
+
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: encoded.toString()
+    })
       .then(function (res) {
         if (!res.ok) throw new Error('submit failed');
         var via = enqEmail.value.trim() || enqPhone.value.trim();
