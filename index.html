@@ -1,0 +1,1732 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Soapmerry</title>
+<meta name="description" content="Handmade soap with merry little moments. Made in small batches.">
+
+<!-- Link preview (WhatsApp, Instagram, iMessage, Facebook, etc.) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Soapmerry">
+<meta property="og:url" content="https://lshimay.github.io/soapmerry/">
+<meta property="og:title" content="Soapmerry">
+<meta property="og:description" content="Handmade soap with merry little moments. Made in small batches.">
+<meta property="og:image" content="https://lshimay.github.io/soapmerry/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<!-- Twitter/X card (falls back to the og: tags above on most other apps) -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Soapmerry">
+<meta name="twitter:description" content="Handmade soap with merry little moments. Made in small batches.">
+<meta name="twitter:image" content="https://lshimay.github.io/soapmerry/assets/og-image.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Kalam:wght@300;400&display=swap">
+
+<style>
+/* =====================================================================
+   TOKENS
+   ===================================================================== */
+:root {
+  --paper:      #EFE7D9;
+  --paper-2:    #E9E0D3;
+  --paper-3:    #E1D3C1;
+  --paper-edge: rgba(60, 45, 30, 0.16);
+  --ink:        #2B2722;
+  --ink-2:      #4C4944;
+  --ink-3:      #7A756F;
+  --olive:      #6E6E56;
+  --olive-deep: #676750;
+  --blush:      #E3CFC6;
+  --rust:       #A0463F;
+  --peach:      #D9B39E;
+  --shade:      52, 36, 22;
+
+  --serif:  "Cormorant Garamond", "EB Garamond", Georgia, serif;
+  --body:   "EB Garamond", Georgia, "Times New Roman", serif;
+  --script: "Segoe Script", "Kalam", "Bradley Hand", "Comic Sans MS", cursive;
+
+  --rail: min(1200px, 100% - 5rem);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--paper) url('assets/paper-hero.webp') center/cover fixed no-repeat;
+  color: var(--ink-2);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* paper grain over everything */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: .085;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 300px 300px;
+}
+
+/* =====================================================================
+   TYPE
+   ===================================================================== */
+h1, h2, h3 { font-family: var(--serif); font-weight: 500; color: var(--ink); margin: 0; letter-spacing: -0.01em; line-height: 1.05; text-wrap: balance; }
+h1 { font-size: clamp(2.6rem, 4.6vw, 4.1rem); }
+h2 { font-size: clamp(2rem, 3.2vw, 2.85rem); }
+h3 { font-size: clamp(1.5rem, 2.1vw, 1.9rem); }
+p  { margin: 0; }
+a  { color: inherit; text-decoration: none; }
+
+.script { font-family: var(--script); font-weight: 400; line-height: 1.7; }
+.small  { font-size: .9375rem; line-height: 1.5; }
+.muted  { color: var(--ink-3); }
+
+/* hand-drawn underline under headings */
+.uline {
+  display: block;
+  width: 5.5rem;
+  height: 8px;
+  margin-top: .9rem;
+  color: var(--ink);
+}
+
+/* =====================================================================
+   PAGE / THREAD / STACKING
+   -------------------------------------------------------------------
+   .page is a stacking context.  Thread SVG sits at z=1.
+   Panel backgrounds (::before) sit at z=0, so the thread passes over
+   paper but under content.  Anything that must sit above the thread
+   gets .z (z=2).
+   ===================================================================== */
+.page { position: relative; isolation: isolate; overflow-x: clip; }
+
+.thread {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  overflow: visible;
+}
+.thread .ink { filter: url(#wobble); }
+.thread path, .thread use {
+  fill: none;
+  stroke: var(--olive);
+  stroke-width: 1.05;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.thread use.ghost { stroke-width: .75; opacity: .55; }
+@media (max-width: 900px) { .thread .ink { filter: none; } }   /* cheaper on phones */
+
+.z { position: relative; z-index: 2; }
+
+.pt { position: absolute; left: var(--x, 50%); top: var(--y, 50%); width: 0; height: 0; pointer-events: none; }
+.pt.m { display: none; }                 /* mobile route, shown ≤ 900px */
+.btn-olive, .ing .ill, .tags, .faq-list, .four figure { position: relative; }
+
+section, header.site, footer.site { position: relative; }
+.wrap { width: var(--rail); margin-inline: auto; }
+
+/* paper panel */
+.panel { position: relative; }
+.panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: var(--paper-2);
+  border: 1px solid var(--paper-edge);
+  box-shadow: 0 10px 28px -14px rgba(var(--shade), .35), 0 1px 0 rgba(255,255,255,.5) inset;
+}
+.panel > * { position: relative; z-index: 2; }
+.panel > .pt { position: absolute; z-index: auto; }
+
+/* torn paper edge */
+.torn { clip-path: polygon(0.8% 1.2%, 6% 0.4%, 13% 1.6%, 21% 0.2%, 29% 1.4%, 37% 0.6%, 45% 1.8%, 53% 0.3%, 61% 1.5%, 69% 0.5%, 77% 1.7%, 85% 0.4%, 93% 1.3%, 99.4% 0.6%, 98.8% 8%, 99.6% 20%, 98.6% 33%, 99.5% 47%, 98.7% 60%, 99.6% 73%, 98.8% 86%, 99.4% 98.8%, 93% 99.6%, 85% 98.4%, 77% 99.7%, 69% 98.3%, 61% 99.6%, 53% 98.5%, 45% 99.8%, 37% 98.4%, 29% 99.5%, 21% 98.6%, 13% 99.7%, 6% 98.5%, 0.6% 99.4%, 1.4% 86%, 0.3% 73%, 1.2% 60%, 0.4% 47%, 1.5% 33%, 0.5% 20%, 1.3% 8%); }
+
+/* =====================================================================
+   HAND-DRAWN SHAPES
+   ===================================================================== */
+.oval-wrap { position: relative; display: inline-block; }
+.oval-wrap > svg.oval {
+  position: absolute;
+  inset: -3px -6px;
+  width: calc(100% + 12px);
+  height: calc(100% + 6px);
+  pointer-events: none;
+  color: var(--ink);
+}
+svg.oval path { fill: none; stroke: currentColor; stroke-width: 1.1; vector-effect: non-scaling-stroke; stroke-linecap: round; }
+
+.plus {
+  width: 22px; height: 22px; flex: 0 0 22px;
+  color: var(--ink);
+}
+.plus circle { fill: none; stroke: currentColor; stroke-width: 1.1; }
+.plus path   { fill: none; stroke: currentColor; stroke-width: 1.2; stroke-linecap: round; transition: transform .25s ease; transform-origin: 50% 50%; }
+
+/* placeholder for the 8 missing illustrations */
+.ph {
+  display: grid; place-items: center;
+  width: 100%; height: 100%;
+  border: 1.2px dashed rgba(var(--shade), .35);
+  border-radius: 46% 54% 50% 50% / 52% 48% 52% 48%;
+  color: var(--ink-3);
+  font-family: var(--script);
+  font-size: .8rem;
+  text-align: center;
+  padding: .5rem;
+  line-height: 1.3;
+}
+
+/* =====================================================================
+   BUTTONS
+   ===================================================================== */
+.btn-olive {
+  display: inline-flex; align-items: center; gap: .9rem;
+  background: var(--olive);
+  color: #F3EEE3;
+  font-family: var(--script);
+  font-size: .95rem;
+  padding: .7rem 1.5rem .6rem 1.6rem;
+  border-radius: 999px;
+  box-shadow: 0 6px 14px -8px rgba(var(--shade), .6), inset 0 1px 0 rgba(255,255,255,.12);
+  border: 0; cursor: pointer;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.btn-olive:hover { transform: translateY(-1px); box-shadow: 0 10px 18px -10px rgba(var(--shade), .7); }
+.btn-olive svg { width: 26px; height: 10px; }
+.btn-olive svg path { fill: none; stroke: currentColor; stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; }
+
+.btn-oval {
+  display: inline-block;
+  font-family: var(--script);
+  font-size: 1rem;
+  color: var(--ink);
+  padding: .9rem 1.6rem .7rem;
+  text-align: center;
+  line-height: 1.45;
+}
+
+/* =====================================================================
+   HEADER
+   ===================================================================== */
+header.site .wrap {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: start;
+  gap: 2rem;
+  padding: 1.6rem 0 0;
+}
+.logo { display: block; width: 200px; margin: -.9rem 0 0 -.6rem; }   /* negative margins eat the GIF's empty border */
+.logo img { display: block; width: 100%; height: auto; opacity: .92; }
+nav.pills { display: flex; gap: .9rem; flex-wrap: wrap; justify-content: center; }
+nav.pills a {
+  font-family: var(--script);
+  font-size: .8rem;
+  color: var(--ink);
+  padding: .55rem 1.15rem .35rem;
+  white-space: nowrap;
+}
+nav.pills a .oval { color: var(--ink-3); opacity: .8; transition: color .15s ease, opacity .15s ease; }
+nav.pills a.active .oval { color: var(--rust); opacity: .6; }
+nav.pills a.active { background: rgba(217, 179, 158, .22); border-radius: 999px; }
+nav.pills a:hover .oval,
+nav.pills a:active .oval,
+nav.pills a:focus-visible .oval { color: var(--olive); opacity: .9; }
+nav.pills a:hover,
+nav.pills a:active,
+nav.pills a:focus-visible { background: rgba(110, 110, 86, .22); border-radius: 999px; }
+nav.pills a .count {
+  display: none;
+  margin-left: .35rem;
+  font-family: var(--body); font-size: .75rem;
+  background: var(--rust); color: #fff;
+  border-radius: 999px; padding: 0 .4rem; line-height: 1.3;
+  vertical-align: 2px;
+}
+nav.pills a .count.on { display: inline-block; }
+.burger {
+  display: none;
+  width: 44px; height: 44px;
+  border: 1px solid var(--paper-edge); border-radius: 50%;
+  background: var(--paper-2); cursor: pointer;
+  flex-direction: column; justify-content: center; align-items: center; gap: 5px;
+  justify-self: end;
+}
+.burger span { display: block; width: 18px; height: 1.2px; background: var(--ink); transition: transform .25s ease, opacity .2s ease; }
+.burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(6.2px) rotate(45deg); }
+.burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6.2px) rotate(-45deg); }
+.tagline { justify-self: end; text-align: right; font-family: var(--script); font-size: .8rem; color: var(--ink-2); line-height: 1.75; position: relative; padding-right: 1.6rem; }
+.tagline .leaf { position: absolute; right: 0; bottom: -.4rem; width: 22px; height: 26px; }
+
+/* small leaf mark (placeholder until real sprig arrives) */
+.leaf { color: var(--ink-2); }
+.leaf path { fill: none; stroke: currentColor; stroke-width: 1; stroke-linecap: round; }
+
+/* =====================================================================
+   HERO
+   ===================================================================== */
+section.hero .wrap {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 3rem;
+  align-items: center;
+  padding: 3rem 0 3rem;
+}
+.hero-copy { max-width: 26rem; padding-top: 1rem; }
+.hero-copy p.lede { margin-top: 2rem; max-width: 20rem; color: var(--ink-2); }
+.hero-copy .btn-olive { margin-top: 2rem; }
+
+/* ---- hero photo: cutout group shot with a soft cast shadow ---- */
+.hero-photo { position: relative; margin: 0 2% 0 4%; }
+.hero-photo img {
+  display: block; width: 100%; height: auto;
+  position: relative; z-index: 1;
+  filter:
+    drop-shadow(0 2px 2px   rgba(var(--shade), .22))
+    drop-shadow(0 12px 14px rgba(var(--shade), .18))
+    drop-shadow(0 30px 40px rgba(var(--shade), .14));
+}
+.hero-photo::after {           /* ground pool under the group */
+  content: ""; position: absolute; z-index: 0;
+  left: 10%; right: 10%; bottom: -5%; height: 6%;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(var(--shade), .22) 0%, rgba(var(--shade), .08) 50%, rgba(var(--shade), 0) 75%);
+  filter: blur(10px);
+}
+
+/* ---- shelf unit (curing section): rows of planks, 2 soaps per row ----
+   shelf-plank.webp is pre-cropped tight to its content (aspect ~18:1);
+   it renders at its natural depth instead of being squashed/cropped by CSS. */
+.shelf-unit { display: flex; flex-direction: column; gap: .8rem; padding-top: .5rem; }
+.shelf-row { display: flex; flex-direction: column; padding-top: 5rem; }
+.shelf-items {
+  position: relative; z-index: 1;
+  display: flex; justify-content: center; align-items: flex-end;
+  gap: 10%; padding: 0 4%; margin-bottom: -10px;
+}
+.plank { width: 96%; margin-inline: auto; }
+.plank img { display: block; width: 100%; height: auto; }
+
+.shelf-soap {
+  position: relative; flex: 1 1 0; max-width: 42%;
+  border: 0; background: none; padding: 0; margin: 0;
+  cursor: pointer; font: inherit; color: inherit;
+}
+/* fixed-height box so mixed portrait/landscape product photos all sit at a
+   consistent scale and ground line, regardless of source aspect ratio */
+.shelf-soap.has-photo {
+  height: 12.5rem; display: flex; align-items: flex-end; justify-content: center;
+}
+.shelf-soap.has-photo img:not(.hand-arrow) {
+  display: block; width: auto; height: auto; max-width: 100%; max-height: 100%;
+  object-fit: contain;
+  position: relative; z-index: 1;
+  filter:
+    drop-shadow(0 1px 1px   rgba(var(--shade), .28))
+    drop-shadow(0 6px 7px   rgba(var(--shade), .2))
+    drop-shadow(0 16px 22px rgba(var(--shade), .16));
+  transition: transform .3s ease, filter .3s ease;
+}
+.shelf-soap.has-photo::after {
+  content: "";
+  position: absolute; z-index: 0;
+  left: 8%; right: 8%; bottom: -6%; height: 22%;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(var(--shade), .34) 0%, rgba(var(--shade), .12) 45%, rgba(var(--shade), 0) 74%);
+  filter: blur(6px);
+}
+.shelf-soap.has-photo:hover img { transform: translateY(-2px); }
+
+/* hand-drawn arrow + name label pointing at each photographed soap */
+.soap-label {
+  position: absolute; bottom: 100%; z-index: 2;
+  display: flex; flex-direction: column; align-items: center;
+  font-family: var(--script); font-size: .82rem; color: var(--ink-2);
+  white-space: nowrap; margin-bottom: -.2rem;
+}
+.soap-label.at-left  { left: -10%; align-items: flex-start; }
+.soap-label.at-right { right: -10%; align-items: flex-end; }
+.hand-arrow { display: block; width: 40px; height: auto; margin-top: .2rem; opacity: .8; }
+
+/* placeholder slot for soaps without photography yet */
+.shelf-soap.no-photo .ph-box {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: .5rem; height: 9.5rem; padding: 1rem;
+  border: 1.5px dashed var(--paper-edge); border-radius: 6px;
+  background: rgba(255,255,255,.25);
+}
+.shelf-soap.no-photo .ph-icon { width: 26px; height: 26px; color: var(--ink-3); }
+.shelf-soap.no-photo .ph-icon path, .shelf-soap.no-photo .ph-icon rect, .shelf-soap.no-photo .ph-icon circle {
+  fill: none; stroke: currentColor; stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round;
+}
+.shelf-soap.no-photo .ph-text { font-family: var(--script); font-size: .8rem; color: var(--ink-3); text-align: center; line-height: 1.5; }
+
+/* =====================================================================
+   TRUST BAR
+   ===================================================================== */
+section.trust .wrap { padding: .5rem 0 0; }
+.trust-panel {
+  width: 92%; margin-inline: auto;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;
+  padding: 2rem 7%;
+}
+.trust-panel::before {
+  background: url('assets/paper-trust-strip.webp') center/100% 100% no-repeat;
+  border: 0;
+  box-shadow: none;
+}
+.trust-item { display: grid; grid-template-columns: 30px 1fr; gap: .9rem; align-items: start; }
+.trust-item .leaf { width: 26px; height: 30px; margin-top: .1rem; object-fit: contain; }
+.trust-item h3 { font-size: 1.15rem; font-family: var(--body); font-weight: 500; }
+.trust-item p { font-size: .9rem; color: var(--ink-2); margin-top: .3rem; line-height: 1.5; }
+
+/* =====================================================================
+   BATCHES
+   ===================================================================== */
+section.batches .wrap {
+  display: grid;
+  grid-template-columns: 26% 1fr;
+  gap: 2rem 2.5rem;
+  align-items: start;
+  padding: 5.5rem 0 4.5rem;
+}
+.batches-copy p { margin-top: 1.4rem; max-width: 18rem; font-size: .95rem; }
+.annot { font-family: var(--script); font-size: .8rem; color: var(--ink-2); line-height: 1.85; padding-top: 4.2rem; padding-left: .5rem; }
+.four { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; padding-top: 1.2rem; }
+.four figure { margin: 0; text-align: center; }
+.four .ill { width: 100px; height: 100px; margin: 0 auto .9rem; }
+.four .ill img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.four h3 { font-family: var(--body); font-weight: 500; font-size: 1.05rem; }
+.four p { font-size: .9rem; margin-top: .4rem; line-height: 1.5; }
+
+/* =====================================================================
+   INGREDIENTS
+   ===================================================================== */
+section.ingredients .wrap {
+  display: grid;
+  grid-template-columns: 26% 1fr;
+  gap: 3rem;
+  align-items: center;
+  padding: 2.5rem 0 4rem;
+}
+.ing-copy p { margin-top: 1.4rem; max-width: 16rem; font-size: .95rem; }
+
+.map {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto minmax(110px, auto) auto;
+  gap: .5rem 1.5rem;
+  align-items: center;
+}
+.map .spokes { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
+.map .spokes path { fill: none; stroke: var(--olive); stroke-width: 1.05; vector-effect: non-scaling-stroke; }
+.ing { position: relative; z-index: 2; display: grid; grid-template-columns: 96px 1fr; gap: .8rem; align-items: center; }
+.ing .ill { width: 96px; height: 96px; }
+.ing .ill img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.ing h3 { font-family: var(--body); font-weight: 500; font-size: 1.05rem; }
+.ing p  { font-family: var(--script); font-size: .74rem; line-height: 1.8; color: var(--ink-2); margin-top: .2rem; }
+.map > .ing:nth-child(-n+4) { grid-row: 1; }
+.map > .ing:nth-child(n+6)  { grid-row: 3; }
+.bubble { grid-column: 2; grid-row: 2; justify-self: center; text-align: center; padding: 1.1rem 1.8rem .9rem; position: relative; z-index: 2; background: var(--paper) url('assets/paper-hero.webp') center/cover fixed no-repeat; border-radius: 50%; font-family: var(--script); font-size: .9rem; color: var(--ink); line-height: 1.8; }
+
+/* =====================================================================
+   CURING
+   ===================================================================== */
+section.curing .wrap {
+  display: grid;
+  grid-template-columns: 25% 1fr;
+  gap: 2rem 2.8rem;
+  align-items: start;
+  padding: 3rem 0 3rem;
+}
+.tags { display: flex; flex-direction: column; gap: 1.1rem; }
+.tag.torn { clip-path: none; }
+.tag::before {
+  background: url('assets/paper-note.webp') center/100% 100% no-repeat;
+  border: 0;
+  box-shadow: none;
+}
+.tag {
+  padding: 1.1rem 1.3rem 1rem 1.4rem;
+  cursor: pointer;
+  width: 100%;
+  border: 0; background: none; text-align: left; font: inherit; color: inherit;
+}
+.tag .num { font-family: var(--script); font-size: .8rem; color: var(--ink-3); }
+.tag .row { display: flex; justify-content: space-between; align-items: flex-end; gap: .5rem; margin-top: .35rem; }
+.tag h3 { font-family: var(--body); font-weight: 500; font-size: 1rem; line-height: 1.3; }
+.tag .more { display: block; font-size: .85rem; line-height: 1.45; color: var(--ink-2); max-height: 0; overflow: hidden; transition: max-height .3s ease, margin .3s ease; }
+.tag .full-note {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-family: var(--script); font-size: .78rem; color: var(--rust);
+  max-height: 0; overflow: hidden; opacity: 0;
+  transition: max-height .3s ease, margin .3s ease, opacity .2s ease;
+}
+.tag .full-note svg { width: 16px; height: 7px; }
+.tag .full-note svg path { fill: none; stroke: currentColor; stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; }
+.tag[aria-expanded="true"] .more { max-height: 8rem; margin-top: .6rem; }
+.tag[aria-expanded="true"] .full-note { max-height: 2rem; margin-top: .7rem; opacity: 1; }
+.tag[aria-expanded="true"] .plus path.v { transform: rotate(90deg); opacity: 0; }
+
+/* =====================================================================
+   BATCH PANEL
+   ===================================================================== */
+section.batch .wrap { padding: 1rem 0 3rem; }
+
+/* ---- phone-only soap cards (replace shelf + tags + batch panel) ---- */
+.batch-cards { display: none; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+.batch-cards .intro { grid-column: 1 / -1; margin-bottom: .25rem; }
+.batch-cards .intro p { margin-top: .9rem; font-size: .95rem; }
+.scard.torn { clip-path: none; }
+.scard::before { background: transparent; border: 0; box-shadow: none; }
+.scard {
+  position: relative; text-align: left; cursor: pointer;
+  border: 0; background: none; font: inherit; color: inherit;
+  padding: 1rem 1rem 1.1rem;
+  display: flex; flex-direction: column; gap: .6rem;
+}
+.scard .pic { position: relative; height: 110px; display: grid; place-items: center; }
+.scard .pic img {
+  width: auto; height: auto; max-width: 88%; max-height: 100%; object-fit: contain;
+  filter: drop-shadow(0 1px 1px rgba(var(--shade), .28)) drop-shadow(0 8px 10px rgba(var(--shade), .2));
+}
+.scard .pic.no-photo {
+  width: 100%; height: 100%;
+  border: 1.5px dashed var(--paper-edge); border-radius: 6px;
+}
+.scard .pic.no-photo .ph-text { font-family: var(--script); font-size: .72rem; color: var(--ink-3); text-align: center; line-height: 1.5; padding: 0 .4rem; }
+.scard .num { font-family: var(--script); font-size: .8rem; color: var(--ink-3); }
+.scard h3 { font-family: var(--body); font-weight: 500; font-size: 1.05rem; line-height: 1.25; }
+.scard .row { display: flex; justify-content: space-between; align-items: flex-end; gap: .5rem; }
+.scard .hint { font-size: .85rem; color: var(--ink-2); }
+
+/* ---- batch dialog ---- */
+dialog.batch-dialog { border: 0; padding: 0; background: transparent; max-width: min(92vw, 34rem); width: 100%; margin: auto; }
+dialog.batch-dialog::backdrop { background: rgba(43, 39, 34, .5); backdrop-filter: blur(2px); }
+.dlg { position: relative; background: var(--paper-2); border: 1px solid var(--paper-edge); box-shadow: 0 30px 60px -30px rgba(0,0,0,.5); padding: 1.6rem 1.5rem 1.5rem; max-height: 88vh; overflow: auto; }
+.dlg .close { position: absolute; top: .8rem; right: .8rem; width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--paper-edge); background: var(--paper); color: var(--ink); font-size: 1.2rem; line-height: 1; cursor: pointer; }
+.dlg .kicker { font-family: var(--script); font-size: .85rem; color: var(--ink-3); }
+.dlg h3 { margin-top: .3rem; line-height: 1.15; }
+.dlg .desc { font-family: var(--script); font-size: .95rem; line-height: 1.7; color: var(--ink-2); margin-top: .8rem; }
+.dlg dl { margin: 1.2rem 0 0; display: grid; gap: .9rem; border-top: 1px solid var(--paper-edge); padding-top: 1.1rem; }
+.dlg dt { font-family: var(--script); font-size: .78rem; color: var(--ink-3); }
+.dlg dd { margin: .15rem 0 0; font-size: .95rem; color: var(--ink); line-height: 1.45; }
+.dlg .btn-olive { margin-top: 1.4rem; }
+
+/* ---- enquiry dialog ---- */
+dialog.enquiry-dialog { border: 0; padding: 0; background: transparent; max-width: min(92vw, 30rem); width: 100%; margin: auto; }
+dialog.enquiry-dialog::backdrop { background: rgba(43, 39, 34, .5); backdrop-filter: blur(2px); }
+.enquiry-dialog .dlg h3 { font-size: 1.35rem; margin-top: .2rem; }
+form.enquiry { margin-top: 1.3rem; display: flex; flex-direction: column; gap: 1.1rem; }
+form.enquiry .field label { display: block; font-family: var(--script); font-size: .85rem; color: var(--ink-3); margin-bottom: .35rem; }
+form.enquiry .field input[type="text"]:not(.step-input),
+form.enquiry .field input[type="email"],
+form.enquiry .field input[type="tel"],
+form.enquiry .field textarea {
+  width: 100%; font-family: var(--body); font-size: .95rem; color: var(--ink);
+  background: var(--paper); border: 1px solid var(--paper-edge); border-radius: 6px;
+  padding: .6rem .7rem; line-height: 1.4;
+}
+form.enquiry .field input:focus, form.enquiry .field textarea:focus { outline: 2px solid var(--olive); outline-offset: 1px; border-color: transparent; }
+form.enquiry .field textarea { resize: vertical; min-height: 4.2rem; }
+form.enquiry .field.row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+form.enquiry .hint { font-size: .78rem; color: var(--ink-3); margin-top: -.5rem; }
+form.enquiry .hint.warn { color: var(--rust); }
+.qty-list { display: flex; flex-direction: column; gap: .5rem; }
+.qty-row {
+  display: flex; align-items: center; justify-content: space-between; gap: .8rem;
+  border: 1px solid var(--paper-edge); border-radius: 6px; padding: .5rem .55rem .5rem .75rem; background: var(--paper);
+}
+.qty-row.has-qty { border-color: var(--olive-deep); background: rgba(110, 110, 86, .08); }
+.qty-row .qty-label { font-family: var(--body); font-size: .88rem; color: var(--ink-2); }
+.stepper { display: flex; align-items: center; gap: 0; flex: none; }
+.step-btn {
+  width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--paper-edge); background: var(--paper-2);
+  color: var(--ink-2); font-family: var(--body); font-size: 1rem; line-height: 1; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.step-btn:hover { background: var(--olive-deep); color: #fdf9ef; border-color: var(--olive-deep); }
+.step-btn:active { transform: scale(.94); }
+.step-input {
+  width: 1.6rem; text-align: center; border: 0; background: none; color: var(--ink);
+  font-family: var(--body); font-size: .92rem; -moz-appearance: textfield; padding: 0;
+}
+.step-input::-webkit-outer-spin-button, .step-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.total-ref { display: flex; justify-content: space-between; align-items: baseline; font-size: .86rem; color: var(--ink-3); padding: 0 .1rem; }
+.total-ref strong { font-family: var(--serif); font-size: 1.1rem; color: var(--ink); font-weight: 600; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.enq-success { text-align: center; padding: 1.2rem 0 .4rem; }
+.enq-success .leaf { width: 40px; height: 46px; color: var(--olive-deep); margin: 0 auto .9rem; display: block; }
+.enq-success .leaf path { fill: none; stroke: currentColor; stroke-width: 1.1; stroke-linecap: round; }
+.enq-success h3 { font-size: 1.3rem; }
+.enq-success p { font-size: .92rem; margin-top: .6rem; color: var(--ink-2); }
+.enq-success .again { display: inline-block; margin-top: 1.1rem; font-family: var(--script); font-size: .88rem; color: var(--olive-deep); text-decoration: underline; cursor: pointer; background: none; border: 0; padding: 0; }
+.enq-error { font-size: .85rem; color: var(--rust); margin-top: -.3rem; }
+.enq-error a { text-decoration: underline; }
+@media (max-width: 600px) { form.enquiry .field.row { grid-template-columns: 1fr; } }
+
+/* ---- loading screen ---- */
+.loader {
+  position: fixed; inset: 0; z-index: 100;
+  background: #fff;
+  display: grid; place-items: center;
+  transition: opacity .7s ease;
+}
+.loader.out { opacity: 0; pointer-events: none; }
+.loader img { width: min(70vw, 520px); height: auto; }
+.page, footer.site { opacity: 0; transition: opacity .9s ease; }
+body.ready .page, body.ready footer.site { opacity: 1; }
+body.no-loader .page, body.no-loader footer.site { opacity: 1; transition: none; }
+
+/* =====================================================================
+   SHARE / TELL US
+   ===================================================================== */
+section.share .wrap {
+  display: flex; justify-content: center;
+  padding: 3.5rem 0 5rem;
+}
+.tellus { text-align: center; padding-top: .5rem; }
+.tellus .ring { position: relative; display: inline-block; padding: 1.4rem 2.6rem 1.2rem; color: var(--rust); font-family: var(--script); font-size: 1.05rem; line-height: 1.7; background: none; border: 0; cursor: pointer; }
+.tellus .ring svg.oval { inset: -4px -10px; width: calc(100% + 20px); height: calc(100% + 8px); }
+.tellus .ring svg.oval path { stroke-width: 1.25; }
+.tellus .ring .go { position: absolute; right: -2px; bottom: 4px; width: 26px; height: 26px; }
+.tellus .ring .go circle { fill: var(--paper); stroke: var(--rust); stroke-width: 1.2; }
+.tellus .ring .go path { fill: none; stroke: var(--rust); stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; }
+.tellus p { font-family: var(--script); font-size: .78rem; color: var(--ink-2); line-height: 1.9; margin-top: 1.1rem; }
+
+/* =====================================================================
+   FAQ
+   ===================================================================== */
+section.faq .wrap { padding: 0 0 4rem; }
+.faq-list { width: 88%; margin-inline: auto; display: grid; gap: .45rem; }
+.faq-list details { position: relative; }
+.faq-list details::before {
+  content: ""; position: absolute; inset: 0; z-index: 0;
+  background: var(--paper-2); border: 1px solid rgba(var(--shade), .1);
+  box-shadow: 0 6px 16px -12px rgba(var(--shade), .3);
+}
+.faq-list summary {
+  position: relative; z-index: 2;
+  list-style: none; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+  padding: .75rem 1.4rem .6rem 2.2rem;
+  font-family: var(--script); font-size: .84rem; color: var(--ink);
+}
+.faq-list summary::-webkit-details-marker { display: none; }
+.faq-list .ans { position: relative; z-index: 2; padding: 0 3.5rem 1rem 2.2rem; font-size: .92rem; color: var(--ink-2); }
+.faq-list details[open] .plus path.v { transform: rotate(90deg); opacity: 0; }
+
+/* =====================================================================
+   FOOTER
+   ===================================================================== */
+footer.site { background: var(--olive-deep); color: #EEE8DA; margin-top: .5rem; }
+footer.site .wrap {
+  display: grid; grid-template-columns: 1.2fr 1fr 1fr auto; gap: 2rem; align-items: center;
+  padding: 2.4rem 0 2.6rem;
+  font-family: var(--script); font-size: .8rem; line-height: 1.9;
+}
+footer.site .flogo { font-size: 1rem; }
+footer.site .leaf { display: inline-block; width: 20px; height: 22px; object-fit: contain; vertical-align: -4px; margin-left: .4rem; }
+footer.site .heart { width: 26px; height: 24px; }
+footer.site .heart path { fill: none; stroke: #EEE8DA; stroke-width: 1.1; }
+footer.site .o8 { opacity: .85; }
+
+/* =====================================================================
+   RESPONSIVE
+   ===================================================================== */
+@media (max-width: 1100px) {
+  section.batches .wrap { grid-template-columns: 30% 1fr; }
+  .annot { display: none; }
+}
+
+@media (max-width: 900px) {
+  :root { --rail: min(1200px, 100% - 3.5rem); }
+  header.site .wrap { grid-template-columns: 1fr auto; align-items: center; }
+  .tagline { display: none; }
+  .burger { display: flex; }
+  nav.pills {
+    display: none;
+    position: absolute; left: 0; right: 0; top: 100%;
+    z-index: 30;
+    flex-direction: column; align-items: stretch; gap: .7rem;
+    padding: 1rem 1.25rem 1.25rem;
+    background: var(--paper-2);
+    border-top: 1px solid var(--paper-edge); border-bottom: 1px solid var(--paper-edge);
+    box-shadow: 0 18px 30px -18px rgba(var(--shade), .45);
+  }
+  nav.pills.open { display: flex; }
+  nav.pills a { text-align: center; font-size: 1rem; padding: .7rem 1rem .55rem; }
+  header.site { z-index: 30; }
+  /* on phones the shelf + tags give way to tappable cards (see .batch-cards) */
+  section.curing { display: none; }
+  .batch-cards { display: grid; }
+  section.hero .wrap { grid-template-columns: 1fr; gap: 2.5rem; padding-top: 2.5rem; }
+  .hero-copy { max-width: 100%; }
+  .trust-panel { width: 100%; grid-template-columns: 1fr; gap: 1.2rem; padding: 2.8rem 9%; }
+  section.batches .wrap { grid-template-columns: 1fr; gap: 1.5rem; padding: 4rem 0 3rem; }
+  .four { grid-template-columns: repeat(2, 1fr); }
+  section.ingredients .wrap { grid-template-columns: 1fr; gap: 2rem; }
+  .map { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto; }
+  .map .spokes { display: none; }
+  .map > .ing:nth-child(n) { grid-row: auto; }
+  .bubble { grid-column: 1 / -1; grid-row: 1; margin-bottom: 1rem; }
+  /* on narrow screens the thread runs down the left gutter instead of weaving through stacked content */
+  .pt.d { display: none; }
+  .pt.m { display: block; }
+  section.curing .wrap { grid-template-columns: 1fr; }
+  .tags { grid-template-rows: none; grid-template-columns: repeat(3, 1fr); gap: .8rem; padding: 0; }
+  section.share .wrap { padding: 2.5rem 0 3.5rem; }
+  .faq-list { width: 100%; }
+  footer.site .wrap { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 600px) {
+  .batch-cards { grid-template-columns: 1fr 1fr; }
+  .four { grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  .map { grid-template-columns: 1fr; }
+  .tags { grid-template-columns: 1fr; }
+  footer.site .wrap { grid-template-columns: 1fr; gap: 1.2rem; }
+  footer.site .wrap > div:not(:first-child) { border-top: 1px solid rgba(238,232,218,.25); padding-top: 1.2rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- loading screen: plays the logo once, then fades into the page -->
+<div class="loader" id="loader" aria-hidden="true">
+  <img src="assets/logo-soapmerry.gif?v=loader" alt="" width="1411" height="528">
+</div>
+
+<div class="grain" aria-hidden="true"></div>
+
+<!-- shared hand-drawn shapes -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="sym-oval" viewBox="0 0 200 80" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round">
+      <path vector-effect="non-scaling-stroke" d="M100 6 C 150 4, 194 20, 195 40 C 196 62, 150 76, 100 75 C 52 76, 6 62, 5 40 C 4 20, 50 6, 100 6 Z"/>
+      <path vector-effect="non-scaling-stroke" d="M104 9 C 148 8, 190 22, 191 41 C 192 60, 146 73, 102 72 C 56 73, 9 60, 9 41 C 8 23, 56 10, 104 9" transform="rotate(-1.6 100 40)"/>
+    </symbol>
+    <symbol id="sym-uline" viewBox="0 0 200 8" preserveAspectRatio="none">
+      <path d="M2 5 C 40 2, 80 6.5, 120 4 S 180 2, 198 4.5" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <symbol id="sym-leaf" viewBox="0 0 24 28" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round">
+      <path d="M4 26 C 8 18, 12 12, 20 4"/>
+      <path d="M9 17 C 6 15, 5 12, 6 9 C 9 10, 10 13, 9 17 Z"/>
+      <path d="M13 12 C 11 9, 11 6, 13 4 C 15 6, 15 9, 13 12 Z"/>
+      <path d="M12 15 C 15 14, 18 14, 20 16 C 17 18, 14 17, 12 15 Z"/>
+    </symbol>
+    <symbol id="sym-arrow" viewBox="0 0 26 10" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M1 5 H24 M19 1 L24 5 L19 9"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="page" id="page">
+
+  <svg class="thread" id="thread" aria-hidden="true">
+    <defs>
+      <!-- hand tremor: low-frequency noise nudges the line ±1.5px along its length -->
+      <filter id="wobble" filterUnits="userSpaceOnUse" x="-20" y="-20" width="2000" height="6000" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.005 0.008" numOctaves="1" seed="11" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+    </defs>
+    <g class="ink">
+      <path id="threadPath" d=""></path>
+      <!-- second pass, offset by a hair: reads as pen pressure -->
+      <use href="#threadPath" class="ghost" transform="translate(0.45 0.3)"/>
+    </g>
+  </svg>
+
+  <!-- ============================ HEADER ============================ -->
+  <header class="site z">
+    <div class="wrap">
+      <a class="logo" href="#soaps" aria-label="Soapmerry, back to top">
+        <!-- handwriting animation; the GIF has no loop block so it plays once and holds the last frame -->
+        <img src="assets/logo-soapmerry.gif" alt="Soapmerry" width="1411" height="528" fetchpriority="high">
+      </a>
+      <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mainNav">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="pills" id="mainNav" aria-label="Sections">
+        <a href="#soaps" class="oval-wrap" data-nav="soaps"><svg class="oval"><use href="#sym-oval"/></svg>My soaps</a>
+        <a href="#making" class="oval-wrap" data-nav="making"><svg class="oval"><use href="#sym-oval"/></svg>The making</a>
+        <a href="#ingredients" class="oval-wrap" data-nav="ingredients"><svg class="oval"><use href="#sym-oval"/></svg>Ingredients</a>
+        <a href="#batch-notes" class="oval-wrap" data-nav="batch-notes"><svg class="oval"><use href="#sym-oval"/></svg>Batch notes</a>
+        <a href="#enquire" class="oval-wrap" data-nav="enquire"><svg class="oval"><use href="#sym-oval"/></svg>Enquire<span class="count" id="noteCount">0</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============================ HERO ============================== -->
+  <section class="hero" id="soaps">
+    <div class="wrap">
+      <div class="hero-copy z">
+        <h1>Handmade soap<br>with merry little moments.</h1>
+        <svg class="uline"><use href="#sym-uline"/></svg>
+        <p class="lede">Turning natural ingredients into small batches of soap bars for different skin types.</p>
+        <a class="btn-olive" href="#curing">See the current batch <svg><use href="#sym-arrow"/></svg>
+          <i class="pt d" data-thread="6" style="--x:86%; --y:50%" data-pin></i>
+          <i class="pt d" data-thread="7" style="--x:58%; --y:140%"></i>
+        </a>
+        <i class="pt d" data-thread="3" style="--x:108%; --y:16%"></i>
+        <i class="pt d" data-thread="4" style="--x:98%; --y:56%"></i>
+        <i class="pt d" data-thread="8" style="--x:92%; --y:110%"></i>
+      </div>
+
+      <figure class="hero-photo z">
+        <img src="assets/hero-soaps-new.png" alt="The full Soapmerry soap collection: Vinegar, Tomato, Pink Himalayan salt, Honey, Stout Beer, Goat Milk, Apple and Carrots, and more, grouped together" width="1448" height="1086" fetchpriority="high">
+        <i class="pt d" data-thread="1" style="--x:20%; --y:32%"></i>
+        <i class="pt d" data-thread="2" style="--x:-5%; --y:36%"></i>
+      </figure>
+    </div>
+    <i class="pt d" data-thread="9"  style="--x:38%; --y:99%"></i>
+    <i class="pt m" data-thread="1"  style="--x:2%; --y:10%"></i>
+    <i class="pt m" data-thread="2"  style="--x:4.5%; --y:60%"></i>
+  </section>
+
+  <!-- ============================ TRUST ============================= -->
+  <section class="trust">
+    <div class="wrap">
+      <div class="trust-panel panel z">
+        <div class="trust-item">
+          <img class="leaf" src="assets/icons/flower-original.png" alt="">
+          <div><h3>Made with care</h3><p>Slow, gently mixed and poured by hand.</p></div>
+        </div>
+        <div class="trust-item">
+          <img class="leaf" src="assets/icons/flower-original.png" alt="">
+          <div><h3>Skin-friendly ingredients</h3><p>Made from plant-derived compounds, free from parabens and phthalates.</p></div>
+        </div>
+        <div class="trust-item">
+          <img class="leaf" src="assets/icons/flower-original.png" alt="">
+          <div><h3>Uniquely handmade</h3><p>Each batch has its own shapes and little imperfections, all part of being made by hand.</p></div>
+        </div>
+      </div>
+    </div>
+    <i class="pt d" data-thread="10" style="--x:39%; --y:8%"></i>
+    <i class="pt d" data-thread="11" style="--x:43%; --y:30%"></i>
+    <i class="pt d" data-thread="12" style="--x:44%; --y:100%"></i>
+    <i class="pt m" data-thread="3"  style="--x:2%; --y:50%"></i>
+  </section>
+
+  <!-- ============================ BATCHES =========================== -->
+  <section class="batches" id="making">
+    <div class="wrap">
+      <div class="batches-copy z">
+        <h2>Each batch<br>looks a little<br>different.</h2>
+        <svg class="uline"><use href="#sym-uline"/></svg>
+        <p>Each soap is made by hand, so the shapes, edges and colours vary from batch to batch. Some bars have uneven surfaces or small marks from the mould.</p>
+      </div>
+      <div class="four z">
+        <figure>
+          <div class="ill"><img src="assets/icons/plants-change.png" alt="" width="1254" height="1254"></div>
+          <h3>Experimenting ingredients</h3>
+          <p>I try seasonal ingredients and everyday kitchen staples in different batches.</p>
+        </figure>
+        <figure>
+          <div class="ill"><img src="assets/icons/handmade.png" alt="" width="1254" height="1254"></div>
+          <h3>Handmade</h3>
+          <p>I mix, pour and cut everything by hand.</p>
+        </figure>
+        <figure>
+          <div class="ill"><img src="assets/icons/time-cures.png" alt="" width="1254" height="1254"></div>
+          <h3>Curing</h3>
+          <p>Each batch needs at least 4&ndash;6 weeks to cure and harden before it&rsquo;s ready.</p>
+        </figure>
+        <figure>
+          <div class="ill"><img src="assets/icons/one-batch.png" alt="" width="1254" height="1254"></div>
+          <h3>Small batches</h3>
+          <p>I make a limited number of bars at a time.</p>
+        </figure>
+      </div>
+    </div>
+    <i class="pt d" data-thread="13" style="--x:47%; --y:14%"></i>
+    <i class="pt m" data-thread="4"  style="--x:4.5%; --y:20%"></i>
+    <i class="pt m" data-thread="5"  style="--x:2%; --y:80%"></i>
+  </section>
+
+  <!-- ============================ INGREDIENTS ======================= -->
+  <section class="ingredients" id="ingredients">
+    <div class="wrap">
+      <div class="ing-copy z">
+        <h2>It starts with<br>what I have.</h2>
+        <svg class="uline"><use href="#sym-uline"/></svg>
+        <p>Sometimes it&rsquo;s an ingredient from the kitchen. Other times, it&rsquo;s something I&rsquo;m curious to try in my next batch.</p>
+      </div>
+
+      <div class="map z">
+        <svg class="spokes" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M50 24 C 49 33, 51 42, 50 50"/>
+          <path d="M76 24 C 67 30, 60 42, 50 50"/>
+          <path d="M50 76 C 49 68, 51 60, 50 50"/>
+          <path d="M76 76 C 67 71, 60 58, 50 50"/>
+        </svg>
+
+        <div class="ing">
+          <div class="ill"><img src="assets/icons/oils.png" alt="" width="1254" height="1254">
+            <i class="pt d" data-thread="22" style="--x:-30%; --y:62%"></i>
+            <i class="pt d" data-thread="23" style="--x:45%; --y:50%"></i>
+            <i class="pt d" data-thread="24" style="--x:110%; --y:96%"></i>
+          </div>
+          <div><h3>Oils</h3><p>Coconut, olive, sunflower, palm, castor &amp; more</p></div>
+        </div>
+        <div class="ing">
+          <div class="ill"><img src="assets/icons/glycerin.png" alt="" width="1254" height="1254"></div>
+          <div><h3>Glycerin</h3><p>Add in liquid soap<br>for gentle feel</p></div>
+        </div>
+        <div class="ing">
+          <div class="ill"><img src="assets/icons/milk-and-oat.png" alt="" width="1254" height="1254"></div>
+          <div><h3>Milk &amp; oat</h3><p>Oat milk, goat milk and other kinds for extra lather</p></div>
+        </div>
+
+        <div class="bubble oval-wrap">
+          <svg class="oval"><use href="#sym-oval"/></svg>
+          Ingredients
+          <i class="pt d" data-thread="25" style="--x:-4%; --y:50%"></i>
+          <i class="pt d" data-thread="26" style="--x:50%; --y:50%"></i>
+          <i class="pt d" data-thread="27" style="--x:4%; --y:96%"></i>
+        </div>
+
+        <div class="ing">
+          <div class="ill"><img src="assets/icons/salts-and-clays.png" alt="" width="1254" height="1254">
+            <i class="pt d" data-thread="28" style="--x:70%; --y:-14%"></i>
+            <i class="pt d" data-thread="29" style="--x:50%; --y:50%"></i>
+            <i class="pt d" data-thread="30" style="--x:40%; --y:115%"></i>
+          </div>
+          <div><h3>Salts &amp; clays</h3><p>Natural colour pigments, texture and purification properties</p></div>
+        </div>
+        <div class="ing">
+          <div class="ill"><img src="assets/icons/fruits-and-juices.png" alt="" width="1254" height="1254"></div>
+          <div><h3>Fruits &amp; juices</h3><p>Boost lather and nourish skin with vitamins</p></div>
+        </div>
+        <div class="ing">
+          <div class="ill"><img src="assets/icons/herbs-and-botanicals.png" alt="" width="1254" height="1254"></div>
+          <div><h3>Herbs &amp; botanicals</h3><p>Calendula, lavender,<br>rosemary &amp; more</p></div>
+        </div>
+      </div>
+    </div>
+    <i class="pt d" data-thread="19" style="--x:23%; --y:-8%" data-pin></i>
+    <i class="pt d" data-thread="20" style="--x:19.8%; --y:11%" data-pin></i>
+    <i class="pt d" data-thread="21" style="--x:23%; --y:27%" data-pin></i>
+    <i class="pt d" data-thread="31" style="--x:33%; --y:94%"></i>
+    <i class="pt d" data-thread="32" style="--x:28%; --y:100%"></i>
+    <i class="pt m" data-thread="6"  style="--x:4.5%; --y:30%"></i>
+    <i class="pt m" data-thread="7"  style="--x:2%; --y:85%"></i>
+  </section>
+
+  <!-- ============================ CURING ============================ -->
+  <section class="curing" id="curing">
+    <div class="wrap">
+      <div class="tags z">
+        <button class="tag panel torn" aria-expanded="false" data-tag>
+          <i class="pt d" data-thread="33" style="--x:22%; --y:35%"></i>
+          <span class="num">01</span>
+          <span class="row"><h3>Coconut<br>Kitchen Bar</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
+          <span class="more">Staple kitchen soap. Best for hands and everyday kitchen use.</span>
+          <span class="full-note" data-batch="coconut">Full note <svg><use href="#sym-arrow"/></svg></span>
+        </button>
+        <button class="tag panel torn" aria-expanded="false" data-tag>
+          <i class="pt d" data-thread="34" style="--x:16%; --y:55%"></i>
+          <span class="num">02</span>
+          <span class="row"><h3>Apple and<br>Carrots</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
+          <span class="more">Bright and clean. Best for dull, uneven tone.</span>
+          <span class="full-note" data-batch="apple-carrot">Full note <svg><use href="#sym-arrow"/></svg></span>
+        </button>
+        <button class="tag panel torn" aria-expanded="false" data-tag>
+          <i class="pt d" data-thread="35" style="--x:24%; --y:40%"></i>
+          <span class="num">03</span>
+          <span class="row"><h3>Tomato</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
+          <span class="more">Green and earthy. Best for sensitive, dry skin.</span>
+          <span class="full-note" data-batch="tomato">Full note <svg><use href="#sym-arrow"/></svg></span>
+        </button>
+        <button class="tag panel torn" aria-expanded="false" data-tag>
+          <i class="pt d" data-thread="36" style="--x:15%; --y:60%"></i>
+          <span class="num">04</span>
+          <span class="row"><h3>Pink Himalayan<br>&amp; Sea Salt Spa</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
+          <span class="more">A gentle exfoliant with a creamy lather. Best for oily, sweaty, body-acne prone skin.</span>
+          <span class="full-note" data-batch="himalayan">Full note <svg><use href="#sym-arrow"/></svg></span>
+        </button>
+        <button class="tag panel torn" aria-expanded="false" data-tag>
+          <i class="pt d" data-thread="37" style="--x:23%; --y:35%"></i>
+          <span class="num">05</span>
+          <span class="row"><h3>Honey and<br>Turmeric</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
+          <span class="more">Soft and simple for dry and sensitive skin.</span>
+          <span class="full-note" data-batch="honey-turmeric">Full note <svg><use href="#sym-arrow"/></svg></span>
+        </button>
+        <button class="tag panel torn" aria-expanded="false" data-tag>
+          <i class="pt d" data-thread="38" style="--x:16%; --y:55%"></i>
+          <span class="num">06</span>
+          <span class="row"><h3>Stout Beer</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
+          <span class="more">Malty and moisturising. Best for dry, dull, itchy skin.</span>
+          <span class="full-note" data-batch="stout">Full note <svg><use href="#sym-arrow"/></svg></span>
+        </button>
+        <button class="tag panel torn" aria-expanded="false" data-tag>
+          <i class="pt d" data-thread="39" style="--x:24%; --y:40%"></i>
+          <span class="num">07</span>
+          <span class="row"><h3>Goat Milk<br>and Oat</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
+          <span class="more">Soft, creamy and mild. Best for sensitive, dry, mature skin.</span>
+          <span class="full-note" data-batch="goatmilk">Full note <svg><use href="#sym-arrow"/></svg></span>
+        </button>
+        <button class="tag panel torn" aria-expanded="false" data-tag>
+          <i class="pt d" data-thread="40" style="--x:15%; --y:70%"></i>
+          <span class="num">08</span>
+          <span class="row"><h3>Herbal<br>Vinegar</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
+          <span class="more">Herbal cleansing for oily and uneven skin.</span>
+          <span class="full-note" data-batch="vinegar">Full note <svg><use href="#sym-arrow"/></svg></span>
+        </button>
+      </div>
+
+      <div class="shelf-unit z">
+        <div class="shelf-row">
+          <div class="shelf-items">
+            <button class="shelf-soap has-photo" type="button" data-batch="apple-carrot">
+              <span class="soap-label at-left">Apple and Carrots<img class="hand-arrow" src="assets/pencil-arrow-curve-right.png" alt=""></span>
+              <img src="assets/soap-yellow.png" alt="" width="383" height="360">
+            </button>
+            <button class="shelf-soap has-photo" type="button" data-batch="tomato">
+              <span class="soap-label at-right">Tomato<img class="hand-arrow" src="assets/pencil-arrow-curve-left.png" alt=""></span>
+              <img src="assets/soap-tomato.png" alt="" width="525" height="318">
+            </button>
+          </div>
+          <div class="plank"><img src="assets/shelf-plank.webp" alt=""></div>
+        </div>
+        <div class="shelf-row">
+          <div class="shelf-items">
+            <button class="shelf-soap has-photo" type="button" data-batch="himalayan">
+              <span class="soap-label at-left">Pink Himalayan &amp; Sea Salt Spa<img class="hand-arrow" src="assets/pencil-arrow-curve-right.png" alt=""></span>
+              <img src="assets/soap-himalayan.png" alt="" width="1503" height="1181">
+            </button>
+            <button class="shelf-soap has-photo" type="button" data-batch="vinegar">
+              <span class="soap-label at-right">Herbal Vinegar<img class="hand-arrow" src="assets/pencil-arrow-curve-left.png" alt=""></span>
+              <img src="assets/soap-vinegar.png" alt="" width="671" height="391">
+            </button>
+          </div>
+          <div class="plank"><img src="assets/shelf-plank.webp" alt=""></div>
+        </div>
+        <div class="shelf-row">
+          <div class="shelf-items">
+            <button class="shelf-soap has-photo" type="button" data-batch="coconut">
+              <span class="soap-label at-left">Coconut Kitchen Bar<img class="hand-arrow" src="assets/pencil-arrow-curve-right.png" alt=""></span>
+              <img src="assets/soap-coconut.png" alt="" width="370" height="330">
+            </button>
+            <button class="shelf-soap has-photo" type="button" data-batch="honey-turmeric">
+              <span class="soap-label at-right">Honey and Turmeric<img class="hand-arrow" src="assets/pencil-arrow-curve-left.png" alt=""></span>
+              <img src="assets/soap-honey.png" alt="" width="389" height="407">
+            </button>
+          </div>
+          <div class="plank"><img src="assets/shelf-plank.webp" alt=""></div>
+        </div>
+        <div class="shelf-row">
+          <div class="shelf-items">
+            <button class="shelf-soap has-photo" type="button" data-batch="stout">
+              <span class="soap-label at-left">Stout Beer<img class="hand-arrow" src="assets/pencil-arrow-curve-right.png" alt=""></span>
+              <img src="assets/soap-beer.png" alt="" width="580" height="364">
+            </button>
+            <button class="shelf-soap has-photo" type="button" data-batch="goatmilk">
+              <span class="soap-label at-right">Goat Milk and Oat<img class="hand-arrow" src="assets/pencil-arrow-curve-left.png" alt=""></span>
+              <img src="assets/soap-goatmilk.png" alt="" width="949" height="415">
+            </button>
+          </div>
+          <div class="plank"><img src="assets/shelf-plank.webp" alt=""></div>
+        </div>
+      </div>
+    </div>
+    <i class="pt m" data-thread="8"  style="--x:4.5%; --y:30%"></i>
+    <i class="pt m" data-thread="9"  style="--x:2%; --y:85%"></i>
+  </section>
+
+  <!-- ============================ BATCH PANEL ======================= -->
+  <section class="batch" id="batch-notes">
+    <div class="wrap">
+      <!-- phone layout: one card per soap, tap for the batch details -->
+      <div class="batch-cards z">
+        <div class="intro">
+          <h2>What&rsquo;s curing<br>on the shelf</h2>
+          <svg class="uline"><use href="#sym-uline"/></svg>
+          <p>Each bar is a single batch. Tap one to see what&rsquo;s in it.</p>
+        </div>
+        <button class="scard panel torn" type="button" data-batch="apple-carrot">
+          <span class="pic"><img src="assets/soap-yellow.png" alt="" width="383" height="360"></span>
+          <span class="num">01</span>
+          <span class="row"><h3>Apple and<br>Carrots</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
+        </button>
+        <button class="scard panel torn" type="button" data-batch="tomato">
+          <span class="pic"><img src="assets/soap-tomato.png" alt="" width="525" height="318"></span>
+          <span class="num">02</span>
+          <span class="row"><h3>Tomato</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
+        </button>
+        <button class="scard panel torn" type="button" data-batch="himalayan">
+          <span class="pic"><img src="assets/soap-himalayan.png" alt="" width="1503" height="1181"></span>
+          <span class="num">03</span>
+          <span class="row"><h3>Pink Himalayan<br>&amp; Sea Salt</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
+        </button>
+        <button class="scard panel torn" type="button" data-batch="vinegar">
+          <span class="pic"><img src="assets/soap-vinegar.png" alt="" width="671" height="391"></span>
+          <span class="num">04</span>
+          <span class="row"><h3>Herbal<br>Vinegar</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
+        </button>
+        <button class="scard panel torn" type="button" data-batch="coconut">
+          <span class="pic"><img src="assets/soap-coconut.png" alt="" width="370" height="330"></span>
+          <span class="num">05</span>
+          <span class="row"><h3>Coconut<br>Kitchen Bar</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
+        </button>
+        <button class="scard panel torn" type="button" data-batch="honey-turmeric">
+          <span class="pic"><img src="assets/soap-honey.png" alt="" width="389" height="407"></span>
+          <span class="num">06</span>
+          <span class="row"><h3>Honey and<br>Turmeric</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
+        </button>
+        <button class="scard panel torn" type="button" data-batch="stout">
+          <span class="pic"><img src="assets/soap-beer.png" alt="" width="580" height="364"></span>
+          <span class="num">07</span>
+          <span class="row"><h3>Stout Beer</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
+        </button>
+        <button class="scard panel torn" type="button" data-batch="goatmilk">
+          <span class="pic"><img src="assets/soap-goatmilk.png" alt="" width="949" height="415"></span>
+          <span class="num">08</span>
+          <span class="row"><h3>Goat Milk<br>and Oat</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
+        </button>
+      </div>
+    </div>
+    <i class="pt m" data-thread="10" style="--x:4.5%; --y:30%"></i>
+    <i class="pt m" data-thread="11" style="--x:2%; --y:85%"></i>
+  </section>
+
+  <!-- ============================ SHARE ============================= -->
+  <section class="share" id="enquire">
+    <div class="wrap">
+      <div class="tellus z">
+        <i class="pt d" data-thread="50" style="--x:-58%; --y:-30%"></i>
+        <i class="pt d" data-thread="51" style="--x:-48%; --y:45%"></i>
+        <i class="pt d" data-thread="52" style="--x:6%; --y:48%"></i>
+        <button class="ring oval-wrap" id="tellUs" type="button">
+          <svg class="oval"><use href="#sym-oval"/></svg>
+          Tell me what<br>you&rsquo;d like
+          <svg class="go" viewBox="0 0 26 26"><circle cx="13" cy="13" r="12"/><path d="M8 13 H18 M14.5 9.5 L18 13 L14.5 16.5"/></svg>
+        </button>
+        <p>I&rsquo;ll get back to you<br>with what&rsquo;s available.</p>
+      </div>
+    </div>
+    <i class="pt m" data-thread="12" style="--x:4.5%; --y:30%"></i>
+    <i class="pt m" data-thread="13" style="--x:2%; --y:90%"></i>
+  </section>
+
+  <!-- ============================ FAQ =============================== -->
+  <section class="faq">
+    <div class="wrap">
+      <div class="faq-list">
+        <details>
+          <summary>How long does the soap take to cure? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
+          <p class="ans">I make cold-process soap bars, which usually take four to eight weeks to cure. During curing, water gradually evaporates from the bar, making it harder, longer-lasting and gentler on skin. I only list and package a batch once it&rsquo;s fully cured and ready to use.</p>
+        </details>
+        <details>
+          <summary>Are your soaps suitable for sensitive skin? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
+          <p class="ans">Everyone&rsquo;s skin reacts differently, so I can&rsquo;t promise that every bar will suit sensitive skin. If you&rsquo;re sensitive to fragrance or particular ingredients, let me know. I can share the full ingredient list for any batch and help you find an unscented or low-scent option that works for you.</p>
+        </details>
+        <details>
+          <summary>What makes handmade soap different? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
+          <p class="ans">I make each batch myself using plant oils, trying different recipes to see how they lather and feel on skin. The glycerin formed naturally during soapmaking stays in the bars instead of being removed, and each batch is left to cure fully before it&rsquo;s ready to use.</p>
+        </details>
+        <details>
+          <summary>How should I store my soap? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
+          <p class="ans">Keep it somewhere it can dry between uses &mdash; a soap dish that drains well helps prevent the bar from sitting in water and turning soft. Store any unused bars in a cool, dry place away from direct sunlight, so they keep their shape and scent.</p>
+        </details>
+        <details>
+          <summary>Can I order in bulk or request a custom batch? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
+          <p class="ans">Yes. Send me the scent, size and quantity you have in mind through the enquiry form, and I&rsquo;ll let you know what I can make, along with how much time I&rsquo;ll need &mdash; including the curing period &mdash; so you know when to expect it.</p>
+        </details>
+        <details>
+          <summary>Does handmade soap expire? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
+          <p class="ans">Handmade soap can change over time, so it&rsquo;s best used within a year of curing. The scent may fade and the bar may soften a little in humid weather. Keep it in a cool, dry place and let it dry fully between uses to help it last.</p>
+        </details>
+      </div>
+    </div>
+    <i class="pt m" data-thread="14" style="--x:4.5%; --y:40%"></i>
+    <i class="pt m" data-thread="15" style="--x:2%; --y:100%"></i>
+  </section>
+
+  <!-- ============================ FOOTER ============================ -->
+  <footer class="site">
+    <div class="wrap">
+      <div>
+        <div class="flogo">Soapmerry</div>
+        <div class="o8">Made by hand.<br>One batch at a time. <img class="leaf" src="assets/icons/flower-original.png" alt=""></div>
+      </div>
+      <div class="o8">Friends &amp; family enquiries<br>I&rsquo;ll reply personally.</div>
+      <div class="o8">Thank you for supporting<br>small and handmade products in Malaysia.</div>
+      <svg class="heart" viewBox="0 0 26 24"><path d="M13 22 C 6 17, 1 13, 1 8 C 1 4.5, 3.5 2, 6.8 2 C 9.4 2, 11.6 3.6, 13 5.8 C 14.4 3.6, 16.6 2, 19.2 2 C 22.5 2, 25 4.5, 25 8 C 25 13, 20 17, 13 22 Z"/></svg>
+    </div>
+  </footer>
+
+</div>
+
+<!-- batch details (opened from the phone cards) -->
+<dialog class="batch-dialog" id="batchDialog" aria-labelledby="dlgTitle">
+  <div class="dlg">
+    <button class="close" type="button" data-close aria-label="Close">&times;</button>
+    <p class="kicker">Selected batch</p>
+    <h3 id="dlgTitle"></h3>
+    <p class="desc" id="dlgDesc"></p>
+    <dl>
+      <div><dt>Ingredients</dt><dd id="dlgIngs"></dd></div>
+      <div><dt>Fragrance</dt><dd id="dlgFrag"></dd></div>
+      <div><dt>Cure time</dt><dd id="dlgCure"></dd></div>
+      <div><dt>Good for</dt><dd id="dlgGood"></dd></div>
+    </dl>
+    <button class="btn-olive" type="button" id="dlgAdd">Add to enquiry note <svg><use href="#sym-arrow"/></svg></button>
+  </div>
+</dialog>
+
+<!-- enquiry popup (opened from "Tell me what you'd like") -->
+<dialog class="enquiry-dialog" id="enquiryDialog" aria-labelledby="enqDlgTitle">
+  <div class="dlg">
+    <button class="close" type="button" id="enqClose" aria-label="Close">&times;</button>
+
+    <div id="enqFormView">
+      <p class="kicker">Enquiry</p>
+      <h3 id="enqDlgTitle">Tell me what you&rsquo;d like<br>and I&rsquo;ll reply with what&rsquo;s available.</h3>
+
+      <form class="enquiry" id="enquiryForm">
+        <!-- honeypot, kept out of view -->
+        <div class="hp" aria-hidden="true">
+          <label for="enqCompany">Company</label>
+          <input type="text" id="enqCompany" name="company" tabindex="-1" autocomplete="off">
+        </div>
+
+        <div class="field">
+          <label for="enqName">Your name</label>
+          <input type="text" id="enqName" name="name" required autocomplete="name">
+        </div>
+
+        <div class="field row">
+          <div class="field">
+            <label for="enqEmail">Email</label>
+            <input type="email" id="enqEmail" name="email" autocomplete="email">
+          </div>
+          <div class="field">
+            <label for="enqPhone">Phone number</label>
+            <input type="tel" id="enqPhone" name="phone" autocomplete="tel">
+          </div>
+        </div>
+        <p class="hint" id="enqContactHint">Fill in at least one &mdash; email or phone.</p>
+
+        <div class="field">
+          <label>Which soap bars, and how many?</label>
+          <div class="qty-list" id="enqQtyList">
+            <div class="qty-row" data-name="Coconut Kitchen Bar">
+              <span class="qty-label">Coconut Kitchen Bar</span>
+              <div class="stepper">
+                <button type="button" class="step-btn minus" aria-label="Decrease Coconut Kitchen Bar">&minus;</button>
+                <input type="text" inputmode="numeric" class="step-input" value="0" readonly aria-label="Coconut Kitchen Bar quantity">
+                <button type="button" class="step-btn plus" aria-label="Increase Coconut Kitchen Bar">+</button>
+              </div>
+            </div>
+            <div class="qty-row" data-name="Apple and Carrots">
+              <span class="qty-label">Apple and Carrots</span>
+              <div class="stepper">
+                <button type="button" class="step-btn minus" aria-label="Decrease Apple and Carrots">&minus;</button>
+                <input type="text" inputmode="numeric" class="step-input" value="0" readonly aria-label="Apple and Carrots quantity">
+                <button type="button" class="step-btn plus" aria-label="Increase Apple and Carrots">+</button>
+              </div>
+            </div>
+            <div class="qty-row" data-name="Tomato">
+              <span class="qty-label">Tomato</span>
+              <div class="stepper">
+                <button type="button" class="step-btn minus" aria-label="Decrease Tomato">&minus;</button>
+                <input type="text" inputmode="numeric" class="step-input" value="0" readonly aria-label="Tomato quantity">
+                <button type="button" class="step-btn plus" aria-label="Increase Tomato">+</button>
+              </div>
+            </div>
+            <div class="qty-row" data-name="Pink Himalayan &amp; Sea Salt">
+              <span class="qty-label">Pink Himalayan &amp; Sea Salt</span>
+              <div class="stepper">
+                <button type="button" class="step-btn minus" aria-label="Decrease Pink Himalayan &amp; Sea Salt">&minus;</button>
+                <input type="text" inputmode="numeric" class="step-input" value="0" readonly aria-label="Pink Himalayan &amp; Sea Salt quantity">
+                <button type="button" class="step-btn plus" aria-label="Increase Pink Himalayan &amp; Sea Salt">+</button>
+              </div>
+            </div>
+            <div class="qty-row" data-name="Honey and Turmeric">
+              <span class="qty-label">Honey and Turmeric</span>
+              <div class="stepper">
+                <button type="button" class="step-btn minus" aria-label="Decrease Honey and Turmeric">&minus;</button>
+                <input type="text" inputmode="numeric" class="step-input" value="0" readonly aria-label="Honey and Turmeric quantity">
+                <button type="button" class="step-btn plus" aria-label="Increase Honey and Turmeric">+</button>
+              </div>
+            </div>
+            <div class="qty-row" data-name="Stout Beer">
+              <span class="qty-label">Stout Beer</span>
+              <div class="stepper">
+                <button type="button" class="step-btn minus" aria-label="Decrease Stout Beer">&minus;</button>
+                <input type="text" inputmode="numeric" class="step-input" value="0" readonly aria-label="Stout Beer quantity">
+                <button type="button" class="step-btn plus" aria-label="Increase Stout Beer">+</button>
+              </div>
+            </div>
+            <div class="qty-row" data-name="Goat Milk and Oat">
+              <span class="qty-label">Goat Milk and Oat</span>
+              <div class="stepper">
+                <button type="button" class="step-btn minus" aria-label="Decrease Goat Milk and Oat">&minus;</button>
+                <input type="text" inputmode="numeric" class="step-input" value="0" readonly aria-label="Goat Milk and Oat quantity">
+                <button type="button" class="step-btn plus" aria-label="Increase Goat Milk and Oat">+</button>
+              </div>
+            </div>
+            <div class="qty-row" data-name="Herbal Vinegar">
+              <span class="qty-label">Herbal Vinegar</span>
+              <div class="stepper">
+                <button type="button" class="step-btn minus" aria-label="Decrease Herbal Vinegar">&minus;</button>
+                <input type="text" inputmode="numeric" class="step-input" value="0" readonly aria-label="Herbal Vinegar quantity">
+                <button type="button" class="step-btn plus" aria-label="Increase Herbal Vinegar">+</button>
+              </div>
+            </div>
+          </div>
+          <p class="total-ref">For your reference <strong id="enqTotalCount">0 bars</strong></p>
+        </div>
+
+        <div class="field">
+          <label for="enqNotes">Anything else?</label>
+          <textarea id="enqNotes" name="notes" placeholder="Scent preferences, timing, custom requests..."></textarea>
+        </div>
+
+        <p class="enq-error" id="enqError" hidden>Something went wrong sending this &mdash; you can email me directly at <a id="enqFallbackMail" href="mailto:hello@example.com">hello@example.com</a> instead.</p>
+
+        <button class="btn-olive" type="submit" id="enqSubmitBtn">
+          <span id="enqSubmitLabel">Send enquiry</span>
+          <svg><use href="#sym-arrow"/></svg>
+        </button>
+      </form>
+    </div>
+
+    <div id="enqSuccessView" class="enq-success" hidden>
+      <svg class="leaf" viewBox="0 0 24 28"><path d="M4 26 C 8 18, 12 12, 20 4"/><path d="M9 17 C 6 15, 5 12, 6 9 C 9 10, 10 13, 9 17 Z"/><path d="M13 12 C 11 9, 11 6, 13 4 C 15 6, 15 9, 13 12 Z"/><path d="M12 15 C 15 14, 18 14, 20 16 C 17 18, 14 17, 12 15 Z"/></svg>
+      <h3>Got it, thank you!</h3>
+      <p id="enqSuccessMsg">I&rsquo;ll reply soon with what&rsquo;s available.</p>
+      <button class="again" id="enqAgainBtn" type="button">Send another enquiry</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ------------------------------------------------------------------
+     LOADER: hold a white screen while the logo writes itself (3.5s),
+     then fade the page in.  Skipped under reduced motion.
+     ------------------------------------------------------------------ */
+  var loader = document.getElementById('loader');
+  var reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function reveal() {
+    document.body.classList.add('ready');
+    loader.classList.add('out');
+    setTimeout(function () { loader.remove(); }, 800);
+  }
+  if (reduceMotion) { document.body.classList.add('no-loader'); loader.remove(); }
+  else { setTimeout(reveal, 3700); }
+
+  /* ------------------------------------------------------------------
+     THREAD: one curve through every [data-thread] anchor
+     ------------------------------------------------------------------ */
+  var page = document.getElementById('page');
+  var svg  = document.getElementById('thread');
+  var path = document.getElementById('threadPath');
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  var len = 0, ticking = false, monoY = [], anchorLen = [];
+
+  /* Anchors live inside the elements the line should pass through.
+     data-thread="N" gives the order along the route (DOM order is not the route). */
+  function anchors() {
+    var box = page.getBoundingClientRect();
+    return Array.prototype.filter.call(page.querySelectorAll('[data-thread]'), function (n) {
+        return n.getClientRects().length > 0;            // skip anchors hidden at this breakpoint
+      })
+      .sort(function (a, b) { return (+a.getAttribute('data-thread') || 0) - (+b.getAttribute('data-thread') || 0); })
+      .map(function (n) {
+        var r = n.getBoundingClientRect();
+        return { x: r.left - box.left, y: r.top - box.top, pin: n.hasAttribute('data-pin') };
+      });
+  }
+
+  /* Relax the anchor chain: each interior point drifts toward the midpoint of
+     its neighbours.  Two light passes turn tight corners into wide arcs while
+     keeping every point within a few px of where it was placed. */
+  function relax(p, passes, w) {
+    for (var k = 0; k < passes; k++) {
+      var q = p.map(function (pt) { return { x: pt.x, y: pt.y, pin: pt.pin }; });
+      for (var i = 1; i < p.length - 1; i++) {
+        if (p[i].pin) continue;
+        q[i].x = p[i].x + ((p[i - 1].x + p[i + 1].x) / 2 - p[i].x) * w;
+        q[i].y = p[i].y + ((p[i - 1].y + p[i + 1].y) / 2 - p[i].y) * w;
+      }
+      p = q;
+    }
+    return p;
+  }
+
+  /* Centripetal Catmull-Rom -> cubic Beziers.
+     Unlike the uniform version, segment lengths shape the curve, so a pair of
+     close anchors no longer produces a hard bend and long gaps no longer sag. */
+  function curve(p) {
+    if (p.length < 2) return '';
+    var A = 0.5;                                              // 0.5 = centripetal
+    function dist(a, b) { return Math.pow(Math.hypot(b.x - a.x, b.y - a.y), A) || 1e-4; }
+    var d = 'M' + p[0].x.toFixed(1) + ' ' + p[0].y.toFixed(1);
+    for (var i = 0; i < p.length - 1; i++) {
+      var p0 = p[i - 1] || p[i], p1 = p[i], p2 = p[i + 1], p3 = p[i + 2] || p2;
+      var d1 = dist(p0, p1), d2 = dist(p1, p2), d3 = dist(p2, p3);
+      var d1s = d1 * d1, d2s = d2 * d2, d3s = d3 * d3;
+      var k1 = 3 * d1 * (d1 + d2), k2 = 3 * d3 * (d3 + d2);
+      var c1x = (d1s * p2.x - d2s * p0.x + (2 * d1s + 3 * d1 * d2 + d2s) * p1.x) / k1;
+      var c1y = (d1s * p2.y - d2s * p0.y + (2 * d1s + 3 * d1 * d2 + d2s) * p1.y) / k1;
+      var c2x = (d3s * p1.x - d2s * p3.x + (2 * d3s + 3 * d3 * d2 + d2s) * p2.x) / k2;
+      var c2y = (d3s * p1.y - d2s * p3.y + (2 * d3s + 3 * d3 * d2 + d2s) * p2.y) / k2;
+      if (i === 0)            { c1x = p1.x + (p2.x - p1.x) / 3; c1y = p1.y + (p2.y - p1.y) / 3; }
+      if (i === p.length - 2) { c2x = p2.x - (p2.x - p1.x) / 3; c2y = p2.y - (p2.y - p1.y) / 3; }
+      d += ' C' + c1x.toFixed(1) + ' ' + c1y.toFixed(1) + ', ' + c2x.toFixed(1) + ' ' + c2y.toFixed(1) + ', ' + p2.x.toFixed(1) + ' ' + p2.y.toFixed(1);
+    }
+    return d;
+  }
+
+  function layout() {
+    svg.setAttribute('viewBox', '0 0 ' + page.offsetWidth + ' ' + page.offsetHeight);
+    var pts = relax(anchors(), 2, 0.3);
+    var d = curve(pts);
+    if (!d) return;
+    path.setAttribute('d', d);
+    len = path.getTotalLength();
+    path.style.strokeDasharray = len;
+
+    /* Progress used to be `scrollY / page height`, which assumes the curve's
+       length is spread evenly over the page. It isn't: sections with wide
+       zig-zags (the ingredient map, the tag list) pack far more curve into
+       far less scroll height than sparse ones, so that assumption made the
+       line lag behind in some sections and race ahead in others. Instead,
+       walk the same anchors the curve was built from, track each one's
+       cumulative (straight-line) distance along the route, and later
+       interpolate scroll position against that -- so the drawn tip tracks
+       where the curve actually is, not where a uniform ramp guesses it is. */
+    monoY = []; anchorLen = [0];
+    var maxY = -Infinity;
+    for (var i = 0; i < pts.length; i++) {
+      maxY = Math.max(maxY, pts[i].y);
+      monoY.push(maxY);
+      if (i > 0) anchorLen.push(anchorLen[i - 1] + Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y));
+    }
+
+    // size the wobble filter region to the page so the displacement isn't clipped
+    var f = document.getElementById('wobble');
+    if (f) { f.setAttribute('width', page.offsetWidth + 40); f.setAttribute('height', page.offsetHeight + 40); }
+  }
+
+  /* cy: page-relative Y of the "reveal line" (85% down the viewport). Returns
+     how far along the route (0-1) that line has reached. */
+  function progressAt(cy) {
+    if (monoY.length < 2) return 1;
+    if (cy <= monoY[0]) return 0;
+    if (cy >= monoY[monoY.length - 1]) return 1;
+    var total = anchorLen[anchorLen.length - 1] || 1;
+    for (var i = 0; i < monoY.length - 1; i++) {
+      if (cy <= monoY[i + 1]) {
+        var span = monoY[i + 1] - monoY[i];
+        var f = span > 0 ? (cy - monoY[i]) / span : 1;
+        return (anchorLen[i] + f * (anchorLen[i + 1] - anchorLen[i])) / total;
+      }
+    }
+    return 1;
+  }
+
+  function render() {
+    if (!len) return;
+    var p = 1;
+    if (!reduce.matches) {
+      var box = page.getBoundingClientRect();
+      p = progressAt(innerHeight * 0.85 - box.top);
+    }
+    path.style.strokeDashoffset = len * (1 - p);
+  }
+
+  function refresh() { layout(); render(); }
+  function onScroll() { if (ticking) return; ticking = true; requestAnimationFrame(function () { ticking = false; render(); }); }
+
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', refresh);
+  new ResizeObserver(refresh).observe(page);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(refresh);
+  Array.prototype.forEach.call(document.images, function (img) { if (!img.complete) img.addEventListener('load', refresh, { once: true }); });
+  refresh();
+
+  /* ------------------------------------------------------------------
+     NAV: active pill follows scroll
+     ------------------------------------------------------------------ */
+  var links = document.querySelectorAll('nav.pills a[data-nav]');
+  var targets = Array.prototype.map.call(links, function (a) { return document.getElementById(a.getAttribute('data-nav')); }).filter(Boolean);
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        links.forEach(function (a) { a.classList.toggle('active', a.getAttribute('data-nav') === e.target.id); });
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    targets.forEach(function (t) { io.observe(t); });
+  }
+  links[0].classList.add('active');
+
+  /* burger (phones): open/close the menu, close after choosing */
+  var burger = document.getElementById('burger'), menu = document.getElementById('mainNav');
+  function setMenu(open) {
+    burger.setAttribute('aria-expanded', String(open));
+    burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    menu.classList.toggle('open', open);
+  }
+  burger.addEventListener('click', function () { setMenu(!menu.classList.contains('open')); });
+  links.forEach(function (a) { a.addEventListener('click', function () { setMenu(false); }); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setMenu(false); });
+
+  /* ------------------------------------------------------------------
+     BATCH DATA + DIALOG (shelf soaps + phone cards)
+     Real recipes. img is null for batches without product photography yet.
+     ------------------------------------------------------------------ */
+  var BATCHES = {
+    coconut: {
+      title: 'Coconut Kitchen Bar', batch: 'Ready 26 Sept', img: 'assets/soap-coconut.png',
+      desc: 'Staple kitchen soap.',
+      ings: 'Coconut oil, palm oil, castor oil, brewed coffee, lime fragrance oil (IFRA certified).',
+      frag: 'Lime', cure: 'Ready 26 Sept', good: 'Hands, everyday kitchen use'
+    },
+    'apple-carrot': {
+      title: 'Apple and Carrots', batch: 'Ready 26 Sept', img: 'assets/soap-yellow.png',
+      desc: 'Bright and clean.',
+      ings: 'Coconut oil, palm oil, camellia oil, sweet almond oil, sunflower oil, apple and carrot juice, island escape fragrance oil (IFRA certified).',
+      frag: 'Island escape', cure: 'Ready 26 Sept', good: 'Dull, uneven tone'
+    },
+    tomato: {
+      title: 'Tomato', batch: 'Ready 26 Sept', img: 'assets/soap-tomato.png',
+      desc: 'Green and earthy.',
+      ings: 'Coconut oil, palm oil, olive oil, green tea seed oil, apricot kernel oil, tomato juice, pomegranate powder, after the rain fragrance oil (IFRA certified).',
+      frag: 'After the rain', cure: 'Ready 26 Sept', good: 'Sensitive, dry skin'
+    },
+    himalayan: {
+      title: 'Pink Himalayan and Sea Salt Spa', batch: 'Ready 26 Sept', img: 'assets/soap-himalayan.png',
+      desc: 'A gentle exfoliant with a creamy lather.',
+      ings: 'Sea salt, coconut oil, castor oil, camellia sugar fragrance oil (IFRA certified).',
+      frag: 'Camellia sugar', cure: 'Ready 26 Sept', good: 'Oily, sweaty, body-acne prone'
+    },
+    'honey-turmeric': {
+      title: 'Honey and Turmeric', batch: 'Ready 26 Sept', img: 'assets/soap-honey.png',
+      desc: 'Soft and simple for dry and sensitive skin.',
+      ings: 'Coconut oil, palm oil, camellia oil, sweet almond oil, sunflower oil, turmeric powder, pomegranate powder, honey, pink peony fragrance oil (IFRA certified).',
+      frag: 'Pink peony', cure: 'Ready 26 Sept', good: 'Dry, sensitive skin'
+    },
+    stout: {
+      title: 'Stout Beer', batch: 'Ready 26 Sept', img: 'assets/soap-beer.png',
+      desc: 'Malty and moisturising.',
+      ings: 'Beer, coconut oil, shea butter, olive oil, grapeseed oil, macadamia oil, brewer’s yeast.',
+      frag: 'Unscented (natural malt)', cure: 'Ready 26 Sept', good: 'Dry, dull, itchy skin'
+    },
+    goatmilk: {
+      title: 'Goat Milk and Oat', batch: 'Ready 26 Sept', img: 'assets/soap-goatmilk.png',
+      desc: 'Soft, creamy and mild.',
+      ings: 'Goat milk, coconut oil, palm oil, sweet almond oil, olive oil, sunflower oil, oat powder, baby powder fragrance oil (IFRA certified).',
+      frag: 'Baby powder', cure: 'Ready 26 Sept', good: 'Sensitive, dry, mature skin'
+    },
+    vinegar: {
+      title: 'Herbal Vinegar', batch: 'Ready 26 Sept', img: 'assets/soap-vinegar.png',
+      desc: 'Herbal cleansing for oily and uneven skin.',
+      ings: 'Coconut oil, palm oil, olive oil, green tea seed oil, apricot kernel oil, gromwell root powder, artemisia powder, cocoa butter cashmere fragrance oil (IFRA certified).',
+      frag: 'Cocoa butter cashmere', cure: 'Ready 26 Sept', good: 'Oily, congested, uneven tone'
+    }
+  };
+  var dlg = document.getElementById('batchDialog');
+  var $ = function (id) { return document.getElementById(id); };
+  var current = null;
+  function openBatch(key) {
+    var b = BATCHES[key]; if (!b || !dlg.showModal) return;
+    current = b.title;
+    $('dlgTitle').innerHTML = b.title + '<br>' + b.batch;
+    $('dlgDesc').textContent = b.desc;
+    $('dlgIngs').textContent = b.ings;
+    $('dlgFrag').textContent = b.frag;
+    $('dlgCure').textContent = b.cure;
+    $('dlgGood').textContent = b.good;
+    $('dlgAdd').firstChild.textContent = note.indexOf(current) > -1 ? 'Added to enquiry note ' : 'Add to enquiry note ';
+    dlg.showModal();
+  }
+  document.querySelectorAll('[data-batch]').forEach(function (c) {
+    c.addEventListener('click', function (e) {
+      if (c.classList.contains('full-note')) e.stopPropagation();
+      openBatch(c.getAttribute('data-batch'));
+    });
+  });
+  dlg.querySelector('[data-close]').addEventListener('click', function () { dlg.close(); });
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });   // click on backdrop
+  $('dlgAdd').addEventListener('click', function () {
+    if (current) { addToNote(current); this.firstChild.textContent = 'Added to enquiry note '; }
+  });
+
+  /* ------------------------------------------------------------------
+     TAGS: expand / collapse
+     ------------------------------------------------------------------ */
+  document.querySelectorAll('[data-tag]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var open = b.getAttribute('aria-expanded') === 'true';
+      b.setAttribute('aria-expanded', String(!open));
+    });
+  });
+
+  /* ------------------------------------------------------------------
+     ENQUIRY NOTE: in-memory list, seeds the enquiry popup's quantities
+     ------------------------------------------------------------------ */
+  var note = [];
+  var countEl = document.getElementById('noteCount');
+  var tell = document.getElementById('tellUs');
+  var MAIL = 'hello@example.com';            // <-- your address
+  function syncNote() {
+    countEl.textContent = note.length;
+    countEl.classList.toggle('on', note.length > 0);
+  }
+  function addToNote(item) { if (note.indexOf(item) === -1) note.push(item); syncNote(); }
+  document.querySelectorAll('[data-add]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      addToNote(b.getAttribute('data-add'));
+      b.firstChild.textContent = 'Added to enquiry note ';
+    });
+  });
+  syncNote();
+
+  /* ------------------------------------------------------------------
+     ENQUIRY POPUP: "Tell me what you'd like"
+     Submits to Formspree. Replace FORM_ENDPOINT with your own form's
+     endpoint from https://formspree.io once you've created one and
+     verified your email -- until then submissions will fail.
+     ------------------------------------------------------------------ */
+  var FORM_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';   // <-- replace after creating a Formspree form
+  var enqDlg = document.getElementById('enquiryDialog');
+  var enqForm = document.getElementById('enquiryForm');
+  var enqFormView = document.getElementById('enqFormView');
+  var enqSuccessView = document.getElementById('enqSuccessView');
+  var enqSuccessMsg = document.getElementById('enqSuccessMsg');
+  var enqAgainBtn = document.getElementById('enqAgainBtn');
+  var enqSubmitBtn = document.getElementById('enqSubmitBtn');
+  var enqSubmitLabel = document.getElementById('enqSubmitLabel');
+  var enqEmail = document.getElementById('enqEmail');
+  var enqPhone = document.getElementById('enqPhone');
+  var enqContactHint = document.getElementById('enqContactHint');
+  var enqTotalCount = document.getElementById('enqTotalCount');
+  var enqQtyRows = Array.prototype.slice.call(document.querySelectorAll('#enqQtyList .qty-row'));
+  var enqError = document.getElementById('enqError');
+  document.getElementById('enqFallbackMail').href = 'mailto:' + MAIL;
+
+  function openEnquiry() {
+    if (!enqDlg.showModal) return;
+    enqQtyRows.forEach(function (row) {
+      var input = row.querySelector('.step-input');
+      if (note.indexOf(row.getAttribute('data-name')) > -1 && parseInt(input.value, 10) === 0) {
+        input.value = 1;
+        row.classList.add('has-qty');
+      }
+    });
+    recalcEnqTotal();
+    enqDlg.showModal();
+  }
+  tell.addEventListener('click', openEnquiry);
+  document.getElementById('enqClose').addEventListener('click', function () { enqDlg.close(); });
+  enqDlg.addEventListener('click', function (e) { if (e.target === enqDlg) enqDlg.close(); });
+
+  function recalcEnqTotal() {
+    var total = enqQtyRows.reduce(function (sum, row) {
+      return sum + parseInt(row.querySelector('.step-input').value, 10);
+    }, 0);
+    enqTotalCount.textContent = total + (total === 1 ? ' bar' : ' bars');
+  }
+  enqQtyRows.forEach(function (row) {
+    var input = row.querySelector('.step-input');
+    function setQty(n) {
+      n = Math.max(0, Math.min(99, n));
+      input.value = n;
+      row.classList.toggle('has-qty', n > 0);
+      recalcEnqTotal();
+    }
+    row.querySelector('.minus').addEventListener('click', function () { setQty(parseInt(input.value, 10) - 1); });
+    row.querySelector('.plus').addEventListener('click', function () { setQty(parseInt(input.value, 10) + 1); });
+  });
+
+  function enqContactFilled() { return enqEmail.value.trim() !== '' || enqPhone.value.trim() !== ''; }
+  [enqEmail, enqPhone].forEach(function (el) {
+    el.addEventListener('input', function () {
+      if (enqContactFilled()) {
+        enqContactHint.classList.remove('warn');
+        enqContactHint.textContent = 'Fill in at least one — email or phone.';
+      }
+    });
+  });
+
+  enqForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (document.getElementById('enqCompany').value) return;   // honeypot tripped
+
+    if (!enqContactFilled()) {
+      enqContactHint.classList.add('warn');
+      enqContactHint.textContent = 'Please add an email or a phone number so I can reply.';
+      enqEmail.focus();
+      return;
+    }
+
+    var picked = enqQtyRows
+      .filter(function (row) { return parseInt(row.querySelector('.step-input').value, 10) > 0; })
+      .map(function (row) { return row.querySelector('.step-input').value + '× ' + row.getAttribute('data-name'); });
+
+    enqError.hidden = true;
+    enqSubmitBtn.disabled = true;
+    enqSubmitLabel.textContent = 'Sending…';
+
+    var formData = new FormData(enqForm);
+    formData.set('soaps', picked.join(', '));
+
+    fetch(FORM_ENDPOINT, { method: 'POST', body: formData, headers: { Accept: 'application/json' } })
+      .then(function (res) {
+        if (!res.ok) throw new Error('submit failed');
+        var via = enqEmail.value.trim() || enqPhone.value.trim();
+        var summary = picked.length ? ' about ' + picked.join(', ') : '';
+        enqSuccessMsg.textContent = "I've got your enquiry" + summary + ' and will reply to ' + via + ' soon.';
+        enqFormView.hidden = true;
+        enqSuccessView.hidden = false;
+        note = []; syncNote();
+      })
+      .catch(function () {
+        enqError.hidden = false;
+      })
+      .then(function () {
+        enqSubmitBtn.disabled = false;
+        enqSubmitLabel.textContent = 'Send enquiry';
+      });
+  });
+
+  enqAgainBtn.addEventListener('click', function () {
+    enqForm.reset();
+    enqQtyRows.forEach(function (row) { row.querySelector('.step-input').value = 0; row.classList.remove('has-qty'); });
+    recalcEnqTotal();
+    enqContactHint.classList.remove('warn');
+    enqContactHint.textContent = 'Fill in at least one — email or phone.';
+    enqSuccessView.hidden = true;
+    enqFormView.hidden = false;
+  });
+})();
+</script>
+</body>
+</html>
