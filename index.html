@@ -1411,7 +1411,6 @@ img {
     <dl>
       <div><dt>Ingredients</dt><dd id="dlgIngs"></dd></div>
       <div><dt>Fragrance</dt><dd id="dlgFrag"></dd></div>
-      <div><dt>Cure time</dt><dd id="dlgCure"></dd></div>
       <div><dt>Good for</dt><dd id="dlgGood"></dd></div>
     </dl>
     <button class="btn-olive" type="button" id="dlgAdd">Add to enquiry note <svg><use href="#sym-arrow"/></svg></button>
@@ -1799,7 +1798,6 @@ img {
     $('dlgDesc').textContent = b.desc;
     $('dlgIngs').textContent = b.ings;
     $('dlgFrag').textContent = b.frag;
-    $('dlgCure').textContent = b.cure;
     $('dlgGood').textContent = b.good;
     $('dlgAdd').firstChild.textContent = note.indexOf(current) > -1 ? 'Added to enquiry note ' : 'Add to enquiry note ';
     dlg.showModal();
