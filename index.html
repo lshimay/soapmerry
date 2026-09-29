@@ -868,6 +868,18 @@ img {
   user-select: none;
   pointer-events: auto;
 }
+
+/* =====================================================================
+   READABILITY: small functional labels use the serif body font in a darker ink.
+   The handwriting stays for decorative accents (kickers, notes, arrows).
+   ===================================================================== */
+.dlg dt, form.enquiry .field label {
+  font-family: var(--body); font-size: .92rem; font-weight: 500; letter-spacing: .01em; color: var(--ink-2);
+}
+.dlg .kicker { font-size: .95rem; color: var(--ink-2); }
+form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
+.ing p { font-family: var(--body); font-size: .98rem; line-height: 1.5; color: var(--ink-2); }
+.tellus p { font-family: var(--body); font-size: .98rem; line-height: 1.6; color: var(--ink-2); }
 </style>
 </head>
 <body>
@@ -1409,6 +1421,7 @@ img {
     <h3 id="dlgTitle"></h3>
     <p class="desc" id="dlgDesc"></p>
     <dl>
+      <div><dt>Price</dt><dd id="dlgPrice"></dd></div>
       <div><dt>Ingredients</dt><dd id="dlgIngs"></dd></div>
       <div><dt>Fragrance</dt><dd id="dlgFrag"></dd></div>
       <div><dt>Good for</dt><dd id="dlgGood"></dd></div>
@@ -1743,49 +1756,49 @@ img {
       title: 'Coconut Kitchen Bar', batch: 'Ready to use now', img: 'assets/preview/brightened/soap-coconut.webp',
       desc: 'Staple kitchen soap.',
       ings: 'Coconut oil, palm oil, castor oil, brewed coffee, lime fragrance oil (IFRA certified).',
-      frag: 'Lime', cure: 'Ready to use now', good: 'Hands, everyday kitchen use'
+      price: 15, frag: 'Lime', cure: 'Ready to use now', good: 'Hands, everyday kitchen use'
     },
     'apple-carrot': {
       title: 'Apple and Carrots', batch: 'Ready 26 Sept', img: 'assets/preview/brightened/soap-yellow.webp',
       desc: 'Bright and clean.',
       ings: 'Coconut oil, palm oil, camellia oil, sweet almond oil, sunflower oil, apple and carrot juice, island escape fragrance oil (IFRA certified).',
-      frag: 'Island escape', cure: 'Ready 26 Sept', good: 'Dull, uneven tone'
+      price: 18, frag: 'Island escape', cure: 'Ready 26 Sept', good: 'Dull, uneven tone'
     },
     tomato: {
       title: 'Tomato', batch: 'Ready 26 Sept', img: 'assets/preview/brightened/soap-tomato.webp',
       desc: 'Green and earthy.',
       ings: 'Coconut oil, palm oil, olive oil, green tea seed oil, apricot kernel oil, tomato juice, pomegranate powder, after the rain fragrance oil (IFRA certified).',
-      frag: 'After the rain', cure: 'Ready 26 Sept', good: 'Sensitive, dry skin'
+      price: 18, frag: 'After the rain', cure: 'Ready 26 Sept', good: 'Sensitive, dry skin'
     },
     himalayan: {
       title: 'Pink Himalayan and Sea Salt Spa', batch: 'Ready to use now', img: 'assets/preview/brightened/soap-himalayan.webp',
       desc: 'A gentle exfoliant with a creamy lather.',
       ings: 'Himalayan salt, calamine powder, coconut oil, castor oil, camellia sugar fragrance oil (IFRA certified).',
-      frag: 'Camellia sugar', cure: 'Ready to use now', good: 'Oily, sweaty, body-acne prone'
+      price: 15, frag: 'Camellia sugar', cure: 'Ready to use now', good: 'Oily, sweaty, body-acne prone'
     },
     'honey-turmeric': {
       title: 'Honey and Turmeric', batch: 'Ready 26 Sept', img: 'assets/preview/brightened/soap-honey.webp',
       desc: 'Soft and simple for dry and sensitive skin.',
       ings: 'Coconut oil, palm oil, camellia oil, sweet almond oil, sunflower oil, turmeric powder, pomegranate powder, honey, pink peony fragrance oil (IFRA certified).',
-      frag: 'Pink peony', cure: 'Ready 26 Sept', good: 'Dry, sensitive skin'
+      price: 20, frag: 'Pink peony', cure: 'Ready 26 Sept', good: 'Dry, sensitive skin'
     },
     stout: {
       title: 'Stout Beer', batch: 'Ready 26 Sept', img: 'assets/preview/brightened/soap-beer.webp',
       desc: 'Malty and moisturising.',
       ings: 'Beer, coconut oil, shea butter, olive oil, grapeseed oil, macadamia oil, brewer’s yeast, cocoa butter, cashmere fragrance oil (IFRA certified).',
-      frag: 'Cocoa butter cashmere', cure: 'Ready 26 Sept', good: 'Dry, dull, itchy skin'
+      price: 20, frag: 'Cocoa butter cashmere', cure: 'Ready 26 Sept', good: 'Dry, dull, itchy skin'
     },
     goatmilk: {
       title: 'Goat Milk and Oat', batch: 'Ready 4 Oct 2026', img: 'assets/preview/brightened/soap-goatmilk.webp',
       desc: 'Soft, creamy and mild.',
       ings: 'Goat milk, coconut oil, palm oil, sweet almond oil, olive oil, sunflower oil, oat powder, baby powder fragrance oil (IFRA certified).',
-      frag: 'Baby powder', cure: 'Ready 4 Oct 2026', good: 'Sensitive, dry, mature skin'
+      price: 23, frag: 'Baby powder', cure: 'Ready 4 Oct 2026', good: 'Sensitive, dry, mature skin'
     },
     vinegar: {
       title: 'Herbal Vinegar', batch: 'Ready 26 Sept', img: 'assets/preview/brightened/soap-vinegar.webp',
       desc: 'Herbal cleansing for oily and uneven skin.',
       ings: 'Coconut oil, palm oil, olive oil, green tea seed oil, apricot kernel oil, gromwell root powder, artemisia powder, cocoa butter cashmere fragrance oil (IFRA certified).',
-      frag: 'Cocoa butter cashmere', cure: 'Ready 26 Sept', good: 'Oily, congested, uneven tone'
+      price: 16, frag: 'Cocoa butter cashmere', cure: 'Ready 26 Sept', good: 'Oily, congested, uneven tone'
     }
   };
   var dlg = document.getElementById('batchDialog');
@@ -1796,12 +1809,26 @@ img {
     current = b.title;
     $('dlgTitle').textContent = b.title;
     $('dlgDesc').textContent = b.desc;
+    $('dlgPrice').textContent = 'RM ' + b.price;
     $('dlgIngs').textContent = b.ings;
     $('dlgFrag').textContent = b.frag;
     $('dlgGood').textContent = b.good;
     $('dlgAdd').firstChild.textContent = note.indexOf(current) > -1 ? 'Added to enquiry note ' : 'Add to enquiry note ';
     dlg.showModal();
   }
+  /* on phones the shelf (#curing) is hidden and the tappable cards (#batch-notes) take its place,
+     so "See the current batch" scrolls to whichever one is showing */
+  document.querySelectorAll('a[href="#curing"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var shelf = document.getElementById('curing');
+      var cards = document.getElementById('batch-notes');
+      if (shelf && cards && getComputedStyle(shelf).display === 'none') {
+        e.preventDefault();
+        cards.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
   document.querySelectorAll('[data-batch]').forEach(function (c) {
     c.addEventListener('click', function (e) {
       if (c.classList.contains('full-note')) e.stopPropagation();
