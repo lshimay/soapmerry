@@ -308,6 +308,20 @@ section.hero .wrap {
   filter: blur(10px);
 }
 
+/* ---- playful "not cookies" disclaimer under the hero group ---- */
+.cookie-note {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; align-items: center;
+  margin: 1.6rem auto 0; text-align: center;
+  font-family: var(--script); font-size: .95rem; color: var(--ink-2); line-height: 1.5;
+  max-width: 22rem;
+}
+.cookie-note .cookie-arrow { width: 2.6rem; height: 2.6rem; color: var(--olive); margin-bottom: .2rem; }
+.cookie-note em { font-style: normal; color: var(--rust); }
+@media (max-width: 900px) {
+  .cookie-note { font-size: .9rem; max-width: 18rem; }
+}
+
 /* ---- shelf unit (curing section): rows of planks, 2 soaps per row ----
    shelf-plank.webp is pre-cropped tight to its content (aspect ~18:1);
    it renders at its natural depth instead of being squashed/cropped by CSS. */
@@ -442,6 +456,139 @@ section.ingredients .wrap {
 .map > .ing:nth-child(-n+4) { grid-row: 1; }
 .map > .ing:nth-child(n+6)  { grid-row: 3; }
 .bubble { grid-column: 2; grid-row: 2; justify-self: center; text-align: center; padding: 1.1rem 1.8rem .9rem; position: relative; z-index: 2; background: var(--paper) url('assets/paper-hero.webp') center/cover fixed no-repeat; border-radius: 50%; font-family: var(--script); font-size: .9rem; color: var(--ink); line-height: 1.8; }
+
+/* =====================================================================
+   PHOTO BANNER (draft)
+   ===================================================================== */
+.photo-banner { position: relative; z-index: 2; }
+.photo-banner figure { margin: 0 auto; position: relative; width: 100%; max-width: 1400px; height: 78vh; min-height: 480px; max-height: 820px; overflow: hidden; }
+.photo-banner img {
+  width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; display: block;
+  filter: sepia(12%) saturate(1.08) brightness(1.02) contrast(.97);
+}
+.photo-banner figcaption {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+  padding: 2rem;
+  background:
+    linear-gradient(to bottom, rgba(239,231,217,.92) 0%, rgba(239,231,217,0) 10%),
+    linear-gradient(to top,    rgba(239,231,217,.92) 0%, rgba(239,231,217,0) 10%),
+    linear-gradient(180deg, rgba(var(--shade),.15) 0%, rgba(var(--shade),.05) 40%, rgba(var(--shade),.35) 100%);
+}
+/* centred line in the same serif as the headings */
+.photo-banner .kicker {
+  font-family: var(--serif); font-size: clamp(1.7rem, 4.2vw, 2.8rem); line-height: 1.1;
+  color: #fff; text-shadow: 0 2px 6px rgba(0,0,0,.35), 0 4px 22px rgba(0,0,0,.45);
+}
+.photo-banner h2 { color: #fff; font-size: clamp(2rem, 5vw, 3.4rem); line-height: 1.1; margin-top: .4rem; text-shadow: 0 4px 18px rgba(0,0,0,.4); }
+
+/* =====================================================================
+   RANGE TEASER (draft)
+   ===================================================================== */
+section.range-teaser .wrap {
+  display: grid; grid-template-columns: minmax(0, 24rem) min(440px, 38%); justify-content: center;
+  gap: 2.75rem; align-items: center;
+  padding: 5rem 0;
+}
+.range-copy .kicker { font-family: var(--script); font-size: .85rem; color: var(--ink-3); }
+.range-copy h2 { margin-top: .4rem; }
+.range-copy p { margin-top: 1.2rem; font-size: .95rem; color: var(--ink-2); max-width: 20rem; }
+.range-grid {
+  margin: 0; width: 100%; padding: .55rem;
+  background: var(--paper);
+  border-radius: 12px;
+  box-shadow: 0 20px 40px -22px rgba(var(--shade), .45), 0 1px 0 rgba(255,255,255,.4) inset;
+}
+.range-grid img {
+  display: block; width: 100%; height: auto; border-radius: 6px;
+  filter: sepia(6%) saturate(1.05) brightness(1.02) contrast(.98);
+}
+.range-carousel { position: relative; }
+.rc-track {
+  display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch; scrollbar-width: none; border-radius: 6px;
+}
+.rc-track::-webkit-scrollbar { display: none; }
+.rc-slide { flex: 0 0 100%; scroll-snap-align: center; scroll-snap-stop: always; }
+.rc-slide img { border-radius: 6px; }
+.rc-btn {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 2.3rem; height: 2.3rem; border-radius: 50%; border: none;
+  background: rgba(239,231,217,.92); color: var(--ink);
+  font-size: 1.4rem; line-height: 1; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 14px rgba(var(--shade),.3);
+}
+.rc-btn:hover { background: #fff; }
+.rc-prev { left: .6rem; }
+.rc-next { right: .6rem; }
+.rc-dots { display: flex; justify-content: center; gap: .45rem; margin-top: .8rem; }
+.rc-dot { width: 6px; height: 6px; border-radius: 50%; border: none; padding: 0; background: var(--paper-edge); cursor: pointer; }
+.rc-dot.active { background: var(--olive); }
+/* auto-play: the active dot stretches into a bar that fills up until the next slide */
+[data-autoplay] .rc-dot { transition: width .3s ease; }
+[data-autoplay] .rc-dot.active { width: 26px; border-radius: 3px; background: var(--paper-edge); position: relative; overflow: hidden; }
+[data-autoplay] .rc-dot.active::after {
+  content: ""; position: absolute; inset: 0; background: var(--olive); transform-origin: left;
+  animation: rc-fill var(--rc-ms, 4000ms) linear forwards;
+}
+[data-autoplay].rc-paused .rc-dot.active::after { animation-play-state: paused; }
+@keyframes rc-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@media (max-width: 900px) {
+  .photo-banner figure { height: 58vh; min-height: 380px; }
+  section.range-teaser .wrap { grid-template-columns: 1fr; gap: 2rem; padding: 3.5rem 0; }
+  .range-grid { width: min(420px, 100%); margin-inline: auto; max-width: 100%; }
+}
+
+/* =====================================================================
+   FACT CARDS (draft)
+   ===================================================================== */
+section.facts { padding: 1rem 0 3rem; }
+.facts-intro { text-align: center; margin: 0 auto 2.2rem; max-width: 30rem; }
+.facts-intro .kicker { font-family: var(--script); font-size: .9rem; color: var(--ink-3); }
+.facts-intro h2 { margin-top: .4rem; }
+.fact-carousel { position: relative; max-width: 620px; margin: 0 auto; }
+.fact-carousel .rc-track { border-radius: 14px; }
+.fact-carousel .rc-slide { aspect-ratio: 16 / 10; }
+.fact-card {
+  position: relative;
+  height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 2.5rem 3.8rem 3rem; border-radius: 14px;
+}
+.fc-kicker { font-family: var(--script); font-size: .95rem; opacity: .85; }
+.fc-text { font-family: var(--serif); font-size: clamp(1.3rem, 2.6vw, 1.8rem); line-height: 1.3; margin-top: .6rem; max-width: 24rem; }
+.fc-source {
+  position: absolute; left: 0; right: 0; bottom: .9rem;
+  font-family: var(--body); font-size: .65rem; letter-spacing: .02em; opacity: .55;
+}
+.fc-olive { background-color: var(--olive); color: #F6F2E9; }
+.fc-rust  { background-color: var(--rust);  color: #F8ECE6; }
+.fc-photo {
+  position: relative; color: #fff;
+  background: #2B2722 url('assets/preview/flatlay-marble.jpg') center/cover no-repeat;
+}
+.fc-photo::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit;
+  background: linear-gradient(180deg, rgba(20,14,8,.3) 0%, rgba(20,14,8,.55) 100%);
+}
+.fc-photo .fc-kicker, .fc-photo .fc-text { position: relative; z-index: 1; }
+/* both photos are bright, so the overlay is darker to keep the white text readable */
+.fc-hands { background-image: url('assets/preview/hands-goatmilk.webp'); background-position: center 55%; }
+.fc-hands::before { background: linear-gradient(180deg, rgba(20,14,8,.58) 0%, rgba(20,14,8,.74) 100%); }
+.fc-dish { background-image: url('assets/preview/honey-dish.webp'); background-position: center 60%; }
+.fc-dish::before { background: linear-gradient(180deg, rgba(20,14,8,.55) 0%, rgba(20,14,8,.72) 100%); }
+.fc-cream { background-color: var(--paper-3); color: var(--ink); }
+.fc-oils { background-image: url('assets/preview/oils-bowls.webp'); background-position: center 40%; }
+.fc-oils::before { background: linear-gradient(180deg, rgba(20,14,8,.55) 0%, rgba(20,14,8,.72) 100%); }
+@media (max-width: 900px) {
+  .fact-carousel { max-width: 420px; }
+  .fc-text { font-size: 1.2rem; }
+  .fact-carousel .rc-slide { aspect-ratio: 4 / 3.4; }
+  .fact-card { padding: 1.8rem 3.2rem 2.6rem; }
+  .fact-carousel .rc-btn { width: 2rem; height: 2rem; font-size: 1.2rem; left: auto; }
+  .fact-carousel .rc-prev { left: .4rem; }
+  .fact-carousel .rc-next { right: .4rem; }
+}
 
 /* =====================================================================
    CURING
@@ -698,6 +845,9 @@ footer.site .o8 { opacity: .85; }
   .batch-cards { grid-template-columns: 1fr 1fr; }
   .four { grid-template-columns: 1fr 1fr; gap: 1.2rem; }
   .map { grid-template-columns: 1fr; }
+  /* single column has the full width, so drop the manual line breaks and let the text wrap naturally */
+  .ing p br { display: none; }
+  .ing p { text-wrap: pretty; }
   .tags { grid-template-columns: 1fr; }
   footer.site .wrap { grid-template-columns: 1fr; gap: 1.2rem; }
   footer.site .wrap > div:not(:first-child) { border-top: 1px solid rgba(238,232,218,.25); padding-top: 1.2rem; }
@@ -808,6 +958,13 @@ img {
         <img src="assets/hero-soaps-new.webp" alt="The full Soapmerry soap collection: Vinegar, Tomato, Pink Himalayan salt, Honey, Stout Beer, Goat Milk, Apple and Carrots, and more, grouped together" width="1448" height="1086" fetchpriority="high">
         <i class="pt d" data-thread="1" style="--x:20%; --y:32%"></i>
         <i class="pt d" data-thread="2" style="--x:-5%; --y:36%"></i>
+        <figcaption class="cookie-note">
+          <svg class="cookie-arrow" viewBox="0 0 60 60" aria-hidden="true">
+            <path d="M10 50 C 20 38, 32 24, 46 14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+            <path d="M30 16 L46 14 L44 30" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>psst&hellip; these are <em>soap</em>, not cookies &mdash; please don&rsquo;t nibble!</span>
+        </figcaption>
       </figure>
     </div>
     <i class="pt d" data-thread="9"  style="--x:38%; --y:99%"></i>
@@ -815,28 +972,14 @@ img {
     <i class="pt m" data-thread="2"  style="--x:4.5%; --y:60%"></i>
   </section>
 
-  <!-- ============================ TRUST ============================= -->
-  <section class="trust">
-    <div class="wrap">
-      <div class="trust-panel panel z">
-        <div class="trust-item">
-          <img class="leaf" src="assets/icons/flower-original.webp" alt="">
-          <div><h3>Made with care</h3><p>Slow, gently mixed and poured by hand.</p></div>
-        </div>
-        <div class="trust-item">
-          <img class="leaf" src="assets/icons/flower-original.webp" alt="">
-          <div><h3>Skin-friendly ingredients</h3><p>Made from plant-derived compounds, free from parabens and phthalates.</p></div>
-        </div>
-        <div class="trust-item">
-          <img class="leaf" src="assets/icons/flower-original.webp" alt="">
-          <div><h3>Uniquely handmade</h3><p>Each batch has its own shapes and little imperfections, all part of being made by hand.</p></div>
-        </div>
-      </div>
-    </div>
-    <i class="pt d" data-thread="10" style="--x:39%; --y:8%"></i>
-    <i class="pt d" data-thread="11" style="--x:43%; --y:30%"></i>
-    <i class="pt d" data-thread="12" style="--x:44%; --y:100%"></i>
-    <i class="pt m" data-thread="3"  style="--x:2%; --y:50%"></i>
+  <!-- ============================ PHOTO BANNER (DRAFT) =============== -->
+  <section class="photo-banner">
+    <figure>
+      <img src="assets/preview/water-splash-honey.jpg" alt="Hands lathering the Honey soap bar under running water">
+      <figcaption>
+        <p class="kicker">Handmade in Malaysia</p>
+      </figcaption>
+    </figure>
   </section>
 
   <!-- ============================ BATCHES =========================== -->
@@ -849,22 +992,22 @@ img {
       </div>
       <div class="four z">
         <figure>
-          <div class="ill"><img src="assets/icons/plants-change.webp" alt="" width="300" height="300"></div>
+          <div class="ill"><img src="assets/icons/plants-change.webp" alt="" width="1254" height="1254"></div>
           <h3>Experimenting ingredients</h3>
           <p>I try seasonal ingredients and everyday kitchen staples in different batches.</p>
         </figure>
         <figure>
-          <div class="ill"><img src="assets/icons/handmade.webp" alt="" width="300" height="300"></div>
+          <div class="ill"><img src="assets/icons/handmade.webp" alt="" width="1254" height="1254"></div>
           <h3>Handmade</h3>
           <p>I mix, pour and cut everything by hand.</p>
         </figure>
         <figure>
-          <div class="ill"><img src="assets/icons/time-cures.webp" alt="" width="300" height="300"></div>
+          <div class="ill"><img src="assets/icons/time-cures.webp" alt="" width="1254" height="1254"></div>
           <h3>Curing</h3>
           <p>Each batch needs at least 4&ndash;6 weeks to cure and harden before it&rsquo;s ready.</p>
         </figure>
         <figure>
-          <div class="ill"><img src="assets/icons/one-batch.webp" alt="" width="300" height="300"></div>
+          <div class="ill"><img src="assets/icons/one-batch.webp" alt="" width="1254" height="1254"></div>
           <h3>Small batches</h3>
           <p>I make a limited number of bars at a time.</p>
         </figure>
@@ -873,6 +1016,51 @@ img {
     <i class="pt d" data-thread="13" style="--x:47%; --y:14%"></i>
     <i class="pt m" data-thread="4"  style="--x:4.5%; --y:20%"></i>
     <i class="pt m" data-thread="5"  style="--x:2%; --y:80%"></i>
+  </section>
+
+  <!-- ============================ FACT CARDS (DRAFT) ================= -->
+  <section class="facts">
+    <div class="wrap">
+      <div class="facts-intro z">
+        <p class="kicker">Small habits, big difference</p>
+        <h2>Did you know?</h2>
+      </div>
+      <div class="fact-carousel" data-carousel data-autoplay="4500">
+        <div class="rc-track">
+          <div class="rc-slide">
+            <div class="fact-card fc-photo">
+              <p class="fc-kicker">Less packaging</p>
+              <p class="fc-text">Liquid soap needs nearly 20 times more energy to package than bar soap.</p>
+              <p class="fc-source">Source: Koehler &amp; Wildbolz, Environmental Science &amp; Technology, 2009</p>
+            </div>
+          </div>
+          <div class="rc-slide">
+            <div class="fact-card fc-photo fc-hands">
+              <p class="fc-kicker">Gentler without SLS</p>
+              <p class="fc-text">SLS and SLES can dry out your skin, and the more you use, the drier it gets. My soap is free from both.</p>
+              <p class="fc-source">Sources: Nardo et al., Contact Dermatitis, 1996; SLS vs SLES study, Food and Chemical Toxicology, 2000</p>
+            </div>
+          </div>
+          <div class="rc-slide">
+            <div class="fact-card fc-photo fc-dish">
+              <p class="fc-kicker">Lasts longer</p>
+              <p class="fc-text">A soap bar lasts longer. Each wash uses more than 6 times less soap than liquid soap.</p>
+              <p class="fc-source">Source: Koehler &amp; Wildbolz, Environmental Science &amp; Technology, 2009</p>
+            </div>
+          </div>
+          <div class="rc-slide">
+            <div class="fact-card fc-photo fc-oils">
+              <p class="fc-kicker">Naturally moisturizing</p>
+              <p class="fc-text">My soap is made from real oils, like olive, castor and sunflower. Turning oil into soap creates glycerin, a natural moisturizer.</p>
+              <p class="fc-source">Source: Fluhr et al., British Journal of Dermatology, 2008</p>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="rc-btn rc-prev" aria-label="Previous fact">&#8249;</button>
+        <button type="button" class="rc-btn rc-next" aria-label="Next fact">&#8250;</button>
+        <div class="rc-dots"></div>
+      </div>
+    </div>
   </section>
 
   <!-- ============================ INGREDIENTS ======================= -->
@@ -893,7 +1081,7 @@ img {
         </svg>
 
         <div class="ing">
-          <div class="ill"><img src="assets/icons/oils.webp" alt="" width="300" height="300">
+          <div class="ill"><img src="assets/icons/oils.webp" alt="" width="1254" height="1254">
             <i class="pt d" data-thread="22" style="--x:-30%; --y:62%"></i>
             <i class="pt d" data-thread="23" style="--x:45%; --y:50%"></i>
             <i class="pt d" data-thread="24" style="--x:110%; --y:96%"></i>
@@ -901,11 +1089,11 @@ img {
           <div><h3>Oils</h3><p>Coconut, olive, sunflower, palm, castor &amp; more</p></div>
         </div>
         <div class="ing">
-          <div class="ill"><img src="assets/icons/glycerin.webp" alt="" width="300" height="300"></div>
+          <div class="ill"><img src="assets/icons/glycerin.webp" alt="" width="1254" height="1254"></div>
           <div><h3>Glycerin</h3><p>Add in liquid soap<br>for gentle feel</p></div>
         </div>
         <div class="ing">
-          <div class="ill"><img src="assets/icons/milk-and-oat.webp" alt="" width="300" height="300"></div>
+          <div class="ill"><img src="assets/icons/milk-and-oat.webp" alt="" width="1254" height="1254"></div>
           <div><h3>Milk &amp; oat</h3><p>Oat milk, goat milk and other kinds for extra lather</p></div>
         </div>
 
@@ -918,7 +1106,7 @@ img {
         </div>
 
         <div class="ing">
-          <div class="ill"><img src="assets/icons/salts-and-clays.webp" alt="" width="300" height="300">
+          <div class="ill"><img src="assets/icons/salts-and-clays.webp" alt="" width="1254" height="1254">
             <i class="pt d" data-thread="28" style="--x:70%; --y:-14%"></i>
             <i class="pt d" data-thread="29" style="--x:50%; --y:50%"></i>
             <i class="pt d" data-thread="30" style="--x:40%; --y:115%"></i>
@@ -926,11 +1114,11 @@ img {
           <div><h3>Salts &amp; clays</h3><p>Natural colour pigments, texture and purification properties</p></div>
         </div>
         <div class="ing">
-          <div class="ill"><img src="assets/icons/fruits-and-juices.webp" alt="" width="300" height="300"></div>
+          <div class="ill"><img src="assets/icons/fruits-and-juices.webp" alt="" width="1254" height="1254"></div>
           <div><h3>Fruits &amp; juices</h3><p>Boost lather and nourish skin with vitamins</p></div>
         </div>
         <div class="ing">
-          <div class="ill"><img src="assets/icons/herbs-and-botanicals.webp" alt="" width="300" height="300"></div>
+          <div class="ill"><img src="assets/icons/herbs-and-botanicals.webp" alt="" width="1254" height="1254"></div>
           <div><h3>Herbs &amp; botanicals</h3><p>Calendula, lavender,<br>rosemary &amp; more</p></div>
         </div>
       </div>
@@ -942,6 +1130,30 @@ img {
     <i class="pt d" data-thread="32" style="--x:28%; --y:100%"></i>
     <i class="pt m" data-thread="6"  style="--x:4.5%; --y:30%"></i>
     <i class="pt m" data-thread="7"  style="--x:2%; --y:85%"></i>
+  </section>
+
+  <!-- ============================ RANGE TEASER (DRAFT) ================ -->
+  <section class="range-teaser">
+    <div class="wrap">
+      <div class="range-copy z">
+        <h2>My soap catalogue</h2>
+        <p>Here&rsquo;s everything I make.</p>
+      </div>
+      <figure class="range-grid range-carousel" data-carousel data-autoplay="2500">
+        <div class="rc-track" id="rcTrack">
+          <div class="rc-slide"><img src="assets/preview/carousel/full-grid.webp" alt="A grid of nine Soapmerry soap bars, each shown individually on a clean reflective surface"></div>
+          <div class="rc-slide"><img src="assets/preview/carousel/styled-trio.jpg" alt="Honey, goat milk and vegetable soap bars styled together on a tray"></div>
+          <div class="rc-slide"><img src="assets/preview/carousel/styled-apple-carrot.jpg" alt="Fruit soap bars styled on a plate with apple slices and carrot peel"></div>
+          <div class="rc-slide"><img src="assets/preview/carousel/styled-goatmilk.jpg" alt="Goat milk soap bar styled on a stone slab with oats"></div>
+          <div class="rc-slide"><img src="assets/preview/carousel/styled-vinegar.jpg" alt="Vinegar soap bar styled with dried apple slices and oil"></div>
+          <div class="rc-slide"><img src="assets/preview/carousel/styled-beer.jpg" alt="Beer soap bar styled with wheat and a glass of beer"></div>
+          <div class="rc-slide"><img src="assets/preview/carousel/styled-vegetable.jpg" alt="Two vegetable soap bars with foam on white marble, beside a sliced tomato and cherry tomatoes"></div>
+        </div>
+        <button type="button" class="rc-btn rc-prev" aria-label="Previous soap">&#8249;</button>
+        <button type="button" class="rc-btn rc-next" aria-label="Next soap">&#8250;</button>
+        <div class="rc-dots" id="rcDots"></div>
+      </figure>
+    </div>
   </section>
 
   <!-- ============================ CURING ============================ -->
@@ -1011,11 +1223,11 @@ img {
           <div class="shelf-items">
             <button class="shelf-soap has-photo" type="button" data-batch="apple-carrot">
               <span class="soap-label at-left">Apple and Carrots<img class="hand-arrow" src="assets/pencil-arrow-curve-right.png" alt=""></span>
-              <img src="assets/soap-yellow.webp" alt="" width="383" height="360">
+              <img src="assets/preview/brightened/soap-yellow.webp" alt="" width="383" height="360">
             </button>
             <button class="shelf-soap has-photo" type="button" data-batch="tomato">
               <span class="soap-label at-right">Tomato<img class="hand-arrow" src="assets/pencil-arrow-curve-left.png" alt=""></span>
-              <img src="assets/soap-tomato.webp" alt="" width="525" height="318">
+              <img src="assets/preview/brightened/soap-tomato.webp" alt="" width="525" height="318">
             </button>
           </div>
           <div class="plank"><img src="assets/shelf-plank.webp" alt=""></div>
@@ -1024,11 +1236,11 @@ img {
           <div class="shelf-items">
             <button class="shelf-soap has-photo" type="button" data-batch="himalayan">
               <span class="soap-label at-left">Pink Himalayan &amp; Sea Salt Spa<img class="hand-arrow" src="assets/pencil-arrow-curve-right.png" alt=""></span>
-              <img src="assets/soap-himalayan.webp" alt="" width="1503" height="1181">
+              <img src="assets/preview/brightened/soap-himalayan.webp" alt="" width="1503" height="1181">
             </button>
             <button class="shelf-soap has-photo" type="button" data-batch="vinegar">
               <span class="soap-label at-right">Herbal Vinegar<img class="hand-arrow" src="assets/pencil-arrow-curve-left.png" alt=""></span>
-              <img src="assets/soap-vinegar.webp" alt="" width="671" height="391">
+              <img src="assets/preview/brightened/soap-vinegar.webp" alt="" width="671" height="391">
             </button>
           </div>
           <div class="plank"><img src="assets/shelf-plank.webp" alt=""></div>
@@ -1037,11 +1249,11 @@ img {
           <div class="shelf-items">
             <button class="shelf-soap has-photo" type="button" data-batch="coconut">
               <span class="soap-label at-left">Coconut Kitchen Bar<img class="hand-arrow" src="assets/pencil-arrow-curve-right.png" alt=""></span>
-              <img src="assets/soap-coconut.webp" alt="" width="370" height="330">
+              <img src="assets/preview/brightened/soap-coconut.webp" alt="" width="370" height="330">
             </button>
             <button class="shelf-soap has-photo" type="button" data-batch="honey-turmeric">
               <span class="soap-label at-right">Honey and Turmeric<img class="hand-arrow" src="assets/pencil-arrow-curve-left.png" alt=""></span>
-              <img src="assets/soap-honey.webp" alt="" width="389" height="407">
+              <img src="assets/preview/brightened/soap-honey.webp" alt="" width="389" height="407">
             </button>
           </div>
           <div class="plank"><img src="assets/shelf-plank.webp" alt=""></div>
@@ -1050,11 +1262,11 @@ img {
           <div class="shelf-items">
             <button class="shelf-soap has-photo" type="button" data-batch="stout">
               <span class="soap-label at-left">Stout Beer<img class="hand-arrow" src="assets/pencil-arrow-curve-right.png" alt=""></span>
-              <img src="assets/soap-beer.webp" alt="" width="580" height="364">
+              <img src="assets/preview/brightened/soap-beer.webp" alt="" width="580" height="364">
             </button>
             <button class="shelf-soap has-photo" type="button" data-batch="goatmilk">
               <span class="soap-label at-right">Goat Milk and Oat<img class="hand-arrow" src="assets/pencil-arrow-curve-left.png" alt=""></span>
-              <img src="assets/soap-goatmilk.webp" alt="" width="949" height="415">
+              <img src="assets/preview/brightened/soap-goatmilk.webp" alt="" width="949" height="415">
             </button>
           </div>
           <div class="plank"><img src="assets/shelf-plank.webp" alt=""></div>
@@ -1073,45 +1285,45 @@ img {
         <div class="intro">
           <h2>What&rsquo;s curing<br>on the shelf</h2>
           <svg class="uline"><use href="#sym-uline"/></svg>
-          <p>Each bar is a single batch. Tap one to see what&rsquo;s in it.</p>
+          <p>Each bar is a single batch. Limited stock available.</p>
         </div>
         <button class="scard panel torn" type="button" data-batch="apple-carrot">
-          <span class="pic"><img src="assets/soap-yellow.webp" alt="" width="383" height="360"></span>
+          <span class="pic"><img src="assets/preview/brightened/soap-yellow.webp" alt="" width="383" height="360"></span>
           <span class="num">01</span>
           <span class="row"><h3>Apple and<br>Carrots</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
         </button>
         <button class="scard panel torn" type="button" data-batch="tomato">
-          <span class="pic"><img src="assets/soap-tomato.webp" alt="" width="525" height="318"></span>
+          <span class="pic"><img src="assets/preview/brightened/soap-tomato.webp" alt="" width="525" height="318"></span>
           <span class="num">02</span>
           <span class="row"><h3>Tomato</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
         </button>
         <button class="scard panel torn" type="button" data-batch="himalayan">
-          <span class="pic"><img src="assets/soap-himalayan.webp" alt="" width="1503" height="1181"></span>
+          <span class="pic"><img src="assets/preview/brightened/soap-himalayan.webp" alt="" width="1503" height="1181"></span>
           <span class="num">03</span>
           <span class="row"><h3>Pink Himalayan<br>&amp; Sea Salt</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
         </button>
         <button class="scard panel torn" type="button" data-batch="vinegar">
-          <span class="pic"><img src="assets/soap-vinegar.webp" alt="" width="671" height="391"></span>
+          <span class="pic"><img src="assets/preview/brightened/soap-vinegar.webp" alt="" width="671" height="391"></span>
           <span class="num">04</span>
           <span class="row"><h3>Herbal<br>Vinegar</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
         </button>
         <button class="scard panel torn" type="button" data-batch="coconut">
-          <span class="pic"><img src="assets/soap-coconut.webp" alt="" width="370" height="330"></span>
+          <span class="pic"><img src="assets/preview/brightened/soap-coconut.webp" alt="" width="370" height="330"></span>
           <span class="num">05</span>
           <span class="row"><h3>Coconut<br>Kitchen Bar</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
         </button>
         <button class="scard panel torn" type="button" data-batch="honey-turmeric">
-          <span class="pic"><img src="assets/soap-honey.webp" alt="" width="389" height="407"></span>
+          <span class="pic"><img src="assets/preview/brightened/soap-honey.webp" alt="" width="389" height="407"></span>
           <span class="num">06</span>
           <span class="row"><h3>Honey and<br>Turmeric</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
         </button>
         <button class="scard panel torn" type="button" data-batch="stout">
-          <span class="pic"><img src="assets/soap-beer.webp" alt="" width="580" height="364"></span>
+          <span class="pic"><img src="assets/preview/brightened/soap-beer.webp" alt="" width="580" height="364"></span>
           <span class="num">07</span>
           <span class="row"><h3>Stout Beer</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
         </button>
         <button class="scard panel torn" type="button" data-batch="goatmilk">
-          <span class="pic"><img src="assets/soap-goatmilk.webp" alt="" width="949" height="415"></span>
+          <span class="pic"><img src="assets/preview/brightened/soap-goatmilk.webp" alt="" width="949" height="415"></span>
           <span class="num">08</span>
           <span class="row"><h3>Goat Milk<br>and Oat</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
         </button>
@@ -1529,49 +1741,49 @@ img {
      ------------------------------------------------------------------ */
   var BATCHES = {
     coconut: {
-      title: 'Coconut Kitchen Bar', batch: 'Ready 26 Sept', img: 'assets/soap-coconut.webp',
+      title: 'Coconut Kitchen Bar', batch: 'Ready to use now', img: 'assets/preview/brightened/soap-coconut.webp',
       desc: 'Staple kitchen soap.',
       ings: 'Coconut oil, palm oil, castor oil, brewed coffee, lime fragrance oil (IFRA certified).',
-      frag: 'Lime', cure: 'Ready 26 Sept', good: 'Hands, everyday kitchen use'
+      frag: 'Lime', cure: 'Ready to use now', good: 'Hands, everyday kitchen use'
     },
     'apple-carrot': {
-      title: 'Apple and Carrots', batch: 'Ready 26 Sept', img: 'assets/soap-yellow.webp',
+      title: 'Apple and Carrots', batch: 'Ready 26 Sept', img: 'assets/preview/brightened/soap-yellow.webp',
       desc: 'Bright and clean.',
       ings: 'Coconut oil, palm oil, camellia oil, sweet almond oil, sunflower oil, apple and carrot juice, island escape fragrance oil (IFRA certified).',
       frag: 'Island escape', cure: 'Ready 26 Sept', good: 'Dull, uneven tone'
     },
     tomato: {
-      title: 'Tomato', batch: 'Ready 26 Sept', img: 'assets/soap-tomato.webp',
+      title: 'Tomato', batch: 'Ready 26 Sept', img: 'assets/preview/brightened/soap-tomato.webp',
       desc: 'Green and earthy.',
       ings: 'Coconut oil, palm oil, olive oil, green tea seed oil, apricot kernel oil, tomato juice, pomegranate powder, after the rain fragrance oil (IFRA certified).',
       frag: 'After the rain', cure: 'Ready 26 Sept', good: 'Sensitive, dry skin'
     },
     himalayan: {
-      title: 'Pink Himalayan and Sea Salt Spa', batch: 'Ready 26 Sept', img: 'assets/soap-himalayan.webp',
+      title: 'Pink Himalayan and Sea Salt Spa', batch: 'Ready to use now', img: 'assets/preview/brightened/soap-himalayan.webp',
       desc: 'A gentle exfoliant with a creamy lather.',
-      ings: 'Sea salt, coconut oil, castor oil, camellia sugar fragrance oil (IFRA certified).',
-      frag: 'Camellia sugar', cure: 'Ready 26 Sept', good: 'Oily, sweaty, body-acne prone'
+      ings: 'Himalayan salt, calamine powder, coconut oil, castor oil, camellia sugar fragrance oil (IFRA certified).',
+      frag: 'Camellia sugar', cure: 'Ready to use now', good: 'Oily, sweaty, body-acne prone'
     },
     'honey-turmeric': {
-      title: 'Honey and Turmeric', batch: 'Ready 26 Sept', img: 'assets/soap-honey.webp',
+      title: 'Honey and Turmeric', batch: 'Ready 26 Sept', img: 'assets/preview/brightened/soap-honey.webp',
       desc: 'Soft and simple for dry and sensitive skin.',
       ings: 'Coconut oil, palm oil, camellia oil, sweet almond oil, sunflower oil, turmeric powder, pomegranate powder, honey, pink peony fragrance oil (IFRA certified).',
       frag: 'Pink peony', cure: 'Ready 26 Sept', good: 'Dry, sensitive skin'
     },
     stout: {
-      title: 'Stout Beer', batch: 'Ready 26 Sept', img: 'assets/soap-beer.webp',
+      title: 'Stout Beer', batch: 'Ready 26 Sept', img: 'assets/preview/brightened/soap-beer.webp',
       desc: 'Malty and moisturising.',
-      ings: 'Beer, coconut oil, shea butter, olive oil, grapeseed oil, macadamia oil, brewer’s yeast.',
-      frag: 'Unscented (natural malt)', cure: 'Ready 26 Sept', good: 'Dry, dull, itchy skin'
+      ings: 'Beer, coconut oil, shea butter, olive oil, grapeseed oil, macadamia oil, brewer’s yeast, cocoa butter, cashmere fragrance oil (IFRA certified).',
+      frag: 'Cocoa butter cashmere', cure: 'Ready 26 Sept', good: 'Dry, dull, itchy skin'
     },
     goatmilk: {
-      title: 'Goat Milk and Oat', batch: 'Ready 26 Sept', img: 'assets/soap-goatmilk.webp',
+      title: 'Goat Milk and Oat', batch: 'Ready 4 Oct 2026', img: 'assets/preview/brightened/soap-goatmilk.webp',
       desc: 'Soft, creamy and mild.',
       ings: 'Goat milk, coconut oil, palm oil, sweet almond oil, olive oil, sunflower oil, oat powder, baby powder fragrance oil (IFRA certified).',
-      frag: 'Baby powder', cure: 'Ready 26 Sept', good: 'Sensitive, dry, mature skin'
+      frag: 'Baby powder', cure: 'Ready 4 Oct 2026', good: 'Sensitive, dry, mature skin'
     },
     vinegar: {
-      title: 'Herbal Vinegar', batch: 'Ready 26 Sept', img: 'assets/soap-vinegar.webp',
+      title: 'Herbal Vinegar', batch: 'Ready 26 Sept', img: 'assets/preview/brightened/soap-vinegar.webp',
       desc: 'Herbal cleansing for oily and uneven skin.',
       ings: 'Coconut oil, palm oil, olive oil, green tea seed oil, apricot kernel oil, gromwell root powder, artemisia powder, cocoa butter cashmere fragrance oil (IFRA certified).',
       frag: 'Cocoa butter cashmere', cure: 'Ready 26 Sept', good: 'Oily, congested, uneven tone'
@@ -1758,6 +1970,103 @@ img {
     enqFormView.hidden = false;
   });
 })();
+
+function initRcCarousel(root) {
+  var track = root.querySelector('.rc-track');
+  if (!track) return;
+  var dotsWrap = root.querySelector('.rc-dots');
+  var prevBtn = root.querySelector('.rc-prev');
+  var nextBtn = root.querySelector('.rc-next');
+  var slides = track.children.length;
+  var dots = [];
+
+  for (var i = 0; i < slides; i++) {
+    (function (idx) {
+      var d = document.createElement('button');
+      d.type = 'button';
+      d.className = 'rc-dot' + (idx === 0 ? ' active' : '');
+      d.setAttribute('aria-label', 'Go to slide ' + (idx + 1));
+      d.addEventListener('click', function () {
+        track.scrollTo({ left: track.clientWidth * idx, behavior: 'smooth' });
+      });
+      dotsWrap.appendChild(d);
+      dots.push(d);
+    })(i);
+  }
+
+  prevBtn.addEventListener('click', function () {
+    track.scrollBy({ left: -track.clientWidth, behavior: 'smooth' });
+  });
+  nextBtn.addEventListener('click', function () {
+    track.scrollBy({ left: track.clientWidth, behavior: 'smooth' });
+  });
+
+  var ms = parseInt(root.getAttribute('data-autoplay'), 10) || 0;
+  var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var auto = ms > 0 && !reduced;
+  var advanceTimer, held = false, inView = true;
+
+  function current() { return Math.round(track.scrollLeft / track.clientWidth); }
+  function schedule() {
+    clearTimeout(advanceTimer);
+    if (!auto || held || !inView || document.hidden) return;
+    advanceTimer = setTimeout(function () {
+      var next = current() + 1;
+      if (next >= slides) {
+        // back to the first slide: a quick fade instead of a long sweep through every slide,
+        // so the first slide arrives (and starts its countdown) as fast as the others
+        track.style.transition = 'opacity .18s ease';
+        track.style.opacity = '0';
+        setTimeout(function () {
+          track.scrollTo({ left: 0, behavior: 'instant' });
+          track.style.opacity = '1';
+        }, 190);
+      } else {
+        track.scrollTo({ left: track.clientWidth * next, behavior: 'smooth' });
+      }
+    }, ms);
+  }
+  function setHeld(v) {
+    held = v;
+    root.classList.toggle('rc-paused', held || !inView);
+    schedule();
+  }
+
+  var scrollTimer;
+  track.addEventListener('scroll', function () {
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(function () {
+      var i2 = current();
+      dots.forEach(function (d, idx) {
+        var on = idx === i2;
+        // toggling off and on restarts the fill animation for the new slide
+        if (on && d.classList.contains('active')) { d.classList.remove('active'); void d.offsetWidth; }
+        d.classList.toggle('active', on);
+      });
+      schedule();
+    }, 80);
+  }, { passive: true });
+
+  if (auto) {
+    root.style.setProperty('--rc-ms', ms + 'ms');
+    root.addEventListener('mouseenter', function () { setHeld(true); });
+    root.addEventListener('mouseleave', function () { setHeld(false); });
+    root.addEventListener('focusin', function () { setHeld(true); });
+    root.addEventListener('focusout', function () { setHeld(false); });
+    root.addEventListener('touchstart', function () { setHeld(true); }, { passive: true });
+    root.addEventListener('touchend', function () { setTimeout(function () { setHeld(false); }, 2000); }, { passive: true });
+    document.addEventListener('visibilitychange', schedule);
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        inView = entries[0].isIntersecting;
+        root.classList.toggle('rc-paused', held || !inView);
+        schedule();
+      }, { threshold: 0.4 }).observe(root);
+    }
+    schedule();
+  }
+}
+document.querySelectorAll('[data-carousel]').forEach(initRcCarousel);
 </script>
 </body>
 </html>
