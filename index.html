@@ -568,6 +568,10 @@ section.facts { padding: 1rem 0 3rem; }
 .fc-hands::before { background: linear-gradient(180deg, rgba(20,14,8,.58) 0%, rgba(20,14,8,.74) 100%); }
 .fc-dish { background-image: url('assets/preview/honey-dish.webp'); background-position: center 60%; }
 .fc-dish::before { background: linear-gradient(180deg, rgba(20,14,8,.55) 0%, rgba(20,14,8,.72) 100%); }
+.fc-clean { background-image: url('assets/preview/clean-sink.webp'); background-position: center 50%; }
+.fc-clean::before { background: linear-gradient(180deg, rgba(20,14,8,.58) 0%, rgba(20,14,8,.76) 100%); }
+.fc-cost { background-image: url('assets/preview/water-splash-honey.jpg'); background-position: center 38%; }
+.fc-cost::before { background: linear-gradient(180deg, rgba(20,14,8,.6) 0%, rgba(20,14,8,.78) 100%); }
 .fc-cream { background-color: var(--paper-3); color: var(--ink); }
 .fc-oils { background-image: url('assets/preview/oils-bowls.webp'); background-position: center 40%; }
 .fc-oils::before { background: linear-gradient(180deg, rgba(20,14,8,.55) 0%, rgba(20,14,8,.72) 100%); }
@@ -958,7 +962,7 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
       <div class="hero-copy z">
         <h1>Handmade soap<br>with merry little moments.</h1>
         <svg class="uline"><use href="#sym-uline"/></svg>
-        <p class="lede">Turning natural ingredients into small batches of soap bars for different skin types.</p>
+        <p class="lede">Turning natural ingredients into small batches of soap bars for different skin types. Bar soap lasts longer than you&rsquo;d expect.</p>
         <a class="btn-olive" href="#catalogue">See the current batch <svg><use href="#sym-arrow"/></svg>
           <i class="pt d" data-thread="6" style="--x:86%; --y:50%" data-pin></i>
           <i class="pt d" data-thread="7" style="--x:58%; --y:140%"></i>
@@ -1289,11 +1293,32 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
   <section class="facts">
     <div class="wrap">
       <div class="facts-intro z">
-        <p class="kicker">Small habits, big difference</p>
-        <h2>Did you know?</h2>
+        <p class="kicker">Bar or bottle?</p>
+        <h2>Why a bar?</h2>
       </div>
       <div class="fact-carousel" data-carousel data-autoplay="4500">
         <div class="rc-track">
+          <div class="rc-slide">
+            <div class="fact-card fc-photo fc-clean">
+              <p class="fc-kicker">Just as clean</p>
+              <p class="fc-text">Lathering and rinsing with bar soap washes germs off your hands.</p>
+              <p class="fc-source">Source: Amin et al., American Journal of Tropical Medicine and Hygiene, 2014</p>
+            </div>
+          </div>
+          <div class="rc-slide">
+            <div class="fact-card fc-photo fc-cost">
+              <p class="fc-kicker">What it costs</p>
+              <p class="fc-text">Based on my experience, one bar lasts about 9&ndash;12 weeks of daily use in the shower. At RM 15&ndash;25 a bar, that works out to about RM 0.18&ndash;0.40 a day.</p>
+              <p class="fc-source">Based on my own use</p>
+            </div>
+          </div>
+          <div class="rc-slide">
+            <div class="fact-card fc-photo fc-dish">
+              <p class="fc-kicker">Lasts longer</p>
+              <p class="fc-text">A soap bar lasts longer. Each wash uses more than 6 times less soap than liquid soap.</p>
+              <p class="fc-source">Source: Koehler &amp; Wildbolz, Environmental Science &amp; Technology, 2009</p>
+            </div>
+          </div>
           <div class="rc-slide">
             <div class="fact-card fc-photo">
               <p class="fc-kicker">Less packaging</p>
@@ -1306,13 +1331,6 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
               <p class="fc-kicker">Gentler without SLS</p>
               <p class="fc-text">SLS and SLES can dry out your skin, and the more you use, the drier it gets. My soap is free from both.</p>
               <p class="fc-source">Sources: Nardo et al., Contact Dermatitis, 1996; SLS vs SLES study, Food and Chemical Toxicology, 2000</p>
-            </div>
-          </div>
-          <div class="rc-slide">
-            <div class="fact-card fc-photo fc-dish">
-              <p class="fc-kicker">Lasts longer</p>
-              <p class="fc-text">A soap bar lasts longer. Each wash uses more than 6 times less soap than liquid soap.</p>
-              <p class="fc-source">Source: Koehler &amp; Wildbolz, Environmental Science &amp; Technology, 2009</p>
             </div>
           </div>
           <div class="rc-slide">
@@ -1372,6 +1390,22 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
         <details>
           <summary>Can I order in bulk or request a custom batch? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
           <p class="ans">Yes. Send me the scent, size and quantity you have in mind through the enquiry form, and I&rsquo;ll let you know what I can make, along with how much time I&rsquo;ll need &mdash; including the curing period &mdash; so you know when to expect it.</p>
+        </details>
+        <details>
+          <summary>Is bar soap hygienic? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
+          <p class="ans">Yes. Lathering and rinsing with bar soap washes germs off your hands (Amin et al., 2014). To keep the bar fresh, let it dry between uses.</p>
+        </details>
+        <details>
+          <summary>Why does my bar go mushy? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
+          <p class="ans">Usually because it&rsquo;s sitting in water. Use a soap dish that drains well and keep the bar out of the direct spray of the shower, so it can dry between uses.</p>
+        </details>
+        <details>
+          <summary>How long does one bar last? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
+          <p class="ans">Based on my own experience, one bar lasts about 9&ndash;12 weeks of daily use in the shower. It will last longer if it dries well between uses.</p>
+        </details>
+        <details>
+          <summary>Will bar soap dry out my skin? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
+          <p class="ans">My soap is made from plant oils, keeps its natural glycerin, and is free from SLS and SLES. Everyone&rsquo;s skin is different, though. If your skin feels tight after washing, tell me and I can suggest a gentler bar.</p>
         </details>
         <details>
           <summary>Does handmade soap expire? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
