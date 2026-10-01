@@ -21,6 +21,7 @@
 <meta name="twitter:title" content="Soapmerry">
 <meta name="twitter:description" content="Handmade soap with merry little moments. Made in small batches.">
 <meta name="twitter:image" content="https://soapmerry.netlify.app/assets/og-image-honey.jpg">
+<link rel="preload" as="image" href="assets/opt/logo-soapmerry.webp?v=loader">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Kalam:wght@300;400&display=swap">
@@ -398,7 +399,7 @@ section.trust .wrap { padding: .5rem 0 0; }
   padding: 2rem 7%;
 }
 .trust-panel::before {
-  background: url('assets/paper-trust-strip.webp') center/100% 100% no-repeat;
+  background: url('assets/opt/paper-trust-strip.webp') center/100% 100% no-repeat;
   border: 0;
   box-shadow: none;
 }
@@ -556,7 +557,7 @@ section.facts { padding: 1rem 0 3rem; }
 .fc-rust  { background-color: var(--rust);  color: #F8ECE6; }
 .fc-photo {
   position: relative; color: #fff;
-  background: #2B2722 url('assets/preview/flatlay-marble.jpg') center/cover no-repeat;
+  background: #2B2722 center/cover no-repeat;
 }
 .fc-photo::before {
   content: ""; position: absolute; inset: 0; border-radius: inherit;
@@ -564,16 +565,23 @@ section.facts { padding: 1rem 0 3rem; }
 }
 .fc-photo .fc-kicker, .fc-photo .fc-text { position: relative; z-index: 1; }
 /* both photos are bright, so the overlay is darker to keep the white text readable */
-.fc-hands { background-image: url('assets/preview/hands-goatmilk.webp'); background-position: center 55%; }
+.fc-hands { background-position: center 55%; }
 .fc-hands::before { background: linear-gradient(180deg, rgba(20,14,8,.58) 0%, rgba(20,14,8,.74) 100%); }
-.fc-dish { background-image: url('assets/preview/honey-dish.webp'); background-position: center 60%; }
+.fc-dish { background-position: center 60%; }
 .fc-dish::before { background: linear-gradient(180deg, rgba(20,14,8,.55) 0%, rgba(20,14,8,.72) 100%); }
-.fc-clean { background-image: url('assets/preview/clean-sink.webp'); background-position: center 50%; }
+.fc-clean { background-position: center 50%; }
 .fc-clean::before { background: linear-gradient(180deg, rgba(20,14,8,.58) 0%, rgba(20,14,8,.76) 100%); }
-.fc-cost { background-image: url('assets/preview/water-splash-honey.jpg'); background-position: center 38%; }
+.fc-cost { background-position: center 38%; }
 .fc-cost::before { background: linear-gradient(180deg, rgba(20,14,8,.6) 0%, rgba(20,14,8,.78) 100%); }
 .fc-cream { background-color: var(--paper-3); color: var(--ink); }
-.fc-oils { background-image: url('assets/preview/oils-bowls.webp'); background-position: center 40%; }
+.fc-oils { background-position: center 40%; }
+/* the photos only start downloading once the section is close to the screen (see .bg-ready in the script) */
+.facts.bg-ready .fc-photo { background-image: url('assets/opt/fc-flatlay.webp'); }
+.facts.bg-ready .fc-hands { background-image: url('assets/opt/fc-hands.webp'); }
+.facts.bg-ready .fc-dish  { background-image: url('assets/opt/fc-dish.webp'); }
+.facts.bg-ready .fc-clean { background-image: url('assets/opt/fc-clean.webp'); }
+.facts.bg-ready .fc-cost  { background-image: url('assets/opt/fc-cost.webp'); }
+.facts.bg-ready .fc-oils  { background-image: url('assets/opt/fc-oils.webp'); }
 .fc-oils::before { background: linear-gradient(180deg, rgba(20,14,8,.55) 0%, rgba(20,14,8,.72) 100%); }
 @media (max-width: 900px) {
   .fact-carousel { max-width: 420px; }
@@ -598,7 +606,7 @@ section.curing .wrap {
 .tags { display: flex; flex-direction: column; gap: 1.1rem; }
 .tag.torn { clip-path: none; }
 .tag::before {
-  background: url('assets/paper-note.webp') center/100% 100% no-repeat;
+  background: url('assets/opt/paper-note.webp') center/100% 100% no-repeat;
   border: 0;
   box-shadow: none;
 }
@@ -893,7 +901,7 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
 
 <!-- loading screen: plays the logo once, then fades into the page -->
 <div class="loader" id="loader" aria-hidden="true">
-  <img src="assets/logo-soapmerry.gif?v=loader" alt="" width="1411" height="528">
+  <img src="assets/opt/logo-soapmerry.webp?v=loader" alt="" width="1411" height="528">
 </div>
 
 <div class="grain" aria-hidden="true"></div>
@@ -942,7 +950,7 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
     <div class="wrap">
       <a class="logo" href="#soaps" aria-label="Soapmerry, back to top">
         <!-- handwriting animation; the GIF has no loop block so it plays once and holds the last frame -->
-        <img src="assets/logo-soapmerry.gif" alt="Soapmerry" width="1411" height="528" fetchpriority="high">
+        <img src="assets/opt/logo-soapmerry.webp" alt="Soapmerry" width="1411" height="528" fetchpriority="high">
       </a>
       <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mainNav">
         <span></span><span></span><span></span>
@@ -962,7 +970,7 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
       <div class="hero-copy z">
         <h1>Handmade soap<br>with merry little moments.</h1>
         <svg class="uline"><use href="#sym-uline"/></svg>
-        <p class="lede">Turning natural ingredients into small batches of soap bars for different skin types. Bar soap lasts longer than you&rsquo;d expect.</p>
+        <p class="lede">Turning natural ingredients into small batches of soap bars for different skin types.</p>
         <a class="btn-olive" href="#catalogue">See the current batch <svg><use href="#sym-arrow"/></svg>
           <i class="pt d" data-thread="6" style="--x:86%; --y:50%" data-pin></i>
           <i class="pt d" data-thread="7" style="--x:58%; --y:140%"></i>
@@ -998,22 +1006,22 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
       </div>
       <div class="four z">
         <figure>
-          <div class="ill"><img src="assets/icons/plants-change.webp" alt="" width="1254" height="1254"></div>
+          <div class="ill"><img loading="lazy" decoding="async" src="assets/icons/plants-change.webp" alt="" width="1254" height="1254"></div>
           <h3>Experimenting ingredients</h3>
           <p>I try seasonal ingredients and everyday kitchen staples in different batches.</p>
         </figure>
         <figure>
-          <div class="ill"><img src="assets/icons/handmade.webp" alt="" width="1254" height="1254"></div>
+          <div class="ill"><img loading="lazy" decoding="async" src="assets/icons/handmade.webp" alt="" width="1254" height="1254"></div>
           <h3>Handmade</h3>
           <p>I mix, pour and cut everything by hand.</p>
         </figure>
         <figure>
-          <div class="ill"><img src="assets/icons/time-cures.webp" alt="" width="1254" height="1254"></div>
+          <div class="ill"><img loading="lazy" decoding="async" src="assets/icons/time-cures.webp" alt="" width="1254" height="1254"></div>
           <h3>Curing</h3>
           <p>Each batch needs at least 4&ndash;6 weeks to cure and harden before it&rsquo;s ready.</p>
         </figure>
         <figure>
-          <div class="ill"><img src="assets/icons/one-batch.webp" alt="" width="1254" height="1254"></div>
+          <div class="ill"><img loading="lazy" decoding="async" src="assets/icons/one-batch.webp" alt="" width="1254" height="1254"></div>
           <h3>Small batches</h3>
           <p>I make a limited number of bars at a time.</p>
         </figure>
@@ -1042,7 +1050,7 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
         </svg>
 
         <div class="ing">
-          <div class="ill"><img src="assets/icons/oils.webp" alt="" width="1254" height="1254">
+          <div class="ill"><img loading="lazy" decoding="async" src="assets/icons/oils.webp" alt="" width="1254" height="1254">
             <i class="pt d" data-thread="22" style="--x:-30%; --y:62%"></i>
             <i class="pt d" data-thread="23" style="--x:45%; --y:50%"></i>
             <i class="pt d" data-thread="24" style="--x:110%; --y:96%"></i>
@@ -1050,11 +1058,11 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
           <div><h3>Oils</h3><p>Coconut, olive, sunflower, palm, castor &amp; more</p></div>
         </div>
         <div class="ing">
-          <div class="ill"><img src="assets/icons/glycerin.webp" alt="" width="1254" height="1254"></div>
+          <div class="ill"><img loading="lazy" decoding="async" src="assets/icons/glycerin.webp" alt="" width="1254" height="1254"></div>
           <div><h3>Glycerin</h3><p>Add in liquid soap<br>for gentle feel</p></div>
         </div>
         <div class="ing">
-          <div class="ill"><img src="assets/icons/milk-and-oat.webp" alt="" width="1254" height="1254"></div>
+          <div class="ill"><img loading="lazy" decoding="async" src="assets/icons/milk-and-oat.webp" alt="" width="1254" height="1254"></div>
           <div><h3>Milk &amp; oat</h3><p>Oat milk, goat milk and other kinds for extra lather</p></div>
         </div>
 
@@ -1067,7 +1075,7 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
         </div>
 
         <div class="ing">
-          <div class="ill"><img src="assets/icons/salts-and-clays.webp" alt="" width="1254" height="1254">
+          <div class="ill"><img loading="lazy" decoding="async" src="assets/icons/salts-and-clays.webp" alt="" width="1254" height="1254">
             <i class="pt d" data-thread="28" style="--x:70%; --y:-14%"></i>
             <i class="pt d" data-thread="29" style="--x:50%; --y:50%"></i>
             <i class="pt d" data-thread="30" style="--x:40%; --y:115%"></i>
@@ -1075,11 +1083,11 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
           <div><h3>Salts &amp; clays</h3><p>Natural colour pigments, texture and purification properties</p></div>
         </div>
         <div class="ing">
-          <div class="ill"><img src="assets/icons/fruits-and-juices.webp" alt="" width="1254" height="1254"></div>
+          <div class="ill"><img loading="lazy" decoding="async" src="assets/icons/fruits-and-juices.webp" alt="" width="1254" height="1254"></div>
           <div><h3>Fruits &amp; juices</h3><p>Boost lather and nourish skin with vitamins</p></div>
         </div>
         <div class="ing">
-          <div class="ill"><img src="assets/icons/herbs-and-botanicals.webp" alt="" width="1254" height="1254"></div>
+          <div class="ill"><img loading="lazy" decoding="async" src="assets/icons/herbs-and-botanicals.webp" alt="" width="1254" height="1254"></div>
           <div><h3>Herbs &amp; botanicals</h3><p>Calendula, lavender,<br>rosemary &amp; more</p></div>
         </div>
       </div>
@@ -1103,12 +1111,12 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
       <figure class="range-grid range-carousel" data-carousel data-autoplay="2500">
         <div class="rc-track" id="rcTrack">
           <div class="rc-slide"><img src="assets/preview/carousel/full-grid.webp" alt="A grid of nine Soapmerry soap bars, each shown individually on a clean reflective surface"></div>
-          <div class="rc-slide"><img src="assets/preview/carousel/styled-trio.jpg" alt="Honey, goat milk and vegetable soap bars styled together on a tray"></div>
-          <div class="rc-slide"><img src="assets/preview/carousel/styled-apple-carrot.jpg" alt="Fruit soap bars styled on a plate with apple slices and carrot peel"></div>
-          <div class="rc-slide"><img src="assets/preview/carousel/styled-goatmilk.jpg" alt="Goat milk soap bar styled on a stone slab with oats"></div>
-          <div class="rc-slide"><img src="assets/preview/carousel/styled-vinegar.jpg" alt="Vinegar soap bar styled with dried apple slices and oil"></div>
-          <div class="rc-slide"><img src="assets/preview/carousel/styled-beer.jpg" alt="Beer soap bar styled with wheat and a glass of beer"></div>
-          <div class="rc-slide"><img src="assets/preview/carousel/styled-vegetable.jpg" alt="Two vegetable soap bars with foam on white marble, beside a sliced tomato and cherry tomatoes"></div>
+          <div class="rc-slide"><img loading="lazy" decoding="async" src="assets/preview/carousel/styled-trio.jpg" alt="Honey, goat milk and vegetable soap bars styled together on a tray"></div>
+          <div class="rc-slide"><img loading="lazy" decoding="async" src="assets/preview/carousel/styled-apple-carrot.jpg" alt="Fruit soap bars styled on a plate with apple slices and carrot peel"></div>
+          <div class="rc-slide"><img loading="lazy" decoding="async" src="assets/preview/carousel/styled-goatmilk.jpg" alt="Goat milk soap bar styled on a stone slab with oats"></div>
+          <div class="rc-slide"><img loading="lazy" decoding="async" src="assets/preview/carousel/styled-vinegar.jpg" alt="Vinegar soap bar styled with dried apple slices and oil"></div>
+          <div class="rc-slide"><img loading="lazy" decoding="async" src="assets/preview/carousel/styled-beer.jpg" alt="Beer soap bar styled with wheat and a glass of beer"></div>
+          <div class="rc-slide"><img loading="lazy" decoding="async" src="assets/opt/styled-vegetable.webp" alt="Two vegetable soap bars with foam on white marble, beside a sliced tomato and cherry tomatoes"></div>
         </div>
         <button type="button" class="rc-btn rc-prev" aria-label="Previous soap">&#8249;</button>
         <button type="button" class="rc-btn rc-next" aria-label="Next soap">&#8250;</button>
@@ -1183,54 +1191,54 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
         <div class="shelf-row">
           <div class="shelf-items">
             <button class="shelf-soap has-photo" type="button" data-batch="apple-carrot">
-              <span class="soap-label at-left">Apple and Carrots<img class="hand-arrow" src="assets/pencil-arrow-curve-right.png" alt=""></span>
-              <img src="assets/preview/brightened/soap-yellow.webp" alt="" width="383" height="360">
+              <span class="soap-label at-left">Apple and Carrots<img loading="lazy" decoding="async" class="hand-arrow" src="assets/pencil-arrow-curve-right.png" alt=""></span>
+              <img loading="lazy" decoding="async" src="assets/preview/brightened/soap-yellow.webp" alt="" width="383" height="360">
             </button>
             <button class="shelf-soap has-photo" type="button" data-batch="tomato">
-              <span class="soap-label at-right">Tomato<img class="hand-arrow" src="assets/pencil-arrow-curve-left.png" alt=""></span>
-              <img src="assets/preview/brightened/soap-tomato.webp" alt="" width="525" height="318">
+              <span class="soap-label at-right">Tomato<img loading="lazy" decoding="async" class="hand-arrow" src="assets/pencil-arrow-curve-left.png" alt=""></span>
+              <img loading="lazy" decoding="async" src="assets/preview/brightened/soap-tomato.webp" alt="" width="525" height="318">
             </button>
           </div>
-          <div class="plank"><img src="assets/shelf-plank.webp" alt=""></div>
+          <div class="plank"><img loading="lazy" decoding="async" src="assets/shelf-plank.webp" alt=""></div>
         </div>
         <div class="shelf-row">
           <div class="shelf-items">
             <button class="shelf-soap has-photo" type="button" data-batch="himalayan">
-              <span class="soap-label at-left">Pink Himalayan &amp; Sea Salt Spa<img class="hand-arrow" src="assets/pencil-arrow-curve-right.png" alt=""></span>
-              <img src="assets/preview/brightened/soap-himalayan.webp" alt="" width="1503" height="1181">
+              <span class="soap-label at-left">Pink Himalayan &amp; Sea Salt Spa<img loading="lazy" decoding="async" class="hand-arrow" src="assets/pencil-arrow-curve-right.png" alt=""></span>
+              <img loading="lazy" decoding="async" src="assets/preview/brightened/soap-himalayan.webp" alt="" width="1503" height="1181">
             </button>
             <button class="shelf-soap has-photo" type="button" data-batch="vinegar">
-              <span class="soap-label at-right">Herbal Vinegar<img class="hand-arrow" src="assets/pencil-arrow-curve-left.png" alt=""></span>
-              <img src="assets/preview/brightened/soap-vinegar.webp" alt="" width="671" height="391">
+              <span class="soap-label at-right">Herbal Vinegar<img loading="lazy" decoding="async" class="hand-arrow" src="assets/pencil-arrow-curve-left.png" alt=""></span>
+              <img loading="lazy" decoding="async" src="assets/preview/brightened/soap-vinegar.webp" alt="" width="671" height="391">
             </button>
           </div>
-          <div class="plank"><img src="assets/shelf-plank.webp" alt=""></div>
+          <div class="plank"><img loading="lazy" decoding="async" src="assets/shelf-plank.webp" alt=""></div>
         </div>
         <div class="shelf-row">
           <div class="shelf-items">
             <button class="shelf-soap has-photo" type="button" data-batch="coconut">
-              <span class="soap-label at-left">Coconut Kitchen Bar<img class="hand-arrow" src="assets/pencil-arrow-curve-right.png" alt=""></span>
-              <img src="assets/preview/brightened/soap-coconut.webp" alt="" width="370" height="330">
+              <span class="soap-label at-left">Coconut Kitchen Bar<img loading="lazy" decoding="async" class="hand-arrow" src="assets/pencil-arrow-curve-right.png" alt=""></span>
+              <img loading="lazy" decoding="async" src="assets/preview/brightened/soap-coconut.webp" alt="" width="370" height="330">
             </button>
             <button class="shelf-soap has-photo" type="button" data-batch="honey-turmeric">
-              <span class="soap-label at-right">Honey and Turmeric<img class="hand-arrow" src="assets/pencil-arrow-curve-left.png" alt=""></span>
-              <img src="assets/preview/brightened/soap-honey.webp" alt="" width="389" height="407">
+              <span class="soap-label at-right">Honey and Turmeric<img loading="lazy" decoding="async" class="hand-arrow" src="assets/pencil-arrow-curve-left.png" alt=""></span>
+              <img loading="lazy" decoding="async" src="assets/preview/brightened/soap-honey.webp" alt="" width="389" height="407">
             </button>
           </div>
-          <div class="plank"><img src="assets/shelf-plank.webp" alt=""></div>
+          <div class="plank"><img loading="lazy" decoding="async" src="assets/shelf-plank.webp" alt=""></div>
         </div>
         <div class="shelf-row">
           <div class="shelf-items">
             <button class="shelf-soap has-photo" type="button" data-batch="stout">
-              <span class="soap-label at-left">Stout Beer<img class="hand-arrow" src="assets/pencil-arrow-curve-right.png" alt=""></span>
-              <img src="assets/preview/brightened/soap-beer.webp" alt="" width="580" height="364">
+              <span class="soap-label at-left">Stout Beer<img loading="lazy" decoding="async" class="hand-arrow" src="assets/pencil-arrow-curve-right.png" alt=""></span>
+              <img loading="lazy" decoding="async" src="assets/preview/brightened/soap-beer.webp" alt="" width="580" height="364">
             </button>
             <button class="shelf-soap has-photo" type="button" data-batch="goatmilk">
-              <span class="soap-label at-right">Goat Milk and Oat<img class="hand-arrow" src="assets/pencil-arrow-curve-left.png" alt=""></span>
-              <img src="assets/preview/brightened/soap-goatmilk.webp" alt="" width="949" height="415">
+              <span class="soap-label at-right">Goat Milk and Oat<img loading="lazy" decoding="async" class="hand-arrow" src="assets/pencil-arrow-curve-left.png" alt=""></span>
+              <img loading="lazy" decoding="async" src="assets/preview/brightened/soap-goatmilk.webp" alt="" width="949" height="415">
             </button>
           </div>
-          <div class="plank"><img src="assets/shelf-plank.webp" alt=""></div>
+          <div class="plank"><img loading="lazy" decoding="async" src="assets/shelf-plank.webp" alt=""></div>
         </div>
       </div>
     </div>
@@ -1244,42 +1252,42 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
       <!-- phone layout: one card per soap, tap for the batch details -->
       <div class="batch-cards z">
         <button class="scard panel torn" type="button" data-batch="apple-carrot">
-          <span class="pic"><img src="assets/preview/brightened/soap-yellow.webp" alt="" width="383" height="360"></span>
+          <span class="pic"><img loading="lazy" decoding="async" src="assets/preview/brightened/soap-yellow.webp" alt="" width="383" height="360"></span>
           <span class="num">01</span>
           <span class="row"><h3>Apple and<br>Carrots</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
         </button>
         <button class="scard panel torn" type="button" data-batch="tomato">
-          <span class="pic"><img src="assets/preview/brightened/soap-tomato.webp" alt="" width="525" height="318"></span>
+          <span class="pic"><img loading="lazy" decoding="async" src="assets/preview/brightened/soap-tomato.webp" alt="" width="525" height="318"></span>
           <span class="num">02</span>
           <span class="row"><h3>Tomato</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
         </button>
         <button class="scard panel torn" type="button" data-batch="himalayan">
-          <span class="pic"><img src="assets/preview/brightened/soap-himalayan.webp" alt="" width="1503" height="1181"></span>
+          <span class="pic"><img loading="lazy" decoding="async" src="assets/preview/brightened/soap-himalayan.webp" alt="" width="1503" height="1181"></span>
           <span class="num">03</span>
           <span class="row"><h3>Pink Himalayan<br>&amp; Sea Salt</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
         </button>
         <button class="scard panel torn" type="button" data-batch="vinegar">
-          <span class="pic"><img src="assets/preview/brightened/soap-vinegar.webp" alt="" width="671" height="391"></span>
+          <span class="pic"><img loading="lazy" decoding="async" src="assets/preview/brightened/soap-vinegar.webp" alt="" width="671" height="391"></span>
           <span class="num">04</span>
           <span class="row"><h3>Herbal<br>Vinegar</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
         </button>
         <button class="scard panel torn" type="button" data-batch="coconut">
-          <span class="pic"><img src="assets/preview/brightened/soap-coconut.webp" alt="" width="370" height="330"></span>
+          <span class="pic"><img loading="lazy" decoding="async" src="assets/preview/brightened/soap-coconut.webp" alt="" width="370" height="330"></span>
           <span class="num">05</span>
           <span class="row"><h3>Coconut<br>Kitchen Bar</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
         </button>
         <button class="scard panel torn" type="button" data-batch="honey-turmeric">
-          <span class="pic"><img src="assets/preview/brightened/soap-honey.webp" alt="" width="389" height="407"></span>
+          <span class="pic"><img loading="lazy" decoding="async" src="assets/preview/brightened/soap-honey.webp" alt="" width="389" height="407"></span>
           <span class="num">06</span>
           <span class="row"><h3>Honey and<br>Turmeric</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
         </button>
         <button class="scard panel torn" type="button" data-batch="stout">
-          <span class="pic"><img src="assets/preview/brightened/soap-beer.webp" alt="" width="580" height="364"></span>
+          <span class="pic"><img loading="lazy" decoding="async" src="assets/preview/brightened/soap-beer.webp" alt="" width="580" height="364"></span>
           <span class="num">07</span>
           <span class="row"><h3>Stout Beer</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
         </button>
         <button class="scard panel torn" type="button" data-batch="goatmilk">
-          <span class="pic"><img src="assets/preview/brightened/soap-goatmilk.webp" alt="" width="949" height="415"></span>
+          <span class="pic"><img loading="lazy" decoding="async" src="assets/preview/brightened/soap-goatmilk.webp" alt="" width="949" height="415"></span>
           <span class="num">08</span>
           <span class="row"><h3>Goat Milk<br>and Oat</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
         </button>
@@ -1293,16 +1301,22 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
   <section class="facts">
     <div class="wrap">
       <div class="facts-intro z">
-        <p class="kicker">Bar or bottle?</p>
-        <h2>Why a bar?</h2>
+        <h2>Why a soap bar?</h2>
       </div>
       <div class="fact-carousel" data-carousel data-autoplay="4500">
         <div class="rc-track">
           <div class="rc-slide">
-            <div class="fact-card fc-photo fc-clean">
-              <p class="fc-kicker">Just as clean</p>
-              <p class="fc-text">Lathering and rinsing with bar soap washes germs off your hands.</p>
-              <p class="fc-source">Source: Amin et al., American Journal of Tropical Medicine and Hygiene, 2014</p>
+            <div class="fact-card fc-photo fc-dish">
+              <p class="fc-kicker">Lasts longer</p>
+              <p class="fc-text">Each wash uses more than 6 times less soap than liquid soap.</p>
+              <p class="fc-source">Source: Koehler &amp; Wildbolz, Environmental Science &amp; Technology, 2009</p>
+            </div>
+          </div>
+          <div class="rc-slide">
+            <div class="fact-card fc-photo fc-hands">
+              <p class="fc-kicker">Gentler without SLS</p>
+              <p class="fc-text">SLS and SLES can dry out your skin, and the more you use, the drier it gets. My soap is free from both.</p>
+              <p class="fc-source">Sources: Nardo et al., Contact Dermatitis, 1996; SLS vs SLES study, Food and Chemical Toxicology, 2000</p>
             </div>
           </div>
           <div class="rc-slide">
@@ -1313,13 +1327,6 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
             </div>
           </div>
           <div class="rc-slide">
-            <div class="fact-card fc-photo fc-dish">
-              <p class="fc-kicker">Lasts longer</p>
-              <p class="fc-text">A soap bar lasts longer. Each wash uses more than 6 times less soap than liquid soap.</p>
-              <p class="fc-source">Source: Koehler &amp; Wildbolz, Environmental Science &amp; Technology, 2009</p>
-            </div>
-          </div>
-          <div class="rc-slide">
             <div class="fact-card fc-photo">
               <p class="fc-kicker">Less packaging</p>
               <p class="fc-text">Liquid soap needs nearly 20 times more energy to package than bar soap.</p>
@@ -1327,10 +1334,10 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
             </div>
           </div>
           <div class="rc-slide">
-            <div class="fact-card fc-photo fc-hands">
-              <p class="fc-kicker">Gentler without SLS</p>
-              <p class="fc-text">SLS and SLES can dry out your skin, and the more you use, the drier it gets. My soap is free from both.</p>
-              <p class="fc-source">Sources: Nardo et al., Contact Dermatitis, 1996; SLS vs SLES study, Food and Chemical Toxicology, 2000</p>
+            <div class="fact-card fc-photo fc-clean">
+              <p class="fc-kicker">Is it hygienic?</p>
+              <p class="fc-text">Lathering and rinsing with bar soap washes germs off your hands.</p>
+              <p class="fc-source">Source: Amin et al., American Journal of Tropical Medicine and Hygiene, 2014</p>
             </div>
           </div>
           <div class="rc-slide">
@@ -1372,44 +1379,32 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
     <div class="wrap">
       <div class="faq-list">
         <details>
-          <summary>How long does the soap take to cure? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
-          <p class="ans">I make cold-process soap bars, which usually take four to six weeks to cure. During curing, water gradually evaporates from the bar, making it harder, longer-lasting and gentler on skin. I only list and package a batch once it&rsquo;s fully cured and ready to use.</p>
+          <summary>What makes handmade soap different? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
+          <p class="ans">I make each batch myself using plant oils, trying different recipes to see how they lather and feel on skin. The glycerin formed naturally during soapmaking stays in the bars instead of being removed, and each batch is left to cure fully before it&rsquo;s ready to use.</p>
         </details>
         <details>
           <summary>Are your soaps suitable for sensitive skin? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
           <p class="ans">Everyone&rsquo;s skin reacts differently, so I can&rsquo;t promise that every bar will suit sensitive skin. If you&rsquo;re sensitive to fragrance or particular ingredients, let me know. I can share the full ingredient list for any batch and help you find an unscented or low-scent option that works for you.</p>
         </details>
         <details>
-          <summary>What makes handmade soap different? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
-          <p class="ans">I make each batch myself using plant oils, trying different recipes to see how they lather and feel on skin. The glycerin formed naturally during soapmaking stays in the bars instead of being removed, and each batch is left to cure fully before it&rsquo;s ready to use.</p>
+          <summary>Will bar soap dry out my skin? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
+          <p class="ans">My soap is made from plant oils, keeps its natural glycerin, and is free from SLS and SLES. Everyone&rsquo;s skin is different, though. If your skin feels tight after washing, tell me and I can suggest a gentler bar.</p>
+        </details>
+        <details>
+          <summary>How long does the soap take to cure? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
+          <p class="ans">I make cold-process soap bars, which usually take four to six weeks to cure. During curing, water gradually evaporates from the bar, making it harder, longer-lasting and gentler on skin. I only list and package a batch once it&rsquo;s fully cured and ready to use.</p>
         </details>
         <details>
           <summary>How should I store my soap? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
           <p class="ans">Keep it somewhere it can dry between uses &mdash; a soap dish that drains well helps prevent the bar from sitting in water and turning soft. Store any unused bars in a cool, dry place away from direct sunlight, so they keep their shape and scent.</p>
         </details>
         <details>
-          <summary>Can I order in bulk or request a custom batch? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
-          <p class="ans">Yes. Send me the scent, size and quantity you have in mind through the enquiry form, and I&rsquo;ll let you know what I can make, along with how much time I&rsquo;ll need &mdash; including the curing period &mdash; so you know when to expect it.</p>
-        </details>
-        <details>
-          <summary>Is bar soap hygienic? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
-          <p class="ans">Yes. Lathering and rinsing with bar soap washes germs off your hands (Amin et al., 2014). To keep the bar fresh, let it dry between uses.</p>
-        </details>
-        <details>
-          <summary>Why does my bar go mushy? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
-          <p class="ans">Usually because it&rsquo;s sitting in water. Use a soap dish that drains well and keep the bar out of the direct spray of the shower, so it can dry between uses.</p>
-        </details>
-        <details>
-          <summary>How long does one bar last? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
-          <p class="ans">Based on my own experience, one bar lasts about 9&ndash;12 weeks of daily use in the shower. It will last longer if it dries well between uses.</p>
-        </details>
-        <details>
-          <summary>Will bar soap dry out my skin? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
-          <p class="ans">My soap is made from plant oils, keeps its natural glycerin, and is free from SLS and SLES. Everyone&rsquo;s skin is different, though. If your skin feels tight after washing, tell me and I can suggest a gentler bar.</p>
-        </details>
-        <details>
           <summary>Does handmade soap expire? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
           <p class="ans">Handmade soap can change over time, so it&rsquo;s best used within a year of curing. The scent may fade and the bar may soften a little in humid weather. Keep it in a cool, dry place and let it dry fully between uses to help it last.</p>
+        </details>
+        <details>
+          <summary>Can I order in bulk or request a custom batch? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
+          <p class="ans">Yes. Send me the scent, size and quantity you have in mind through the enquiry form, and I&rsquo;ll let you know what I can make, along with how much time I&rsquo;ll need &mdash; including the curing period &mdash; so you know when to expect it.</p>
         </details>
       </div>
     </div>
@@ -1422,7 +1417,7 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
     <div class="wrap">
       <div>
         <div class="flogo">Soapmerry</div>
-        <div class="o8">Made by hand.<br>One batch at a time. <img class="leaf" src="assets/icons/flower-original.webp" alt=""></div>
+        <div class="o8">Made by hand.<br>One batch at a time. <img loading="lazy" decoding="async" class="leaf" src="assets/icons/flower-original.webp" alt=""></div>
       </div>
       <div class="o8">Friends &amp; family enquiries<br>I&rsquo;ll reply personally.</div>
       <div class="o8">Thank you for supporting<br>small and handmade products in Malaysia.</div>
@@ -1598,6 +1593,19 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
      LOADER: hold a white screen while the logo writes itself (3.5s),
      then fade the page in.  Skipped under reduced motion.
      ------------------------------------------------------------------ */
+  var factsSec = document.querySelector('section.facts');
+  if (factsSec) {
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es, ob) {
+        if (es[0].isIntersecting) { factsSec.classList.add('bg-ready'); ob.disconnect(); }
+      }, { rootMargin: '800px 0px' }).observe(factsSec);
+    } else { factsSec.classList.add('bg-ready'); }
+    /* safety net: if the observer never fires, load the photos a few seconds after the page is ready */
+    window.addEventListener('load', function () {
+      setTimeout(function () { factsSec.classList.add('bg-ready'); }, 6000);
+    });
+  }
+
   var loader = document.getElementById('loader');
   var reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   function reveal() {
