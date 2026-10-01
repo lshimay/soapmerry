@@ -36,7 +36,7 @@
   --paper-edge: rgba(60, 45, 30, 0.16);
   --ink:        #2B2722;
   --ink-2:      #4C4944;
-  --ink-3:      #7A756F;
+  --ink-3:      #5F5A54;   /* darkened from #7A756F so small grey labels reach 4.5:1 on the paper colours */
   --olive:      #6E6E56;
   --olive-deep: #676750;
   --blush:      #E3CFC6;
@@ -460,27 +460,8 @@ section.ingredients .wrap {
 /* =====================================================================
    PHOTO BANNER (draft)
    ===================================================================== */
-.photo-banner { position: relative; z-index: 2; }
-.photo-banner figure { margin: 0 auto; position: relative; width: 100%; max-width: 1400px; height: 78vh; min-height: 480px; max-height: 820px; overflow: hidden; }
-.photo-banner img {
-  width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; display: block;
-  filter: sepia(12%) saturate(1.08) brightness(1.02) contrast(.97);
-}
-.photo-banner figcaption {
-  position: absolute; inset: 0;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
-  padding: 2rem;
-  background:
-    linear-gradient(to bottom, rgba(239,231,217,.92) 0%, rgba(239,231,217,0) 10%),
-    linear-gradient(to top,    rgba(239,231,217,.92) 0%, rgba(239,231,217,0) 10%),
-    linear-gradient(180deg, rgba(var(--shade),.15) 0%, rgba(var(--shade),.05) 40%, rgba(var(--shade),.35) 100%);
-}
-/* centred line in the same serif as the headings */
-.photo-banner .kicker {
-  font-family: var(--serif); font-size: clamp(1.7rem, 4.2vw, 2.8rem); line-height: 1.1;
-  color: #fff; text-shadow: 0 2px 6px rgba(0,0,0,.35), 0 4px 22px rgba(0,0,0,.45);
-}
-.photo-banner h2 { color: #fff; font-size: clamp(2rem, 5vw, 3.4rem); line-height: 1.1; margin-top: .4rem; text-shadow: 0 4px 18px rgba(0,0,0,.4); }
+/* the old "Each batch looks a little different" section is no longer used */
+section.batches { display: none; }
 
 /* =====================================================================
    RANGE TEASER (draft)
@@ -522,20 +503,30 @@ section.range-teaser .wrap {
 .rc-btn:hover { background: #fff; }
 .rc-prev { left: .6rem; }
 .rc-next { right: .6rem; }
-.rc-dots { display: flex; justify-content: center; gap: .45rem; margin-top: .8rem; }
-.rc-dot { width: 6px; height: 6px; border-radius: 50%; border: none; padding: 0; background: var(--paper-edge); cursor: pointer; }
-.rc-dot.active { background: var(--olive); }
+.rc-dots { display: flex; justify-content: center; align-items: center; gap: 0; margin-top: .4rem; }
+/* each dot is drawn 6px wide, but its tap area is 24x24 (padding + background-clip) */
+.rc-dot { box-sizing: content-box; width: 6px; height: 6px; border-radius: 50%; border: none; padding: 9px; background: var(--paper-edge); background-clip: content-box; cursor: pointer; }
+.rc-dot.active { background-color: var(--olive); }
+.rc-pause {
+  width: 30px; height: 30px; margin-right: .35rem; border-radius: 50%; border: 1px solid var(--paper-edge);
+  background: transparent; color: var(--ink-2); cursor: pointer; display: grid; place-items: center; padding: 0;
+}
+.rc-pause:hover { background: rgba(255,255,255,.5); }
+.rc-pause svg { width: 12px; height: 12px; fill: currentColor; }
+.rc-pause .i-play { display: none; }
+.rc-pause[aria-pressed="true"] .i-pause { display: none; }
+.rc-pause[aria-pressed="true"] .i-play { display: block; }
 /* auto-play: the active dot stretches into a bar that fills up until the next slide */
 [data-autoplay] .rc-dot { transition: width .3s ease; }
-[data-autoplay] .rc-dot.active { width: 26px; border-radius: 3px; background: var(--paper-edge); position: relative; overflow: hidden; }
+[data-autoplay] .rc-dot.active { width: 26px; border-radius: 0; background: none; position: relative; }
+[data-autoplay] .rc-dot.active::before { content: ""; position: absolute; inset: 9px; border-radius: 3px; background: var(--paper-edge); }
 [data-autoplay] .rc-dot.active::after {
-  content: ""; position: absolute; inset: 0; background: var(--olive); transform-origin: left;
+  content: ""; position: absolute; inset: 9px; border-radius: 3px; background: var(--olive); transform-origin: left;
   animation: rc-fill var(--rc-ms, 4000ms) linear forwards;
 }
 [data-autoplay].rc-paused .rc-dot.active::after { animation-play-state: paused; }
 @keyframes rc-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @media (max-width: 900px) {
-  .photo-banner figure { height: 58vh; min-height: 380px; }
   section.range-teaser .wrap { grid-template-columns: 1fr; gap: 2rem; padding: 3.5rem 0; }
   .range-grid { width: min(420px, 100%); margin-inline: auto; max-width: 100%; }
 }
@@ -558,8 +549,8 @@ section.facts { padding: 1rem 0 3rem; }
 .fc-kicker { font-family: var(--script); font-size: .95rem; opacity: .85; }
 .fc-text { font-family: var(--serif); font-size: clamp(1.3rem, 2.6vw, 1.8rem); line-height: 1.3; margin-top: .6rem; max-width: 24rem; }
 .fc-source {
-  position: absolute; left: 0; right: 0; bottom: .9rem;
-  font-family: var(--body); font-size: .65rem; letter-spacing: .02em; opacity: .55;
+  position: absolute; left: 0; right: 0; bottom: .9rem; padding: 0 1rem;
+  font-family: var(--body); font-size: .8rem; line-height: 1.3; letter-spacing: .01em; opacity: .92;
 }
 .fc-olive { background-color: var(--olive); color: #F6F2E9; }
 .fc-rust  { background-color: var(--rust);  color: #F8ECE6; }
@@ -614,6 +605,18 @@ section.curing .wrap {
   border: 0; background: none; text-align: left; font: inherit; color: inherit;
 }
 .tag .num { font-family: var(--script); font-size: .8rem; color: var(--ink-3); }
+/* price shown on the list itself, so nobody has to open a pop-up to find it */
+/* the price sits in the name row, next to the plus sign, level with the FIRST line of the name */
+.tag .row .price, .scard .row .price {
+  margin-left: auto; align-self: flex-start; white-space: nowrap;
+  font-family: var(--body); font-weight: 500; color: var(--ink);   /* same font, weight and colour as the soap name */
+}
+.scard .row .price { font-size: 1.05rem; line-height: 1.25; }      /* same size and line height as the name (.scard h3), so the two share a line */
+.tag .row .price   { font-size: 1rem;    line-height: 1.3; }       /* same as .tag h3 */
+@media (max-width: 600px) {
+  /* narrow two-column phone cards: a tighter gap to leave more room for the name */
+  .scard .row { gap: .35rem; }
+}
 .tag .row { display: flex; justify-content: space-between; align-items: flex-end; gap: .5rem; margin-top: .35rem; }
 .tag h3 { font-family: var(--body); font-weight: 500; font-size: 1rem; line-height: 1.3; }
 .tag .more { display: block; font-size: .85rem; line-height: 1.45; color: var(--ink-2); max-height: 0; overflow: hidden; transition: max-height .3s ease, margin .3s ease; }
@@ -648,7 +651,7 @@ section.batch .wrap { padding: 1rem 0 3rem; }
 }
 .scard .pic { position: relative; height: 110px; display: grid; place-items: center; }
 .scard .pic img {
-  width: auto; height: auto; max-width: 88%; max-height: 100%; object-fit: contain;
+  width: auto; height: auto; max-width: 88%; max-height: 110px; object-fit: contain;   /* never taller than the 110px picture box, so it can't run into the name and price */
   filter: drop-shadow(0 1px 1px rgba(var(--shade), .28)) drop-shadow(0 8px 10px rgba(var(--shade), .2));
 }
 .scard .pic.no-photo {
@@ -942,9 +945,8 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
       </button>
       <nav class="pills" id="mainNav" aria-label="Sections">
         <a href="#soaps" class="oval-wrap" data-nav="soaps"><svg class="oval"><use href="#sym-oval"/></svg>My soaps</a>
-        <a href="#making" class="oval-wrap" data-nav="making"><svg class="oval"><use href="#sym-oval"/></svg>The making</a>
         <a href="#ingredients" class="oval-wrap" data-nav="ingredients"><svg class="oval"><use href="#sym-oval"/></svg>Ingredients</a>
-        <a href="#batch-notes" class="oval-wrap" data-nav="batch-notes"><svg class="oval"><use href="#sym-oval"/></svg>Batch notes</a>
+        <a href="#catalogue" class="oval-wrap" data-nav="catalogue"><svg class="oval"><use href="#sym-oval"/></svg>Catalogue</a>
         <a href="#enquire" class="oval-wrap" data-nav="enquire"><svg class="oval"><use href="#sym-oval"/></svg>Enquire<span class="count" id="noteCount">0</span></a>
       </nav>
     </div>
@@ -957,13 +959,12 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
         <h1>Handmade soap<br>with merry little moments.</h1>
         <svg class="uline"><use href="#sym-uline"/></svg>
         <p class="lede">Turning natural ingredients into small batches of soap bars for different skin types.</p>
-        <a class="btn-olive" href="#curing">See the current batch <svg><use href="#sym-arrow"/></svg>
+        <a class="btn-olive" href="#catalogue">See the current batch <svg><use href="#sym-arrow"/></svg>
           <i class="pt d" data-thread="6" style="--x:86%; --y:50%" data-pin></i>
           <i class="pt d" data-thread="7" style="--x:58%; --y:140%"></i>
         </a>
         <i class="pt d" data-thread="3" style="--x:108%; --y:16%"></i>
         <i class="pt d" data-thread="4" style="--x:98%; --y:56%"></i>
-        <i class="pt d" data-thread="8" style="--x:92%; --y:110%"></i>
       </div>
 
       <figure class="hero-photo z">
@@ -979,23 +980,12 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
         </figcaption>
       </figure>
     </div>
-    <i class="pt d" data-thread="9"  style="--x:38%; --y:99%"></i>
     <i class="pt m" data-thread="1"  style="--x:2%; --y:10%"></i>
     <i class="pt m" data-thread="2"  style="--x:4.5%; --y:60%"></i>
   </section>
 
-  <!-- ============================ PHOTO BANNER (DRAFT) =============== -->
-  <section class="photo-banner">
-    <figure>
-      <img src="assets/preview/water-splash-honey.jpg" alt="Hands lathering the Honey soap bar under running water">
-      <figcaption>
-        <p class="kicker">Handmade in Malaysia</p>
-      </figcaption>
-    </figure>
-  </section>
-
   <!-- ============================ BATCHES =========================== -->
-  <section class="batches" id="making">
+  <section class="batches">
     <div class="wrap">
       <div class="batches-copy z">
         <h2>Each batch<br>looks a little<br>different.</h2>
@@ -1028,51 +1018,6 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
     <i class="pt d" data-thread="13" style="--x:47%; --y:14%"></i>
     <i class="pt m" data-thread="4"  style="--x:4.5%; --y:20%"></i>
     <i class="pt m" data-thread="5"  style="--x:2%; --y:80%"></i>
-  </section>
-
-  <!-- ============================ FACT CARDS (DRAFT) ================= -->
-  <section class="facts">
-    <div class="wrap">
-      <div class="facts-intro z">
-        <p class="kicker">Small habits, big difference</p>
-        <h2>Did you know?</h2>
-      </div>
-      <div class="fact-carousel" data-carousel data-autoplay="4500">
-        <div class="rc-track">
-          <div class="rc-slide">
-            <div class="fact-card fc-photo">
-              <p class="fc-kicker">Less packaging</p>
-              <p class="fc-text">Liquid soap needs nearly 20 times more energy to package than bar soap.</p>
-              <p class="fc-source">Source: Koehler &amp; Wildbolz, Environmental Science &amp; Technology, 2009</p>
-            </div>
-          </div>
-          <div class="rc-slide">
-            <div class="fact-card fc-photo fc-hands">
-              <p class="fc-kicker">Gentler without SLS</p>
-              <p class="fc-text">SLS and SLES can dry out your skin, and the more you use, the drier it gets. My soap is free from both.</p>
-              <p class="fc-source">Sources: Nardo et al., Contact Dermatitis, 1996; SLS vs SLES study, Food and Chemical Toxicology, 2000</p>
-            </div>
-          </div>
-          <div class="rc-slide">
-            <div class="fact-card fc-photo fc-dish">
-              <p class="fc-kicker">Lasts longer</p>
-              <p class="fc-text">A soap bar lasts longer. Each wash uses more than 6 times less soap than liquid soap.</p>
-              <p class="fc-source">Source: Koehler &amp; Wildbolz, Environmental Science &amp; Technology, 2009</p>
-            </div>
-          </div>
-          <div class="rc-slide">
-            <div class="fact-card fc-photo fc-oils">
-              <p class="fc-kicker">Naturally moisturizing</p>
-              <p class="fc-text">My soap is made from real oils, like olive, castor and sunflower. Turning oil into soap creates glycerin, a natural moisturizer.</p>
-              <p class="fc-source">Source: Fluhr et al., British Journal of Dermatology, 2008</p>
-            </div>
-          </div>
-        </div>
-        <button type="button" class="rc-btn rc-prev" aria-label="Previous fact">&#8249;</button>
-        <button type="button" class="rc-btn rc-next" aria-label="Next fact">&#8250;</button>
-        <div class="rc-dots"></div>
-      </div>
-    </div>
   </section>
 
   <!-- ============================ INGREDIENTS ======================= -->
@@ -1145,11 +1090,11 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
   </section>
 
   <!-- ============================ RANGE TEASER (DRAFT) ================ -->
-  <section class="range-teaser">
+  <section class="range-teaser" id="catalogue">
     <div class="wrap">
       <div class="range-copy z">
         <h2>My soap catalogue</h2>
-        <p>Here&rsquo;s everything I make.</p>
+        <p>Here&rsquo;s everything I make. Each bar is a single batch. Limited stock available.</p>
       </div>
       <figure class="range-grid range-carousel" data-carousel data-autoplay="2500">
         <div class="rc-track" id="rcTrack">
@@ -1294,11 +1239,6 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
     <div class="wrap">
       <!-- phone layout: one card per soap, tap for the batch details -->
       <div class="batch-cards z">
-        <div class="intro">
-          <h2>What&rsquo;s curing<br>on the shelf</h2>
-          <svg class="uline"><use href="#sym-uline"/></svg>
-          <p>Each bar is a single batch. Limited stock available.</p>
-        </div>
         <button class="scard panel torn" type="button" data-batch="apple-carrot">
           <span class="pic"><img src="assets/preview/brightened/soap-yellow.webp" alt="" width="383" height="360"></span>
           <span class="num">01</span>
@@ -1343,6 +1283,51 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
     </div>
     <i class="pt m" data-thread="10" style="--x:4.5%; --y:30%"></i>
     <i class="pt m" data-thread="11" style="--x:2%; --y:85%"></i>
+  </section>
+
+  <!-- ============================ FACT CARDS (DRAFT) ================= -->
+  <section class="facts">
+    <div class="wrap">
+      <div class="facts-intro z">
+        <p class="kicker">Small habits, big difference</p>
+        <h2>Did you know?</h2>
+      </div>
+      <div class="fact-carousel" data-carousel data-autoplay="4500">
+        <div class="rc-track">
+          <div class="rc-slide">
+            <div class="fact-card fc-photo">
+              <p class="fc-kicker">Less packaging</p>
+              <p class="fc-text">Liquid soap needs nearly 20 times more energy to package than bar soap.</p>
+              <p class="fc-source">Source: Koehler &amp; Wildbolz, Environmental Science &amp; Technology, 2009</p>
+            </div>
+          </div>
+          <div class="rc-slide">
+            <div class="fact-card fc-photo fc-hands">
+              <p class="fc-kicker">Gentler without SLS</p>
+              <p class="fc-text">SLS and SLES can dry out your skin, and the more you use, the drier it gets. My soap is free from both.</p>
+              <p class="fc-source">Sources: Nardo et al., Contact Dermatitis, 1996; SLS vs SLES study, Food and Chemical Toxicology, 2000</p>
+            </div>
+          </div>
+          <div class="rc-slide">
+            <div class="fact-card fc-photo fc-dish">
+              <p class="fc-kicker">Lasts longer</p>
+              <p class="fc-text">A soap bar lasts longer. Each wash uses more than 6 times less soap than liquid soap.</p>
+              <p class="fc-source">Source: Koehler &amp; Wildbolz, Environmental Science &amp; Technology, 2009</p>
+            </div>
+          </div>
+          <div class="rc-slide">
+            <div class="fact-card fc-photo fc-oils">
+              <p class="fc-kicker">Naturally moisturizing</p>
+              <p class="fc-text">My soap is made from real oils, like olive, castor and sunflower. Turning oil into soap creates glycerin, a natural moisturizer.</p>
+              <p class="fc-source">Source: Fluhr et al., British Journal of Dermatology, 2008</p>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="rc-btn rc-prev" aria-label="Previous fact">&#8249;</button>
+        <button type="button" class="rc-btn rc-next" aria-label="Next fact">&#8250;</button>
+        <div class="rc-dots"></div>
+      </div>
+    </div>
   </section>
 
   <!-- ============================ SHARE ============================= -->
@@ -1816,17 +1801,13 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
     $('dlgAdd').firstChild.textContent = note.indexOf(current) > -1 ? 'Added to enquiry note ' : 'Add to enquiry note ';
     dlg.showModal();
   }
-  /* on phones the shelf (#curing) is hidden and the tappable cards (#batch-notes) take its place,
-     so "See the current batch" scrolls to whichever one is showing */
-  document.querySelectorAll('a[href="#curing"]').forEach(function (a) {
-    a.addEventListener('click', function (e) {
-      var shelf = document.getElementById('curing');
-      var cards = document.getElementById('batch-notes');
-      if (shelf && cards && getComputedStyle(shelf).display === 'none') {
-        e.preventDefault();
-        cards.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
+
+  /* show each soap's price on the list itself (desktop tags and phone cards), not only inside the pop-up */
+  document.querySelectorAll('.tag, .scard').forEach(function (card) {
+    var keyEl = card.hasAttribute('data-batch') ? card : card.querySelector('[data-batch]');
+    var b = keyEl && BATCHES[keyEl.getAttribute('data-batch')];
+    var plus = card.querySelector('.row .plus');
+    if (b && plus && b.price) plus.insertAdjacentHTML('beforebegin', '<span class="price">RM ' + b.price + '</span>');
   });
 
   document.querySelectorAll('[data-batch]').forEach(function (c) {
@@ -2029,12 +2010,13 @@ function initRcCarousel(root) {
   var ms = parseInt(root.getAttribute('data-autoplay'), 10) || 0;
   var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var auto = ms > 0 && !reduced;
-  var advanceTimer, held = false, inView = true;
+  var advanceTimer, held = false, inView = true, userPaused = false;
 
   function current() { return Math.round(track.scrollLeft / track.clientWidth); }
+  function syncPaused() { root.classList.toggle('rc-paused', held || userPaused || !inView); }
   function schedule() {
     clearTimeout(advanceTimer);
-    if (!auto || held || !inView || document.hidden) return;
+    if (!auto || held || userPaused || !inView || document.hidden) return;
     advanceTimer = setTimeout(function () {
       var next = current() + 1;
       if (next >= slides) {
@@ -2053,7 +2035,7 @@ function initRcCarousel(root) {
   }
   function setHeld(v) {
     held = v;
-    root.classList.toggle('rc-paused', held || !inView);
+    syncPaused();
     schedule();
   }
 
@@ -2084,10 +2066,28 @@ function initRcCarousel(root) {
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(function (entries) {
         inView = entries[0].isIntersecting;
-        root.classList.toggle('rc-paused', held || !inView);
+        syncPaused();
         schedule();
       }, { threshold: 0.4 }).observe(root);
     }
+
+    /* a visible pause / play button, so people can stop the automatic sliding for good (keyboard, mouse or touch) */
+    var pauseBtn = document.createElement('button');
+    pauseBtn.type = 'button';
+    pauseBtn.className = 'rc-pause';
+    pauseBtn.setAttribute('aria-pressed', 'false');
+    pauseBtn.setAttribute('aria-label', 'Pause automatic sliding');
+    pauseBtn.innerHTML =
+      '<svg class="i-pause" viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="1.5" width="3" height="9" rx=".6"/><rect x="7" y="1.5" width="3" height="9" rx=".6"/></svg>' +
+      '<svg class="i-play" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.5v9l7.5-4.5z"/></svg>';
+    pauseBtn.addEventListener('click', function () {
+      userPaused = !userPaused;
+      pauseBtn.setAttribute('aria-pressed', String(userPaused));
+      pauseBtn.setAttribute('aria-label', userPaused ? 'Play automatic sliding' : 'Pause automatic sliding');
+      syncPaused();
+      schedule();
+    });
+    dotsWrap.insertBefore(pauseBtn, dotsWrap.firstChild);
     schedule();
   }
 }
