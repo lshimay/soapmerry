@@ -588,6 +588,12 @@ section.facts { padding: 1rem 0 3rem; }
   .fc-text { font-size: 1.2rem; }
   .fact-carousel .rc-slide { aspect-ratio: 4 / 3.4; }
   .fact-card { padding: 1.8rem 3.2rem 2.6rem; }
+}
+@media (max-width: 600px) {
+  /* narrow phones: cards grow with their text instead of a fixed ratio, and the source line sits below the text */
+  .fact-carousel .rc-slide { aspect-ratio: auto; min-height: 15.5rem; }
+  .fact-card { padding: 1.8rem 2.9rem 1.4rem; }
+  .fc-source { position: relative; bottom: auto; margin-top: 1rem; padding: 0; }
   .fact-carousel .rc-btn { width: 2rem; height: 2rem; font-size: 1.2rem; left: auto; }
   .fact-carousel .rc-prev { left: .4rem; }
   .fact-carousel .rc-next { right: .4rem; }
@@ -857,7 +863,12 @@ footer.site .o8 { opacity: .85; }
 }
 
 @media (max-width: 600px) {
-  .batch-cards { grid-template-columns: 1fr 1fr; }
+  .batch-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem; }
+  .scard { min-width: 0; padding: .9rem .8rem 1rem; }
+  .scard .row { flex-wrap: wrap; align-items: center; row-gap: .35rem; }
+  .scard .row h3 { flex: 1 1 100%; font-size: 1rem; }
+  .scard .row .price { margin-left: 0; align-self: center; }
+  .scard .row .plus { margin-left: auto; }
   .four { grid-template-columns: 1fr 1fr; gap: 1.2rem; }
   .map { grid-template-columns: 1fr; }
   /* single column has the full width, so drop the manual line breaks and let the text wrap naturally */
