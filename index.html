@@ -698,7 +698,12 @@ dialog.batch-dialog::backdrop { background: rgba(43, 39, 34, .5); backdrop-filte
 /* ---- enquiry dialog ---- */
 dialog.enquiry-dialog { border: 0; padding: 0; background: transparent; max-width: min(92vw, 30rem); width: 100%; margin: auto; }
 dialog.enquiry-dialog::backdrop { background: rgba(43, 39, 34, .5); backdrop-filter: blur(2px); }
-.enquiry-dialog .dlg h3 { font-size: 1.35rem; margin-top: .2rem; }
+.enquiry-dialog .dlg h3 { font-size: 1.7rem; margin-top: .2rem; }
+.enq-hl { position: relative; display: inline-block; padding: 0 .35em; z-index: 0; }
+.enq-hl::before { content: ""; position: absolute; left: 0; right: 0; top: 30%; bottom: 2%; z-index: -1; background: radial-gradient(ellipse at 30% 40%, rgba(150,172,122,.78), rgba(183,196,160,.58) 60%, rgba(205,214,186,.4)); border-radius: 40% 60% 45% 55% / 60% 50% 50% 40%; filter: url(#brush); }
+.enq-sub { margin: .55rem 0 0; font-size: 1.05rem; color: var(--ink-2); }
+.enq-dlg-sub { margin: .5rem 0 0; font-size: 1.05rem; line-height: 1.35; color: var(--ink-2); }
+.enquiry-dialog #enqSubmitBtn { margin-top: 1.4rem; width: 100%; justify-content: center; }
 form.enquiry { margin-top: 1.3rem; display: flex; flex-direction: column; gap: 1.1rem; }
 form.enquiry .field label { display: block; font-family: var(--script); font-size: .85rem; color: var(--ink-3); margin-bottom: .35rem; }
 form.enquiry .field input[type="text"]:not(.step-input),
@@ -906,6 +911,980 @@ img {
 form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
 .ing p { font-family: var(--body); font-size: .98rem; line-height: 1.5; color: var(--ink-2); }
 .tellus p { font-family: var(--body); font-size: .98rem; line-height: 1.6; color: var(--ink-2); }
+
+/* =====================================================================
+   SOAP STAMP & LOOP  (design spec: pencil loops, seal marks, brush washes)
+   ===================================================================== */
+:root {
+  --porcelain: #F5F0E7; --oat: #DDD0BB; --kraft: #B89C78; --sage: #B7C4A0; --clay: #E3BDB6; --clay-deep: #8E5650; --line-green: #94A87E;
+  --olive: #B7C4A0; --olive-deep: #B7C4A0; --rust: #E3BDB6; --ink-d: #302B25;
+  --plus: #EBDC9A;
+  --wash: #E3BDB6;
+  --dm: "EB Garamond", Georgia, "Times New Roman", serif;
+}
+
+/* pencil-loop button (double hand-drawn outline); .is-on = brush wash */
+.loop {
+  position: relative; isolation: isolate; display: inline-flex; align-items: center; justify-content: center; gap: .7rem;
+  font-family: var(--serif); font-weight: 500; font-size: 1.1rem; line-height: 1.1; color: var(--ink-d);
+  background: transparent; border: 0; border-radius: 30px;
+  padding: .5rem .55rem .5rem 1.35rem; min-height: 46px; cursor: pointer; text-decoration: none;
+}
+/* hand-drawn pencil loops: real SVG strokes, injected by script, stretched to fit */
+svg.ln { position: absolute; z-index: -1; inset: -6px -9px; width: calc(100% + 18px); height: calc(100% + 12px); overflow: visible; pointer-events: none; color: rgba(48,43,37,.88); }
+svg.ln path { fill: none; stroke: currentColor; stroke-width: 1.2; vector-effect: non-scaling-stroke; stroke-linecap: round; stroke-linejoin: round; transition: opacity .2s ease, transform .25s ease; transform-origin: 50% 50%; }
+svg.ln path.b { opacity: .5; }
+.loop:hover svg.ln path.b, .loop:focus-visible svg.ln path.b { opacity: 1; transform: rotate(-1.2deg) scale(1.015); }
+.loop:hover svg.ln path.a { transform: rotate(.6deg); }
+svg.ln.box { inset: -7px -8px; width: calc(100% + 16px); height: calc(100% + 14px); }
+.loop::before { content: ""; position: absolute; inset: 3px 4px 2px 5px; z-index: -1; pointer-events: none; border-radius: 42% 58% 46% 54% / 66% 58% 42% 34%; background: var(--wash); filter: url(#brush); opacity: 0; transition: opacity .2s ease; }
+.loop:focus-visible { outline: 1.5px dotted var(--ink-d); outline-offset: 7px; }
+.loop.is-on::before, .loop[aria-pressed="true"]::before { opacity: .5; }
+.loop-sec.is-on::before, .loop-sec[aria-pressed="true"]::before { background: var(--plus); opacity: .55; }
+.loop { white-space: nowrap; }
+.loop[disabled] { opacity: .4; cursor: default; }
+.loop .go { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--kraft); color: #fff; font-family: var(--dm); font-size: 1rem; line-height: 1; }
+.loop-sec .go { background: var(--plus); color: var(--ink-d); }
+.loop .go svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.loop-primary.is-on .go { background: var(--sage); }
+
+/* hero stock line */
+.hero-stock { margin-top: 1.4rem; display: flex; align-items: center; gap: .7rem; font-family: var(--dm); font-size: .86rem; color: var(--ink-d); }
+.hero-stock .seal { flex: none; }
+.hero-stock + .loop, .hero-stock + a.loop { margin-top: 1.3rem; }
+
+/* seal counter (stamped, a little off-square) */
+.seal { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--kraft); color: var(--ink-d); font-family: var(--dm); font-weight: 600; font-size: .85rem; line-height: 1; transform: rotate(-8deg); box-shadow: 0 0 0 2px var(--porcelain), 0 0 0 3px var(--kraft), 0 4px 7px -2px rgba(48,43,37,.35); }
+.seal.last { background: var(--porcelain); color: var(--clay-deep); box-shadow: 0 0 0 2px var(--porcelain), 0 0 0 3px var(--clay), 0 4px 7px -2px rgba(48,43,37,.3); }
+.seal.none { background: var(--porcelain); color: var(--ink-3); box-shadow: 0 0 0 2px var(--porcelain), 0 0 0 3px rgba(48,43,37,.35); }
+
+section.cg { padding: 4.5rem 0 3rem; position: relative; }
+.cg-label { font-family: var(--dm); font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
+.cg-head { max-width: 38rem; }
+.cg-head h2 { font-size: clamp(2.1rem, 4.6vw, 3.3rem); margin-top: .5rem; }
+.cg-lede { margin-top: 1rem; font-size: 1rem; color: var(--ink-2); max-width: 30rem; }
+.cg-sum { margin-top: 1rem; font-family: var(--dm); font-size: .84rem; color: var(--ink-d); line-height: 1.8; }
+.cg-sum span + span::before { content: "\00b7"; color: var(--kraft); margin: 0 .6rem; font-weight: 700; }
+.cg-sum b { font-weight: 600; }
+
+/* tabs */
+.cg-tabs { position: relative; isolation: isolate; display: inline-flex; margin: 2rem 0 1.3rem; padding: 4px; max-width: 100%; }
+.cg-tab { position: relative; isolation: isolate; font-family: var(--serif); font-weight: 500; font-size: 1rem; color: var(--ink-d); background: transparent; border: 0; padding: .5rem 1.1rem; min-height: 40px; cursor: pointer; white-space: nowrap; }
+.cg-tab::before { content: ""; position: absolute; inset: 3px 2px; z-index: -1; border-radius: 40% 60% 50% 50% / 70% 60% 40% 40%; background: var(--wash); filter: url(#brush); opacity: 0; transition: opacity .2s ease; }
+.cg-tab.is-on::before { opacity: .5; }
+.cg-tab:hover:not(.is-on) { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.cg-tab:focus-visible { outline: 1.5px dotted var(--ink-d); outline-offset: 3px; }
+
+/* filter chips */
+.cg-chips { display: flex; flex-wrap: wrap; gap: 1.1rem 1.2rem; margin: .5rem 0 .3rem; padding: .4rem .5rem; }
+.loop.chip { font-size: .98rem; padding: .35rem 1.05rem; min-height: 40px; gap: .45rem; }
+.loop.chip .x { display: none; font-family: var(--dm); font-size: .8rem; }
+.loop.chip[aria-pressed="true"] .x { display: inline; }
+.cg-count { font-family: var(--dm); font-size: .78rem; color: var(--ink-3); margin: .8rem 0 1.2rem; min-height: 1.2em; }
+
+/* grid and cards: no boxes, just soap on an oat wash */
+.cg-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem 1.4rem; }
+.cg-card { position: relative; display: flex; flex-direction: column; text-align: left; }
+.cg-card[hidden] { display: none; }
+.cg-open { all: unset; display: block; cursor: pointer; position: relative; box-sizing: border-box; }
+.cg-open:focus-visible { outline: 1.5px dotted var(--ink-d); outline-offset: 4px; }
+.cg-pic { position: relative; display: grid; grid-template: minmax(0,1fr) / minmax(0,1fr); place-items: center; aspect-ratio: 1 / .9; padding: 1rem 1rem .6rem; overflow: visible; }
+.cg-pic::before { content: ""; position: absolute; inset: 7% 4% 5% 5%; z-index: 0; border-radius: 46% 54% 44% 56% / 58% 46% 54% 42%; background: var(--oat); opacity: .6; filter: blur(1.5px); transition: transform .3s ease; }
+.cg-card:hover .cg-pic::before { transform: rotate(-1.5deg) scale(1.02); }
+.cg-pic img { position: relative; z-index: 1; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 8px 8px rgba(var(--shade), .25)); }
+.cg-pic .seal { position: absolute; z-index: 3; top: -2px; right: 0; }
+/* hand-drawn sold-out ribbon over the photo (photo stays in colour) */
+.cg-ribbon { position: absolute; z-index: 3; left: 2%; right: 2%; bottom: 4%; display: grid; place-items: center; padding: .75rem .9rem .8rem; transform: rotate(-4deg); text-align: center; pointer-events: none; }
+.cg-ribbon svg { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; overflow: visible; }
+.cg-ribbon .f { fill: var(--clay); opacity: .42; stroke: none; }
+.cg-ribbon .s { fill: none; stroke: rgba(48,43,37,.8); stroke-width: 1.2; vector-effect: non-scaling-stroke; stroke-linecap: round; stroke-linejoin: round; }
+.cg-ribbon .s2 { opacity: .4; }
+.cg-ribbon b { font-family: var(--script); font-weight: 400; font-size: .95rem; line-height: 1.2; color: var(--ink-d); }
+.cg-ribbon i { font-family: var(--script); font-style: normal; font-size: .64rem; line-height: 1.3; color: var(--ink-d); }
+
+/* floating "send my request" pill, shown only while browsing the catalogue */
+.cg-send { position: fixed; left: 50%; bottom: 1.2rem; z-index: 40; transform: translateX(-50%); }
+.cg-send[hidden] { display: none; }
+.cg-send .loop { background: var(--porcelain); box-shadow: 0 10px 20px -10px rgba(48,43,37,.5); }
+.cg-body { display: block; padding-top: .3rem; }
+.cg-body h3 { font-size: 1.35rem; line-height: 1.12; }
+.cg-good { display: block; margin-top: .35rem; font-family: var(--dm); font-size: .76rem; line-height: 1.45; color: var(--ink-3); }
+.cg-meta { display: flex; align-items: baseline; gap: .6rem; margin-top: .45rem; font-family: var(--dm); font-size: .86rem; color: var(--ink-d); }
+.cg-price { font-weight: 600; }
+.cg-status { font-size: .75rem; color: var(--ink-3); }
+.cg-cure { margin: .2rem 0 0; font-family: var(--dm); font-size: .76rem; line-height: 1.35; color: var(--clay-deep); }
+.cg-card.last .cg-status { color: var(--clay-deep); font-weight: 600; }
+.cg-add { align-self: flex-start; margin-top: .8rem; font-size: 1rem; padding-left: 1.1rem; min-height: 44px; }
+.cg-empty { grid-column: 1 / -1; font-family: var(--dm); font-size: .9rem; color: var(--ink-3); padding: 1rem 0; }
+
+/* next batches */
+.cg-next { margin-top: 3rem; padding: 1.8rem; border: 1.5px dashed rgba(184,156,120,.9); border-radius: 10px; display: grid; grid-template-columns: 1.1fr 1.6fr; gap: 1.4rem 2rem; align-items: center; }
+.cg-next-head h3 { font-size: 1.55rem; margin-top: .4rem; }
+.cg-next-head p:last-child { margin-top: .5rem; font-size: .95rem; color: var(--ink-2); }
+.cg-next-cards { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; }
+.cg-soon { background: rgba(221,208,187,.35); border: 1px dashed rgba(184,156,120,.9); border-radius: 8px; padding: .8rem; display: grid; gap: .3rem; justify-items: start; }
+.cg-soon { font: inherit; text-align: left; cursor: pointer; color: inherit; }
+.cg-soon-pic { display: block; width: 100%; aspect-ratio: 4 / 3; border-radius: 5px; overflow: hidden; background: rgba(221,208,187,.5); }
+.cg-soon-pic img { width: 100%; height: 100%; object-fit: cover; object-position: center 62%; display: block; }
+.cg-soon h4 { margin: .2rem 0 0; font-family: var(--serif); font-weight: 500; font-size: 1.1rem; color: var(--ink-d); }
+.cg-soon-tag { font-family: var(--dm); font-size: .72rem; color: var(--ink-3); }
+.cg-next .cg-add { grid-column: 1 / -1; margin-top: .2rem; }
+
+/* dialog and enquiry list additions */
+.dlg-img { display: block; width: calc(100% + 3rem); margin: -1.6rem -1.5rem 1.1rem; aspect-ratio: 4 / 3; object-fit: cover; background: var(--paper); }
+.dlg-prog { margin-top: 1.1rem; border-top: 1px solid var(--paper-edge); padding-top: 1rem; }
+.dlg-prog .lbl { font-family: var(--dm); font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
+.dlg-prog .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; margin-top: .5rem; }
+.dlg-prog .step { aspect-ratio: 1; border: 1px dashed rgba(184,156,120,.9); border-radius: 6px; display: grid; place-items: center; text-align: center; font-family: var(--dm); font-size: .72rem; color: var(--ink-3); background: var(--porcelain); line-height: 1.4; }
+.dlg .loop { margin-top: 1.4rem; }
+.qty-label small { display: block; font-family: var(--dm); font-size: .7rem; color: var(--ink-3); margin-top: .1rem; }
+
+@media (max-width: 1000px) { .cg-grid { grid-template-columns: repeat(3, 1fr); } .cg-next { grid-template-columns: 1fr; } }
+@media (max-width: 700px) {
+  section.cg { padding: 3rem 0 2rem; }
+  .cg-grid { grid-template-columns: repeat(2, 1fr); gap: 1.6rem .9rem; }
+  .cg-tab { padding: .5rem .55rem; font-size: .92rem; }
+  .cg-tabs { display: flex; }
+  .cg-tab { flex: 1; }
+  .cg-good { display: none; }
+  .cg-pic { padding: .8rem .5rem .4rem; }
+  .cg-body h3 { font-size: 1.15rem; }
+  .cg-add { font-size: .88rem; padding-left: .85rem; padding-right: .4rem; gap: .35rem; }
+  .cg-next { padding: 1.1rem; }
+  .loop.chip { font-size: .92rem; }
+}
+
+/* FAQ: compact, Cormorant Garamond, hairline rows, two columns on desktop */
+.faq-list { width: 100%; grid-template-columns: repeat(2, 1fr); gap: 0 3.2rem; align-items: start; }
+.faq-list details::before { display: none; }
+.faq-list details { border-bottom: 1px solid var(--paper-edge); }
+.faq-list summary { font-family: var(--serif); font-weight: 500; font-size: 1.2rem; line-height: 1.25; padding: .85rem 0 .75rem; }
+.faq-list .ans { font-family: var(--serif); font-weight: 500; font-size: 1.05rem; line-height: 1.5; padding: 0 2.4rem 1rem 0; }
+.faq-list .plus { width: 20px; height: 20px; flex: none; }
+@media (max-width: 900px) { .faq-list { grid-template-columns: 1fr; } }
+
+/* Olive Bronze + Amber Spice highlights: darker amber for small text so it stays readable */
+.cookie-note em, form.enquiry .hint.warn, .enq-error, .cg-card.last .cg-status, .tag .num { color: var(--clay-deep); }
+.qty-row.has-qty { background: rgba(115,107,2,.08); }
+
+/* mobile menu panel uses the same paper as the page */
+@media (max-width: 900px) { nav.pills { background: var(--paper) url("assets/paper-hero.webp") center/cover fixed no-repeat; } }
+
+
+/* ===== Palette v2: Linden Leaf (green), Petal Sugar (rose), Sunny Citron (gold) ===== */
+/* pastel fills get dark ink text */
+.fc-olive, .fc-rust { color: var(--ink-d); }
+footer.site, footer.site a { color: var(--ink-d); }
+footer.site .heart path { stroke: var(--ink-d); }
+footer.site .wrap > div:not(:first-child) { border-top-color: rgba(48,43,37,.2); }
+.btn-olive { color: var(--ink-d); }
+.step-btn:hover { color: var(--ink-d); }
+nav.pills a .count { color: var(--ink-d); }
+.loop-primary.is-on .go { background: var(--sage); color: var(--ink-d); }
+.loop.is-on::before, .loop[aria-pressed="true"]::before, .cg-tab.is-on::before { opacity: .75; }
+.loop-sec.is-on::before, .loop-sec[aria-pressed="true"]::before { opacity: .8; }
+.cg-ribbon .f { opacity: .8; }
+/* thin lines stay readable: Matcha Mist for strokes, deep rose for small text */
+.thread path, .thread use, .map .spokes path { stroke: var(--line-green); }
+.cookie-note .cookie-arrow { color: var(--line-green); }
+.rc-dot.active { background-color: var(--line-green); }
+form.enquiry .field input:focus, form.enquiry .field textarea:focus { outline-color: var(--line-green); }
+nav.pills a.active .oval { color: var(--clay-deep); opacity: .7; }
+.cookie-note em, .tag .full-note, form.enquiry .hint.warn, .enq-error { color: var(--clay-deep); }
+.tellus .ring { color: var(--clay-deep); }
+.tellus .ring .go circle, .tellus .ring .go path { stroke: var(--clay-deep); }
+.qty-row.has-qty { background: rgba(183,196,160,.3); }
+
+/* nav highlight: same hand-painted wash as the tabs and chips */
+nav.pills a { isolation: isolate; }
+nav.pills a.active, nav.pills a:hover, nav.pills a:active, nav.pills a:focus-visible { background: transparent; }
+nav.pills a::before { content: ""; position: absolute; inset: 4px 8px; z-index: -1; pointer-events: none; border-radius: 40% 60% 50% 50% / 70% 60% 40% 40%; background: var(--wash); filter: url(#brush); opacity: 0; transition: opacity .2s ease; }
+nav.pills a.active::before { opacity: .75; }
+nav.pills a:hover::before, nav.pills a:focus-visible::before { opacity: .5; }
+
+/* ===== Round 3: how-to-order steps, lighter card buttons, one type system ===== */
+.cg-how { list-style: none; margin: 1.6rem 0 0; padding: 0; display: grid; gap: .7rem; max-width: 34rem; }
+.cg-how li { display: flex; align-items: center; gap: .8rem; font-family: var(--dm); font-size: .88rem; color: var(--ink-d); line-height: 1.4; }
+.cg-how b { flex: none; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--wash); color: var(--ink-d); font-weight: 500; font-size: .8rem; }
+@media (min-width: 900px) { .cg-how { grid-template-columns: repeat(3, auto); gap: 1.6rem; max-width: none; justify-content: start; } }
+
+/* card buttons: a single, lighter pencil pass (the double loop stays on the main buttons and chips) */
+.cg-grid .cg-add svg.ln path.b { display: none; }
+.cg-grid .cg-add svg.ln { color: rgba(48,43,37,.7); }
+.cg-grid .cg-add svg.ln path { stroke-width: 1; }
+
+/* type system: Cormorant Garamond + DM Sans. The handwritten face is kept only for the sold-out ribbon and the cookie note. */
+:root { --script: "EB Garamond", Georgia, "Times New Roman", serif; }
+.cg-ribbon b, .cg-ribbon i, .cookie-note, .cookie-note span { font-family: "Kalam", "Segoe Script", "Bradley Hand", cursive; }
+.tellus .ring { font-family: var(--serif); font-weight: 500; font-size: 1.35rem; }
+
+.hero-copy .loop { margin-top: 2rem; }
+
+.hero-copy p.lede2 { margin-top: .9rem; font-size: .95rem; color: var(--ink-3); max-width: 22rem; }
+
+/* ===== secondary font = EB Garamond: sizes nudged so labels stay comfortable ===== */
+.cg-label { font-size: .8rem; letter-spacing: .12em; }
+.cg-how li { font-size: 1.02rem; }
+.cg-meta { font-size: 1.05rem; }
+.cg-price { font-weight: 500; }
+.cg-status { font-size: .92rem; }
+.cg-good { font-size: .92rem; }
+.cg-count { font-size: .92rem; }
+.dlg-prog .lbl, .dlg-prog .step { font-size: .82rem; }
+.qty-label small { font-size: .85rem; }
+.cg-soon-tag { font-size: .88rem; }
+nav.pills a { font-size: 1.1rem; }
+@media (max-width: 900px) { nav.pills a { font-size: 1.15rem; } }
+footer.site { font-size: 1.05rem; }
+
+@media (max-width: 420px) { .cg-grid .cg-add { font-size: .9rem; padding-left: .7rem; padding-right: .35rem; gap: .3rem; } .cg-grid .cg-add .go { width: 26px; height: 26px; } }
+
+/* price: regular weight; stock text sits on the right */
+.cg-price { font-weight: 400; }
+
+
+/* sold-out ribbon in capitals */
+.cg-ribbon b { text-transform: uppercase; letter-spacing: .08em; font-size: .9rem; }
+.cg-ribbon i { text-transform: uppercase; letter-spacing: .05em; font-size: .6rem; }
+
+/* ===== lighter catalogue head + tighter space above it ===== */
+section.ingredients .wrap { padding-bottom: 1rem; }
+section.cg { padding-top: 1.5rem; }
+.cg-head h2 { margin-top: .35rem; }
+.cg-lede { margin-top: .7rem; font-size: 1.02rem; max-width: 26rem; }
+.cg-how { margin-top: 1.1rem; max-width: none; grid-template-columns: repeat(3, 1fr); gap: .6rem; }
+.cg-how li { flex-direction: column; align-items: flex-start; gap: .4rem; font-size: .98rem; line-height: 1.25; }
+.cg-how b { width: 24px; height: 24px; font-size: .78rem; }
+.cg-tabs { margin: 1.4rem 0 1rem; }
+@media (min-width: 900px) { .cg-how { grid-template-columns: repeat(3, auto); gap: 2.4rem; justify-content: start; } .cg-how li { flex-direction: row; align-items: center; gap: .7rem; } }
+@media (max-width: 700px) { section.cg { padding-top: 1rem; } }
+
+/* hand-drawn heart after the sold-out message */
+.cg-ribbon i svg.hrt { position: static; inset: auto; width: 1.15em; height: 1.15em; display: inline-block; vertical-align: -.2em; margin-left: .2em; z-index: auto; overflow: visible; }
+.cg-ribbon i svg.hrt path { fill: var(--clay); stroke: rgba(48,43,37,.85); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; opacity: 1; }
+
+/* ===== Round 4: skin-type chips only, paper pop-up with paperclip and photo carousel ===== */
+.cg-skin { margin: 1.4rem 0 .2rem; }
+.cg-chips { margin-top: .3rem; }
+
+dialog.batch-dialog { max-width: min(92vw, 30rem); }
+dialog.batch-dialog .dlg.paper {
+  background: #E9E2D2 url('assets/paper-card.webp') center/cover; border: 0; border-radius: 3px;
+  padding: 2.1rem 1.4rem 1.5rem; max-height: 90vh; overflow: auto;
+  box-shadow: 0 30px 60px -28px rgba(0,0,0,.6), 0 1px 0 rgba(255,255,255,.4) inset;
+}
+dialog.batch-dialog .clip { position: absolute; top: 2px; right: 26px; height: 92px; width: auto; z-index: 6; pointer-events: none; filter: drop-shadow(1px 3px 2px rgba(48,43,37,.35)); }
+dialog.batch-dialog .dlg .close { left: .7rem; right: auto; top: .7rem; z-index: 7; }
+
+.dlg-car { position: relative; margin: .4rem 0 1.1rem; padding: 6px; background: #F6F1E6; box-shadow: 0 8px 16px -10px rgba(48,43,37,.55); border-radius: 2px; }
+.dlg-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; aspect-ratio: 4 / 3; background: #F6F1E6; }
+.dlg-track::-webkit-scrollbar { display: none; }
+.dlg-track img { flex: 0 0 100%; width: 100%; height: 100%; object-fit: cover; scroll-snap-align: center; }
+.dlg-track img.fit { object-fit: contain; background: var(--oat); padding: 2%; box-sizing: border-box; }
+.dlg-track img.contain { object-fit: contain; background: var(--oat); padding: 6%; box-sizing: border-box; }
+.car-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; border-radius: 50%; border: 0; background: rgba(245,240,231,.92); color: var(--ink-d); font-size: 1.15rem; line-height: 1; cursor: pointer; box-shadow: 0 2px 6px rgba(48,43,37,.25); }
+.car-btn.prev { left: 12px; } .car-btn.next { right: 12px; }
+.car-dots { position: absolute; left: 0; right: 0; bottom: 14px; display: flex; justify-content: center; gap: 6px; pointer-events: none; }
+.car-dots i { width: 6px; height: 6px; border-radius: 50%; background: rgba(245,240,231,.65); }
+.car-dots i.on { background: #F5F0E7; box-shadow: 0 0 0 1px rgba(48,43,37,.35); }
+.dlg-car.single .car-btn, .dlg-car.single .car-dots { display: none; }
+
+dialog.batch-dialog .dlg h3 { font-size: 1.7rem; margin-top: .2rem; }
+dialog.batch-dialog .dlg .desc { font-family: var(--serif); font-weight: 500; font-size: 1.1rem; margin-top: .4rem; color: var(--ink-2); }
+dialog.batch-dialog .dlg dl.rows { display: block; margin: 1rem 0 0; padding: 0; border-top: 1px solid rgba(48,43,37,.18); gap: 0; }
+dialog.batch-dialog .dlg dl.rows > div { display: grid; grid-template-columns: 6.2rem 1fr; gap: .8rem; padding: .55rem 0; border-bottom: 1px solid rgba(48,43,37,.12); align-items: baseline; }
+dialog.batch-dialog .dlg dl.rows dt { font-size: .95rem; color: var(--ink-3); }
+dialog.batch-dialog .dlg dl.rows dd { margin: 0; font-size: 1.05rem; color: var(--ink-d); line-height: 1.4; }
+#dlgAdd .go::before { content: "+"; }
+#dlgAdd.is-on .go::before { content: "\2713"; font-size: .85rem; }
+
+.dlg-track { aspect-ratio: 16 / 10; }
+dialog.batch-dialog .dlg h3 { font-size: 1.55rem; }
+dialog.batch-dialog .dlg dl.rows > div { padding: .45rem 0; }
+
+/* ===== Round 5: softer paper, free-from icons, INCI, phone-first pop-up ===== */
+dialog.batch-dialog .dlg.paper { background: #EBE2CE url('assets/paper-card.webp') center/cover; background-blend-mode: multiply; padding-bottom: 0; }
+.free { margin-top: 1rem; padding-top: .9rem; border-top: 1px solid rgba(48,43,37,.18); }
+.free-h { margin: 0 0 .6rem; font-size: .95rem; color: var(--ink-3); }
+.free ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: .7rem .8rem; }
+.free li { display: flex; align-items: center; gap: .6rem; font-size: 1rem; line-height: 1.2; color: var(--ink-d); }
+.free svg { flex: none; width: 34px; height: 34px; fill: none; stroke: var(--ink-d); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.free svg .x { stroke: var(--clay-deep); stroke-width: 1.8; }
+.inci { margin-top: .9rem; border-top: 1px solid rgba(48,43,37,.18); border-bottom: 1px solid rgba(48,43,37,.12); }
+.inci summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; padding: .7rem 0; font-size: 1.05rem; color: var(--ink-d); min-height: 44px; }
+.inci summary::-webkit-details-marker { display: none; }
+.inci summary::after { content: "+"; font-family: var(--serif); font-size: 1.4rem; line-height: 1; color: var(--ink-3); }
+.inci[open] summary::after { content: "\2212"; }
+.inci p { margin: 0 0 .8rem; font-size: .95rem; line-height: 1.5; color: var(--ink-2); }
+.dlg-foot { position: sticky; bottom: 0; z-index: 4; margin: .6rem -1.4rem 0; padding: 1.1rem 1.4rem 1.2rem; background: linear-gradient(to top, #E7DEC9 62%, rgba(231,222,201,0)); }
+.dlg-foot .loop { margin-top: 0; }
+dialog.batch-dialog .dlg dl.rows dt { font-size: .98rem; }
+
+@media (max-width: 600px) {
+  dialog.batch-dialog { max-width: calc(100vw - 14px); width: calc(100vw - 14px); max-height: 94vh; }
+  dialog.batch-dialog .dlg.paper { max-height: 94vh; padding: 2rem 1.1rem 0; }
+  dialog.batch-dialog .dlg .close { width: 44px; height: 44px; font-size: 1.4rem; }
+  dialog.batch-dialog .clip { right: 20px; height: 84px; }
+  .car-btn { width: 40px; height: 40px; }
+  dialog.batch-dialog .dlg dl.rows > div { grid-template-columns: 6.4rem 1fr; }
+  .dlg-foot { margin: .6rem -1.1rem 0; padding: 1rem 1.1rem 1.1rem; }
+  .dlg-foot .loop { width: 100%; justify-content: center; }
+}
+
+/* warmer paper: soft texture under a warm tint, no multiply */
+dialog.batch-dialog .dlg.paper { background: linear-gradient(rgba(241,233,215,.74), rgba(241,233,215,.74)), url('assets/paper-card.webp') center/cover; background-blend-mode: normal; }
+.dlg-foot { background: linear-gradient(to top, #EDE4CF 62%, rgba(237,228,207,0)); }
+dialog.batch-dialog .dlg dl.rows > div { grid-template-columns: 7.4rem 1fr; }
+@media (max-width: 600px) { dialog.batch-dialog .dlg dl.rows > div { grid-template-columns: 7.4rem 1fr; } }
+
+/* ===== FAQ behind one tap ===== */
+details.faq-all { width: 88%; margin: 0 auto; }
+details.faq-all > summary.faq-sum { list-style: none; display: flex; width: fit-content; margin: 1.6rem auto 0; cursor: pointer; font-size: 1.15rem; }
+details.faq-all > summary.faq-sum::-webkit-details-marker { display: none; }
+.faq-sum .go::before { content: "+"; }
+details.faq-all[open] > .faq-sum .go::before { content: "\2212"; }
+details.faq-all[open] > .faq-sum::before { opacity: .8; background: var(--plus); }
+details.faq-all .faq-list { margin-top: 1.8rem; width: 100%; }
+@media (max-width: 900px) { details.faq-all { width: 100%; } }
+
+/* ===== deckled photo frame (your artwork) ===== */
+.dlg-car { padding: 12px; background: transparent; box-shadow: none; border-radius: 0; margin: .5rem 0 1.1rem; }
+.dlg-track { background: transparent; }
+.dlg-car::after { content: ""; position: absolute; inset: -2px; border: 13px solid transparent; border-image: url('assets/photo-frame.webp') 24 stretch; pointer-events: none; z-index: 2; filter: drop-shadow(0 4px 5px rgba(48,43,37,.22)); }
+.car-btn, .car-dots { z-index: 3; }
+
+/* photos are cropped 4:3 */
+.dlg-track { aspect-ratio: 4 / 3; }
+
+/* photo note */
+.dlg-note { margin: -.55rem 0 .9rem; font-size: .8rem; line-height: 1.35; color: var(--ink-3); font-style: italic; }
+
+/* no coloured circle behind the soaps in the grid */
+.cg-pic::before { display: none; }
+
+/* lighter underline */
+.uline { opacity: .75; }
+
+/* ===== one text-colour system =====
+   1. main text (headings, names, prices, buttons, menu): --ink  #2B2722
+   2. reading text (paragraphs, answers, descriptions):   --ink-2 #4C4944
+   3. small labels and notes:                              --ink-3 #5F5A54
+   accent (Last bar, "Send me an enquiry"):                --clay-deep */
+:root { --ink-d: var(--ink); }
+.enq-success .again { color: var(--ink-2); }
+.dlg-note, .cg-status, .cg-label, .cg-good, .qty-label small, .free-h, dialog.batch-dialog .dlg dl.rows dt { color: var(--ink-3); }
+.cg-lede, .dlg .desc, dialog.batch-dialog .dlg .desc, .inci p, .faq-list .ans { color: var(--ink-2); }
+.cg-card.last .cg-status { color: var(--clay-deep); }
+
+/* ===== final polish: icons, FAQ hint, one-line footer ===== */
+.free { padding-top: .8rem; }
+.free ul { grid-template-columns: 1fr 1fr; gap: .8rem .8rem; }
+.free li { gap: .65rem; font-size: 1rem; line-height: 1.2; }
+.free img { flex: none; width: 48px; height: 48px; border-radius: 50%; display: block; }
+.faq-hint { text-align: center; margin: .7rem 0 0; font-size: .85rem; color: var(--ink-3); }
+details.faq-all[open] + .faq-hint { display: none; }
+.faq-list summary { align-items: flex-start; }
+.faq-list .plus { margin-top: .15rem; }
+footer.site .wrap.foot-one { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .9rem; text-align: center; grid-template-columns: none; padding-top: 2rem; padding-bottom: 2rem; }
+footer.site .foot-thanks { margin: 0; max-width: 40rem; font-size: 1.1rem; line-height: 1.45; text-wrap: balance; }
+@media (max-width: 600px) { footer.site .foot-thanks { font-size: 1.05rem; max-width: 20rem; } }
+
+.faq-list summary { font-variant-numeric: lining-nums; }
+
+/* ===== round 6: tighter section gaps on phones, hand-drawn footer heart ===== */
+@media (max-width: 700px) {
+  section.hero .wrap { padding-bottom: .5rem; }
+  section.ingredients .wrap { padding-top: .8rem; }
+  section.cg { padding-bottom: .4rem; }
+  section.facts { padding-bottom: .6rem; }
+  section.share .wrap { padding: .6rem 0 .6rem; }
+  section.faq .wrap { padding-bottom: 1.2rem; }
+  footer.site .wrap.foot-one { padding-top: 1.6rem; padding-bottom: 1.6rem; }
+}
+.foot-thanks .nb { white-space: nowrap; }
+/* footer: no flat green band; the thank-you sits on paper above green watercolour waves (ribbon version kept in assets/ribbon-green.webp) */
+footer.site { position: relative; background: transparent; margin-top: 0; padding: 1.2rem 0 0; }
+footer.site::after { content: ""; display: block; height: clamp(6.5rem, 34vw, 9rem); background: url(assets/wave-green.webp) bottom center / 100% 100% no-repeat; pointer-events: none; }
+/* the thank-you sits ON the waves, near the bottom edge, with no box behind it */
+footer.site .wrap.foot-one { position: absolute; left: 0; right: 0; bottom: clamp(.9rem, 3.2vw, 1.5rem); z-index: 2; width: auto; aspect-ratio: auto; padding: 0 1rem; background: none; display: block; }
+footer.site .foot-thanks { margin: 0 auto; max-width: 24rem; font-size: 1.02rem; line-height: 1.4; text-align: center; color: var(--ink); text-shadow: 0 0 7px rgba(236,232,218,.9), 0 0 2px rgba(236,232,218,.8); }
+@media (min-width: 700px) { footer.site .foot-thanks { max-width: none; white-space: nowrap; font-size: 1.1rem; } }
+.foot-thanks .hh { display: inline-block; width: 1.2em; height: 1.2em; margin-left: .25em; vertical-align: -.28em; overflow: visible; }
+.foot-thanks .hh path { fill: none; stroke: var(--ink); stroke-width: .9; stroke-linecap: round; stroke-linejoin: round; }
+.foot-thanks .hh .hf { fill: rgba(227,189,182,.75); stroke: none; transform: translate(.5px, .6px); }
+.foot-thanks .hh .hl2 { opacity: .6; stroke-width: .7; }
+
+/* ===== round 7: smoother page flow ===== */
+.tellus { text-align: center; }
+.tell-lead { margin: 0 0 1rem; font-family: var(--serif); font-weight: 500; font-size: 1.6rem; color: var(--ink); }
+.tellus .loop { margin: 0 auto; }
+section.ingredients::before, section.facts::before, section.faq::before { content: ""; display: none !important; width: 110px; height: 10px; margin: 0 auto .5rem; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 110 10'%3E%3Cpath d='M2 6 C 14 2, 24 9, 38 5 S 62 2, 76 6 S 98 8, 108 4' fill='none' stroke='%232B2722' stroke-width='.8' stroke-linecap='round'/%3E%3Cpath d='M10 7.4 C 30 5, 52 8.4, 82 6.4' fill='none' stroke='%232B2722' stroke-width='.45' stroke-linecap='round' opacity='.55'/%3E%3C/svg%3E") center / contain no-repeat; opacity: .65; }
+.facts-intro { text-align: left; margin: 0 0 1.3rem; max-width: none; }
+/* fact cards: soft palette tints instead of dark photos */
+.facts.bg-ready .fc-photo, .fact-card, .fc-photo { background-image: none !important; }
+.fc-photo::before { display: none; }
+.fact-card { color: var(--ink); }
+.fc-kicker, .fc-text, .fc-photo .fc-kicker, .fc-photo .fc-text { color: var(--ink); }
+.fc-source { color: var(--ink-2); opacity: 1; }
+.rc-slide:nth-child(3n+1) .fact-card { background-color: #B7C4A0; }
+.rc-slide:nth-child(3n+2) .fact-card { background-color: #E3BDB6; }
+.rc-slide:nth-child(3n) .fact-card { background-color: #EBDC9A; }
+/* ingredients: a compact icon grid on phones */
+@media (max-width: 700px) {
+  section.ingredients .map { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem .4rem; padding: 0; margin-top: 1rem; }
+  section.ingredients .map .spokes, section.ingredients .map .bubble { display: none; }
+  section.ingredients .ing { display: flex; flex-direction: column; align-items: center; text-align: center; gap: .3rem; }
+  section.ingredients .ing .ill { width: 64px; height: 64px; margin: 0; }
+  section.ingredients .ing h3 { font-size: .95rem; line-height: 1.15; }
+  section.ingredients .ing p { display: none; }
+}
+
+/* ===== round 8: tighter hero note, catalogue header, ingredients story, FAQ row, enquiry note ===== */
+@media (max-width: 700px) {
+  .hero-photo { margin-bottom: 0; }
+  .cookie-note { margin-top: -1.6rem; }
+  .cookie-note .cookie-arrow { width: 2.1rem; height: 2.1rem; margin-bottom: 0; }
+}
+.cg-head h2 { margin-top: 0; }
+.cg-head .cg-asof { margin-top: .35rem; font-size: .85rem; letter-spacing: .03em; text-transform: none; }
+.cg-skin { margin-top: 1.2rem; }
+
+/* ingredients as a short story: icon + one clear line each */
+@media (max-width: 700px) {
+  section.ingredients .map { grid-template-columns: 1fr 1fr; gap: 1.1rem .9rem; }
+  section.ingredients .ing { flex-direction: row; align-items: flex-start; text-align: left; gap: .6rem; }
+  section.ingredients .ing .ill { width: 54px; height: 54px; flex: none; }
+  section.ingredients .ing h3 { font-size: 1rem; line-height: 1.15; }
+  section.ingredients .ing p { display: block; margin: .2rem 0 0; font-size: .85rem; line-height: 1.3; color: var(--ink-2); font-family: var(--body); }
+}
+
+/* FAQ: a quiet accordion row */
+details.faq-all { width: 100%; }
+details.faq-all > summary.faq-sum { display: flex; justify-content: space-between; align-items: center; gap: 1rem; width: auto; margin: 1.2rem 0 0; padding: .95rem 0; border-top: 1px solid var(--paper-edge); border-bottom: 1px solid var(--paper-edge); font-family: var(--serif); font-weight: 500; font-size: 1.4rem; color: var(--ink); cursor: pointer; list-style: none; }
+details.faq-all > summary.faq-sum::-webkit-details-marker { display: none; }
+details.faq-all > summary.faq-sum .plus { width: 22px; height: 22px; flex: none; }
+details.faq-all[open] > summary.faq-sum .plus path.v { opacity: 0; }
+details.faq-all .faq-list { margin-top: .4rem; }
+.faq-hint { text-align: left; margin: .5rem 0 0; font-size: .85rem; }
+
+/* closing enquiry: a paper note, one clear button */
+.tellus { background: url('assets/opt/paper-note.webp') center / 100% 100% no-repeat; max-width: 21rem; margin: 2rem auto 0; padding: 1.7rem 1.4rem 1.8rem; text-align: center; }
+.tellus .tell-lead { margin: 0 0 .9rem; font-family: var(--serif); font-weight: 500; font-size: 1.5rem; line-height: 1.2; color: var(--ink); }
+section.share .wrap { padding-top: .4rem; padding-bottom: 2rem; }
+
+.tellus { max-width: 23rem; padding: 2.1rem 1.8rem 2.3rem; }
+
+/* ===== round 9: less scrolling on phones ===== */
+@media (max-width: 700px) {
+  /* hero: a little smaller so the soaps and the button share the first screen */
+  section.hero .wrap { gap: 1rem; padding-top: 1.2rem; }
+  .hero-photo { width: 80%; margin: 0 auto; }
+  .cookie-note { margin-top: -1.9rem; font-size: .85rem; }
+
+  /* catalogue: one swipeable row of filters, tighter cards */
+  .cg-chips { flex-wrap: nowrap; overflow-x: auto; gap: .9rem; margin-inline: -2.5rem; padding: .5rem 2.5rem .7rem; scrollbar-width: none; }
+  .cg-chips::-webkit-scrollbar { display: none; }
+  .loop.chip { flex: none; }
+  .cg-grid { gap: 1rem .9rem; }
+  .cg-pic { aspect-ratio: 1 / .7; padding: .3rem .4rem .1rem; }
+  .cg-body h3 { font-size: 1.1rem; }
+  .cg-meta { margin-top: .2rem; font-size: 1rem; }
+  .cg-add { margin-top: .45rem; min-height: 38px; font-size: .86rem; }
+
+  /* next batches: just the facts, no placeholder cards */
+  .cg-next { margin-top: 1.2rem; padding: .9rem 1rem; gap: .5rem; }
+  .cg-next-head p:last-child { display: none; }
+  .cg-next-cards { gap: .6rem; }
+  .cg-next-head h3 { font-size: 1.2rem; margin-top: .2rem; }
+
+  /* ingredients: swipe sideways instead of a tall list */
+  section.ingredients .ing-copy p { font-size: .95rem; }
+  section.ingredients .map { display: flex; flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x mandatory; gap: .7rem; margin-inline: -2.5rem; padding: .3rem 2.5rem .7rem; scrollbar-width: none; }
+  section.ingredients .map::-webkit-scrollbar { display: none; }
+  section.ingredients .ing { flex: 0 0 8.2rem; scroll-snap-align: start; flex-direction: column; align-items: flex-start; gap: .35rem; padding: .7rem; background: rgba(255,255,255,.35); border: 1px solid var(--paper-edge); border-radius: 8px; }
+  section.ingredients .ing .ill { width: 44px; height: 44px; }
+  section.ingredients .ing p { font-size: .8rem; }
+
+  /* fun facts: a shorter card */
+  .fact-card { padding: 1.1rem 2.7rem 1rem; }
+  .fc-text { font-size: 1.15rem; }
+}
+
+@media (max-width: 700px) {
+  /* full-width swipe rows that start exactly at the text edge, whatever the page margin is */
+  .cg-chips, section.ingredients .map { margin-inline: calc(50% - 50vw); padding-inline: calc(50vw - 50%); }
+  .cookie-note { margin-top: -1rem; }
+}
+
+@media (max-width: 700px) { section.ingredients .map { scroll-padding-inline: 1.75rem; } }
+
+/* ===== round 10: watercolour icons, washi tape, flip cards, swipe cue ===== */
+.free img { width: 54px; height: 54px; border-radius: 0; background: none; }
+.free ul { gap: .6rem .8rem; }
+.tellus { position: relative; }
+.tellus .washi { position: absolute; top: -17px; left: 50%; width: 9.5rem; height: auto; transform: translateX(-50%) rotate(-2.5deg); opacity: .88; mix-blend-mode: multiply; pointer-events: none; z-index: 4; }
+
+.swipe-cue { display: none; }
+@media (max-width: 700px) {
+  .swipe-cue { display: flex; justify-content: space-between; align-items: center; margin-top: .2rem; font-size: .8rem; color: var(--ink-3); }
+  .swipe-cue .sdots { display: inline-flex; gap: 5px; }
+  .swipe-cue .sdots i { width: 6px; height: 6px; border-radius: 50%; background: var(--paper-edge); }
+  .swipe-cue .sdots i.on { background: var(--ink-3); }
+}
+
+/* fun facts: flip cards */
+.flips { display: flex; gap: .8rem; overflow-x: auto; scroll-snap-type: x mandatory; margin-inline: calc(50% - 50vw); padding: .3rem calc(50vw - 50%) .8rem; scroll-padding-inline: 1.75rem; scrollbar-width: none; }
+.flips::-webkit-scrollbar { display: none; }
+.flip { flex: 0 0 74%; height: 14rem; scroll-snap-align: start; perspective: 900px; background: none; border: 0; padding: 0; cursor: pointer; font: inherit; color: var(--ink); text-align: center; }
+.flip-in { position: relative; display: block; width: 100%; height: 100%; transition: transform .6s ease; transform-style: preserve-3d; }
+.flip[aria-pressed="true"] .flip-in { transform: rotateY(180deg); }
+.flip .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 12px; padding: 1.1rem 1.2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .6rem; border: 1px solid rgba(48,43,37,.14); box-shadow: 0 10px 18px -14px rgba(48,43,37,.5); }
+.flip .back { transform: rotateY(180deg); justify-content: space-between; text-align: center; }
+.flip:nth-child(3n+1) .face { background: #B7C4A0; }
+.flip:nth-child(3n+2) .face { background: #E3BDB6; }
+.flip:nth-child(3n) .face { background: #EBDC9A; }
+.flip .ft { font-family: var(--serif); font-weight: 500; font-size: 1.7rem; line-height: 1.1; }
+.flip .fh { font-size: .85rem; color: var(--ink-2); }
+.flip .fh::before { content: "\21BB  "; }
+.flip .bt { font-family: var(--serif); font-weight: 500; font-size: 1.12rem; line-height: 1.3; margin: auto 0; }
+.flip .bs { font-size: .72rem; line-height: 1.3; color: var(--ink-2); }
+.flip:focus-visible { outline: 1.5px dotted var(--ink); outline-offset: 4px; }
+.flip-cue { margin: .1rem 0 0; font-size: .8rem; color: var(--ink-3); text-align: center; }
+@media (min-width: 701px) {
+  .flips { display: grid; grid-template-columns: repeat(3, 1fr); overflow: visible; margin-inline: 0; padding-inline: 0; }
+  .flip { flex: none; height: 15rem; }
+}
+
+/* fun facts: a fanned stack of landscape cards (tap = flip, arrows/swipe = next card) */
+.facts .flips { display: block; position: relative; overflow: visible; scroll-snap-type: none; margin: 0 auto; padding: 0; width: min(100%, 34rem); height: 14.4rem; touch-action: pan-y; }
+.facts .flip { position: absolute; left: 0; top: 1.8rem; width: calc(100% - 2rem); height: 12.4rem; flex: none; scroll-snap-align: none; transform-origin: 50% 100%;
+  transform: translateX(calc(var(--p, 0) * .65rem)) rotate(calc(var(--p, 0) * -2.6deg)); z-index: calc(10 - var(--p, 0));
+  transition: transform .45s cubic-bezier(.3,.7,.3,1), opacity .3s ease; }
+.facts .flip[data-p="0"] { --p: 0; } .facts .flip[data-p="1"] { --p: 1; } .facts .flip[data-p="2"] { --p: 2; } .facts .flip[data-p="3"] { --p: 3; }
+.facts .flip[data-p="far"] { --p: 3; opacity: 0; pointer-events: none; }
+.facts .flip:not([data-p="0"]) .face { filter: saturate(.92) brightness(.97); }
+.facts .flip .ft { font-size: 1.9rem; }
+.facts .flip .bt { font-size: 1.15rem; }
+.stack-ctl { display: flex; align-items: center; justify-content: center; gap: .9rem; margin: 1.3rem 0 .2rem; position: relative; z-index: 20; }
+.stack-ctl button { width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(48,43,37,.35); background: transparent; color: var(--ink); font: 1.3rem/1 var(--serif); cursor: pointer; }
+.stack-ctl .cnt { min-width: 3.2rem; text-align: center; font-size: .95rem; color: var(--ink-3); }
+@media (min-width: 701px) {
+  .facts .flips { display: block; grid-template-columns: none; width: min(100%, 38rem); height: 15.6rem; }
+  .facts .flip { height: 13.6rem; }
+}
+/* paper-texture cards: deckled/torn paper edges via 9-slice border images, tinted sage / rose / citron */
+.facts .flip .face, .facts .flip:nth-child(n) .face { background: none !important; border-radius: 0; border: 22px solid transparent; border-image-slice: 60 fill; border-image-width: 22px; border-image-repeat: stretch; box-shadow: none; padding: .35rem .7rem; filter: drop-shadow(0 7px 8px rgba(48,43,37,.26)); }
+.facts .flip:not([data-p="0"]) .face { filter: drop-shadow(0 6px 7px rgba(48,43,37,.22)) brightness(.97); }
+.facts .flip:nth-child(1) .face { border-image-source: url(assets/paper/card-0.webp); }
+.facts .flip:nth-child(2) .face { border-image-source: url(assets/paper/card-1.webp); }
+.facts .flip:nth-child(3) .face { border-image-source: url(assets/paper/card-2.webp); }
+.facts .flip:nth-child(4) .face { border-image-source: url(assets/paper/card-3.webp); }
+.facts .flip:nth-child(5) .face { border-image-source: url(assets/paper/card-4.webp); }
+.facts .flip:nth-child(6) .face { border-image-source: url(assets/paper/card-5.webp); }
+.facts .flip .bt { font-size: 1.08rem; line-height: 1.25; }
+.facts .flip .bs { font-size: .7rem; }
+@media (prefers-reduced-motion: reduce) { .facts .flip { transition: none; } }
+
+/* "Tell me when they're ready": the oval hugs its wording on wider screens (phones keep the full-width button) */
+@media (min-width: 701px) { .cg-next .cg-add { justify-self: center; width: auto; min-width: 17rem; padding-inline: 1.8rem; } }
+
+/* desktop: Fun facts (cards) on the left, FAQ on the right; phones and tablets stay stacked */
+.faq-h { display: none; }
+@media (min-width: 1000px) {
+  .ff-row { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); column-gap: 4rem; row-gap: 0; width: var(--rail); margin-inline: auto; align-items: start; }
+  .ff-row > section { padding-top: 1rem; padding-bottom: 3rem; }
+  /* "Ready to order?" note tucked under the FAQ list, in the right column */
+  .ff-row > .facts { grid-column: 1; grid-row: 1; }
+  .ff-row > .faq { grid-column: 2; grid-row: 1; padding-bottom: .5rem; }
+  .ff-row > .share { grid-column: 2; grid-row: 2; padding: 0 0 2.5rem; }
+  .ff-row > .share .wrap { display: block; padding: 0; }
+  .ff-row > .share .tellus { margin: 1.4rem auto 0; }
+  .ff-row .wrap { width: auto; padding: 0; }
+  .ff-row .facts .flips { width: min(100%, 34rem); height: 13.6rem; margin: 0; }
+  .ff-row .facts .flip { top: .9rem; height: 12.4rem; }
+  .ff-row .stack-ctl { justify-content: flex-start; margin: .7rem 0 0; }
+  .ff-row .flip-cue { display: none; }
+  .ff-row .facts-intro { margin: 0 0 1.3rem; }
+  .ff-row .facts-intro h2, .faq-h { margin: 0; line-height: 1.05; }
+  .faq-h { display: block; margin-bottom: 1.3rem; }
+  details.faq-all > summary.faq-sum { display: none; }
+  details.faq-all .faq-list { margin-top: 0; grid-template-columns: 1fr; gap: 0; }
+}
+
+/* ===== "Ready to order?" on a green watercolour band at the bottom of the page (replaces the paper note and the thank-you footer) ===== */
+section.share.cta-band { background: url(assets/wave-green.webp) bottom center / 100% 100% no-repeat; padding: clamp(5rem, 10vw, 8rem) 0 clamp(2.2rem, 4.5vw, 3.6rem); margin-top: 1rem; }
+.cta-band .wrap { display: block; width: var(--rail); padding: 0; margin-inline: auto; }
+.cta-band .tellus { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem 2rem; width: 100%; max-width: none; margin: 0; padding: 0; background: none; text-align: left; }
+.cta-band .tellus .washi { display: none; }
+.cta-band .tell-lead { margin: 0; font-family: var(--serif); font-weight: 500; font-size: clamp(1.8rem, 3.2vw, 2.7rem); line-height: 1.1; color: var(--ink); }
+.cta-band .loop { margin: 0; flex: none; font-size: 1.3rem; min-height: 56px; padding-inline: 1.7rem 1.1rem; }
+.cta-band .loop .go { background: #8A9C68; }
+@media (max-width: 700px) {
+  .cta-band .tellus { flex-direction: column; text-align: center; gap: 1rem; }
+  .cta-band .loop { font-size: 1.15rem; }
+}
+
+/* ===================== EDITORIAL PREVIEW (editorial-preview.html only) ===================== */
+h1, h2 { text-transform: uppercase; letter-spacing: .02em; }
+.ed-label { margin: 0 0 .55rem; font-family: var(--body); font-size: .68rem; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-2); }
+.ed-sublabel { margin: 0 0 1.4rem; font-family: var(--body); font-size: .66rem; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-3); }
+.ed-btn { position: relative; isolation: isolate; display: inline-block; padding: .95rem 2rem; border: 0; background: transparent; color: var(--ink-d); font-family: var(--body); font-size: .68rem; letter-spacing: .22em; text-transform: uppercase; text-decoration: none; cursor: pointer; line-height: 1.2; }
+.ed-link { font-family: var(--body); font-size: .68rem; letter-spacing: .22em; text-transform: uppercase; color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--ink); padding-bottom: .2rem; }
+
+/* header */
+header.site .wrap { position: relative; }
+nav.pills { gap: 1.3rem; align-items: center; }
+nav.pills a { background: none !important; border-radius: 0; isolation: isolate; padding: .55rem 1.05rem .4rem; font-family: var(--body); font-size: .66rem; letter-spacing: .22em; text-transform: uppercase; color: var(--ink); }
+nav.pills a .oval { color: var(--ink-3); opacity: 0; transition: opacity .18s ease, color .18s ease; }
+nav.pills a:hover .oval, nav.pills a:focus-visible .oval { opacity: .9; color: var(--olive); }
+nav.pills a.active .oval { opacity: .85; color: var(--rust); }
+nav.pills a.active::before { content: ""; position: absolute; inset: 3px 4px 2px 5px; z-index: -1; pointer-events: none; border-radius: 42% 58% 46% 54% / 66% 58% 42% 34%; background: rgba(217,179,158,.38); filter: url(#brush); }
+nav.pills a.ed-reserve { padding: .85rem 1.8rem; color: var(--ink-d); }
+nav.pills a.ed-reserve .oval { display: none; }
+nav.pills a.ed-reserve.active::before { display: none; }
+nav.pills a.ed-reserve .count { margin-left: .5rem; }
+@media (min-width: 901px) { nav.pills a.ed-reserve { position: absolute; right: 0; top: .9rem; } }
+
+/* hero: pastel watercolour behind the soaps */
+section.ed-hero { position: relative; padding: 0; overflow: hidden; }
+.ed-hero-scene { position: absolute; inset: 0; z-index: 0; pointer-events: none; background: url(assets/hero-scene.webp) center top / cover no-repeat; }
+.ed-hero .wrap { position: relative; z-index: 2; display: grid; grid-template-columns: minmax(0, .96fr) minmax(0, 1.04fr); align-items: center; gap: 1rem; padding: 3rem 0 7rem; }
+.ed-hero h1 { margin: 0 0 1.2rem; font-size: clamp(2.1rem, 3.7vw, 3.35rem); line-height: 1.04; font-weight: 500; }
+.ed-lede { max-width: 22rem; margin: 0 0 1.7rem; color: var(--ink-2); font-size: 1.05rem; line-height: 1.5; }
+.ed-cta { display: flex; flex-wrap: wrap; align-items: center; gap: .9rem 1.6rem; }
+.ed-hero-photo { margin: 0; position: relative; z-index: 3; }
+.ed-hero-photo img { display: block; width: 112%; max-width: none; height: auto; margin-left: -2%; filter: drop-shadow(0 2px 2px rgba(var(--shade), .22)) drop-shadow(0 16px 18px rgba(var(--shade), .2)); }
+
+/* torn paper overlay: page paper with a torn, fibrous edge laid over the section above (page background stays as it was) */
+.ed-tear { position: relative; z-index: 6; height: 46px; margin-top: -26px; margin-bottom: -14px; pointer-events: none; }
+.ed-tear::before, .ed-tear::after { content: ""; position: absolute; inset: 0; }
+.ed-tear::before { background: rgba(246,239,227,.78); clip-path: var(--band, none); filter: blur(.5px); }
+.ed-tear::after { background: rgba(60,45,30,.07); clip-path: var(--shade, none); filter: blur(1.2px); }
+
+/* sections */
+section.cg { padding-top: 2rem; }
+.ed-row-label { width: var(--rail); margin: 1.2rem auto -.4rem; }
+.ed-make .wrap, .ed-why .wrap { width: var(--rail); margin: 0 auto; padding: 2.6rem 0 3rem; }
+.ed-make h2, .ed-why h2 { margin: .1rem 0 .5rem; font-size: clamp(1.9rem, 3.3vw, 2.8rem); font-weight: 500; }
+.ed-sub { margin: 0 0 2.2rem; color: var(--ink-2); font-size: 1.05rem; }
+.ed-why-p { max-width: 38rem; line-height: 1.55; }
+
+/* tinted paper squares with watercolour icons (3 steps and the 6 ingredients) */
+.ed-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0 -2rem; row-gap: 2.6rem; }
+.ed-col { padding: 0 2rem; border-left: 1px solid rgba(48,43,37,.2); }
+.ed-col:nth-child(3n+1) { border-left: 0; }
+.ed-sq { aspect-ratio: 1 / 1; display: grid; place-items: center; background-size: 100% 100%; background-repeat: no-repeat; filter: drop-shadow(0 6px 8px rgba(48,43,37,.18)); }
+.ed-cols6 .ed-sq { aspect-ratio: 5 / 3.4; }
+.ed-sq1 { background-image: url(assets/paper/card-0.webp); } .ed-sq2 { background-image: url(assets/paper/card-1.webp); } .ed-sq3 { background-image: url(assets/paper/card-2.webp); }
+.ed-sq4 { background-image: url(assets/paper/card-3.webp); } .ed-sq5 { background-image: url(assets/paper/card-4.webp); } .ed-sq6 { background-image: url(assets/paper/card-5.webp); }
+.ed-sq img { width: 52%; height: auto; max-height: 78%; object-fit: contain; }
+.ed-cols6 .ed-sq img { width: auto; height: 72%; max-width: 62%; }
+.ed-col h3 { margin: 1.3rem 0 .45rem; font-family: var(--body); font-weight: 500; font-size: .92rem; letter-spacing: .2em; text-transform: uppercase; }
+.ed-col p { margin: 0 0 .9rem; color: var(--ink-2); font-size: 1rem; line-height: 1.45; }
+.ed-details { font-size: .62rem; letter-spacing: .22em; text-transform: uppercase; color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--ink); padding-bottom: .15rem; }
+
+/* order band: the countryside painting along the bottom, text in its blank sky */
+section.ed-order { position: relative; margin-top: -8px; overflow: hidden; background: url(assets/order-strip.webp) center bottom / 100% 270px no-repeat; }
+.ed-order-in { position: relative; z-index: 2; width: var(--rail); margin: 0 auto; padding: 2.2rem 0 6.4rem; }
+.ed-order h2 { margin: .1rem 0 .6rem; font-size: clamp(2rem, 4.2vw, 3.5rem); font-weight: 500; color: #8E5650; }
+.ed-order .ed-sub { margin-bottom: 1.6rem; }
+
+/* phones */
+@media (max-width: 900px) {
+  .ed-hero .wrap { grid-template-columns: 1fr; padding: 1.4rem 0 5rem; }
+  .ed-hero h1 { font-size: clamp(2rem, 9vw, 3.2rem); }
+  .ed-hero-scene { background: linear-gradient(180deg, rgba(246,241,230,.78) 0%, rgba(246,241,230,.3) 55%, rgba(246,241,230,0) 100%), url(assets/hero-scene.webp) 62% top / cover no-repeat; }
+  .ed-hero-photo { margin: 1rem -3% 0 3%; }
+  .ed-hero-photo img { width: 100%; margin-left: 0; }
+  .ed-cols { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 1rem; margin: 0; margin-inline: calc(50% - 50vw); padding: .3rem calc(50vw - 50%) .8rem; scrollbar-width: none; }
+  .ed-cols::-webkit-scrollbar { display: none; }
+  .ed-col, .ed-col:nth-child(3n+1) { flex: 0 0 72%; scroll-snap-align: start; padding: 0; border: 0; }
+  section.ed-order { background-size: auto 150px; background-position: 50% 100%; }
+  .ed-order-in { padding: 1.8rem 0 5.2rem; }
+    nav.pills a.ed-reserve { position: static; }
+}
+@media (max-width: 700px) {
+  .ed-make .wrap, .ed-why .wrap { padding: 1.8rem 0 2rem; }
+}
+
+/* ingredients: icons sit straight on the page, the description sits in a paper card beside each one (2 columns, compact) */
+.ed-why .wrap { padding: 2rem 0 2.2rem; }
+.ed-why h2 { font-size: clamp(1.6rem, 2.6vw, 2.2rem); }
+.ed-why .ed-sub { margin-bottom: 1.4rem; font-size: 1rem; }
+.ed-ing { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .9rem 2.6rem; }
+.ed-ing-item { display: grid; grid-template-columns: 96px minmax(0, 1fr); align-items: center; gap: .4rem; }
+.ed-ing-ico { display: grid; place-items: center; }
+.ed-ing-ico img { width: 84px; height: 84px; object-fit: contain; filter: drop-shadow(0 4px 5px rgba(48,43,37,.16)); }
+.ed-ing-card { min-height: 5.4rem; display: flex; flex-direction: column; justify-content: center; border: 15px solid transparent; border-image-source: var(--pi); border-image-slice: 60 fill; border-image-width: 15px; border-image-repeat: stretch; padding: .1rem .55rem; filter: drop-shadow(0 5px 6px rgba(48,43,37,.15)); }
+.ed-ing-card h3 { margin: 0 0 .2rem; font-family: var(--body); font-weight: 500; font-size: .78rem; letter-spacing: .2em; text-transform: uppercase; }
+.ed-ing-card p { margin: 0; color: var(--ink-2); font-size: .98rem; line-height: 1.35; }
+@media (max-width: 760px) {
+  .ed-ing { grid-template-columns: 1fr; gap: .7rem; }
+  .ed-ing-item { grid-template-columns: 72px minmax(0, 1fr); }
+  .ed-ing-ico img { width: 64px; height: 64px; }
+}
+
+/* hand-drawn buttons: a brush-wash fill with a pencil box outline around it (same strokes as the main page) */
+.ed-btn::before, nav.pills a.ed-reserve::before { content: ""; position: absolute; inset: 2px 4px; z-index: -1; pointer-events: none; border-radius: 42% 58% 46% 54% / 66% 58% 42% 34%; background: radial-gradient(ellipse at 28% 34%, rgba(214,142,132,.82), rgba(226,178,168,.62) 55%, rgba(233,198,190,.42)); filter: url(#brush); transition: opacity .18s ease; }
+.ed-btn.dark::before { background: radial-gradient(ellipse at 28% 34%, rgba(150,172,122,.86), rgba(183,196,160,.66) 55%, rgba(205,214,186,.46)); }
+.ed-btn.dark { color: var(--ink-d); }
+.ed-btn::before, nav.pills a.ed-reserve::before { opacity: .96; }
+.ed-btn:hover::before, .ed-btn:focus-visible::before, nav.pills a.ed-reserve:hover::before { opacity: .85; }
+nav.pills a.ed-reserve { position: relative; }
+@media (min-width: 901px) { nav.pills a.ed-reserve { position: absolute; } }
+.ed-btn svg.ln, nav.pills a.ed-reserve svg.ln { color: rgba(48,43,37,.8); }
+.ed-btn:focus-visible, nav.pills a.ed-reserve:focus-visible { outline: 1.5px dotted var(--ink-d); outline-offset: 8px; }
+
+/* Good to know: the craft-paper artwork behind the cards and the FAQ, fading into the page paper at its top and bottom */
+.ed-ffwrap { position: relative; isolation: isolate; padding: 4.2rem 0 3.4rem; margin: 0; }
+.ed-ffwrap::before { content: ""; position: absolute; left: 0; right: 0; top: -1px; bottom: -1px; z-index: -1; pointer-events: none; background: url(assets/good-to-know-bg.webp) center / 100% 100% no-repeat; filter: saturate(.62) brightness(1.03); -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 9%, #000 91%, transparent 100%); mask-image: linear-gradient(180deg, transparent 0, #000 9%, #000 91%, transparent 100%); }
+@media (max-width: 900px) { .ed-ffwrap::before { background-size: cover; background-position: 8% 50%; } }
+
+
+/* ===== round 7 ===== */
+/* hero: the scene fades into the header paper at the top, and its colours (leaves, oats, papers) are toned down */
+.ed-hero-scene { -webkit-mask-image: linear-gradient(180deg, transparent 0, rgba(0,0,0,.55) 9%, #000 20%); mask-image: linear-gradient(180deg, transparent 0, rgba(0,0,0,.55) 9%, #000 20%); }
+
+/* fun facts: a pile of real torn-paper cards (the owner's paper assets). Tap = flip, arrows = next card. */
+.ed-ffwrap .facts { padding: 0; }
+.ed-ffwrap .facts .wrap { display: flex; flex-direction: column; padding: 0; width: 100%; }
+.ed-ffwrap .facts .facts-intro { margin: 0 0 .9rem; }
+.ed-ffwrap .facts .facts-intro h2 { margin: 0; line-height: 1.05; }
+.ed-ffwrap .facts .flips { position: relative; display: block; width: 100%; height: auto; aspect-ratio: 1.36; margin: 0; padding: 0; overflow: visible; }
+.ed-ffwrap .facts .flip { position: absolute; left: 0; top: 0; width: 100%; height: 100%; perspective: 1100px; transform-origin: 50% 60%; z-index: calc(10 - var(--p, 0)); transition: transform .55s cubic-bezier(.3,.7,.3,1), opacity .3s ease; }
+.ed-ffwrap .facts .flip[data-p="0"] { transform: none; }
+.ed-ffwrap .facts .flip[data-p="1"] { transform: translate(10px, 7px) rotate(2.6deg); }
+.ed-ffwrap .facts .flip[data-p="2"] { transform: translate(-9px, 12px) rotate(-3.4deg); }
+.ed-ffwrap .facts .flip[data-p="3"] { transform: translate(16px, 17px) rotate(4.8deg); }
+.ed-ffwrap .facts .flip[data-p="far"] { transform: translate(16px, 17px) rotate(4.8deg); opacity: 0; pointer-events: none; }
+.ed-ffwrap .facts .flip .face, .ed-ffwrap .facts .flip:nth-of-type(n) .face { border: 0; border-image: none; border-radius: 0; box-shadow: none; background-color: transparent !important; background-position: center !important; background-size: 100% 100% !important; background-repeat: no-repeat !important; padding: 13% 12% 12%; color: var(--tc, var(--ink)); filter: drop-shadow(0 7px 9px rgba(48,43,37,.25)) saturate(.88); }
+.ed-ffwrap .facts .flip:not([data-p="0"]) .face { filter: drop-shadow(0 6px 8px rgba(48,43,37,.22)) saturate(.88) brightness(.97); }
+.ed-ffwrap .facts .flip:nth-of-type(1) .face { background-image: url(assets/cards/c1.webp) !important; }
+.ed-ffwrap .facts .flip:nth-of-type(2) .face { background-image: url(assets/cards/c2.webp) !important; }
+.ed-ffwrap .facts .flip:nth-of-type(3) .face { background-image: url(assets/cards/c3.webp) !important; }
+.ed-ffwrap .facts .flip:nth-of-type(4) .face { background-image: url(assets/cards/c4.webp) !important; --tc: #FFF7EA; }
+.ed-ffwrap .facts .flip:nth-of-type(5) .face { background-image: url(assets/cards/c5.webp) !important; }
+.ed-ffwrap .facts .flip:nth-of-type(6) .face { background-image: url(assets/cards/c6.webp) !important; }
+.ed-ffwrap .facts .flip .fh, .ed-ffwrap .facts .flip .bs { color: inherit; opacity: .78; }
+.ed-ffwrap .facts .flip .ft { font-size: 1.5rem; line-height: 1.12; color: inherit; }
+.ed-ffwrap .facts .flip .bt { font-size: 1rem; line-height: 1.3; color: inherit; margin: auto 0; }
+.ed-ffwrap .facts .flip .bs { font-size: .68rem; line-height: 1.3; }
+.ed-ffwrap .facts .stack-ctl { margin: 1.3rem 0 0; justify-content: flex-start; gap: .7rem; }
+.ed-ffwrap .facts .stack-ctl button { background: rgba(250,246,238,.6); }
+.ed-ffwrap .facts .flip-cue { display: none; }
+
+/* phones and tablets: the pile sits in the normal flow, no big artwork behind */
+@media (max-width: 999px) {
+  .ed-ffwrap { padding: 2rem 0 1.2rem; }
+  .ed-ffwrap::before { display: none; }
+  .ed-ffwrap .facts .wrap { width: calc(100% - 2.8rem); margin: 0 auto; padding: 0 .9rem .3rem 0; }
+  .ed-ffwrap .facts .flips { margin-bottom: .6rem; }
+  .ed-ffwrap .facts .flip .ft { font-size: 1.28rem; }
+  .ed-ffwrap .facts .flip .bt { font-size: .92rem; }
+}
+
+/* desktop: the label, heading, pile and FAQ are laid over the artwork by percentage */
+@media (min-width: 1000px) {
+  .ed-ffwrap { aspect-ratio: 2000 / 610; padding: 0; container-type: inline-size; }
+  .ed-ffwrap .ed-row-label { position: absolute; left: 6.6%; top: 9.5%; margin: 0; width: auto; z-index: 2; }
+  .ed-ffwrap .ff-row { position: absolute; inset: 0; display: block; width: auto; margin: 0; }
+  .ed-ffwrap .ff-row > section.facts { position: absolute; left: 6.6%; top: 14%; width: 23%; height: 80.5%; margin: 0; padding: 0; }
+  .ed-ffwrap .ff-row > section.faq { position: absolute; left: 43%; top: 14%; width: 44%; margin: 0; padding: 0; }
+  .ed-ffwrap .facts .facts-intro { margin-bottom: .55rem; }
+  .ed-ffwrap .facts .facts-intro h2 { font-size: clamp(1.25rem, 2.35cqw, 2.1rem); }
+  .ed-ffwrap .facts .flip .ft { font-size: clamp(1rem, 1.6cqw, 1.45rem); }
+  .ed-ffwrap .facts .flip .bt { font-size: clamp(.76rem, 1.02cqw, .95rem); }
+  .ed-ffwrap .facts .flip .bs { font-size: clamp(.5rem, .68cqw, .62rem); }
+  .ed-ffwrap .facts .stack-ctl { margin-top: clamp(.6rem, 1.6cqw, 1.4rem); }
+  .ed-ffwrap .facts .stack-ctl button { width: clamp(30px, 3cqw, 42px); height: clamp(30px, 3cqw, 42px); }
+  .ed-ffwrap .faq-h { font-size: clamp(1.25rem, 2.35cqw, 2.1rem); margin-bottom: .6rem; }
+  .ed-ffwrap .faq-list summary { font-size: clamp(.9rem, 1.25cqw, 1.1rem); padding: .32rem 0; }
+}
+
+/* hero scene: same paper grain as the page (neutral overlay, so the colour stays matched to the header) */
+.ed-hero-scene::after { content: ""; position: absolute; inset: 0; background: url(assets/paper-grain.webp) center / cover fixed no-repeat; mix-blend-mode: overlay; opacity: .9; pointer-events: none; }
+/* the grain only lands where the scene image is solid (otherwise the see-through torn bottom turned grey) */
+.ed-hero-scene::after { -webkit-mask-image: url(assets/hero-scene.webp); mask-image: url(assets/hero-scene.webp); -webkit-mask-size: cover; mask-size: cover; -webkit-mask-position: center top; mask-position: center top; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; }
+@media (max-width: 900px) { .ed-hero-scene::after { -webkit-mask-position: 62% top; mask-position: 62% top; } }
+/* the scene runs a little below the hero, so the linen reaches the jagged cut (no second edge from the image itself) */
+.ed-hero-scene { bottom: -70px; }
+
+/* the owner's frayed torn-paper banner sits across the seam under the catalogue */
+.ed-banner { position: relative; z-index: 6; display: block; width: 100%; height: max(30px, 6.4vw); margin: -14px 0 -4px; background: url(assets/torn-banner.webp) center / 100% 100% no-repeat; pointer-events: none; }
+section.cg { padding-bottom: 1.6rem !important; }
+
+
+/* hero: the owner's thin frayed strip lies along the cut; the hero is clipped along the same line (profile in tear3.js) */
+.ed-tear-hero { height: calc(100vw * .059); margin-top: -26px; margin-bottom: -26px; background: url(assets/hero-edge.webp) center / 100% 100% no-repeat; }
+.ed-tear-hero::before, .ed-tear-hero::after { display: none; }
+/* trial: a peeking cat behind the torn edge of the hero (it is cut by the hero's own torn clip) */
+.ed-cat { position: absolute; z-index: 4; left: 4%; bottom: -3px; width: clamp(130px, 17vw, 250px); height: auto; pointer-events: none; }
+@media (max-width: 700px) { .ed-cat { left: 3%; bottom: 15px; width: 160px; } }
+/* trial: orange cat behind the top fun-fact card, only head and paws above it */
+.ed-cat2 { position: absolute; z-index: 1; right: 2%; bottom: calc(100% - 24px); width: clamp(76px, 8.4vw, 120px); height: auto; pointer-events: none; }
+/* ribbon: the green left end is removed; the frayed line fades in from the left instead */
+.ed-banner:not(.ed-banner-flip) { -webkit-mask-image: linear-gradient(90deg, transparent 0, transparent 22%, #000 36%); mask-image: linear-gradient(90deg, transparent 0, transparent 22%, #000 36%); }
+/* fun facts: hint on the back, dots instead of a counter, quieter arrows */
+.ed-ffwrap .facts .flip .fn { display: block; margin-top: .5rem; font-size: .64rem; letter-spacing: .08em; text-transform: uppercase; color: inherit; opacity: .8; }
+.ed-ffwrap .facts .stack-ctl .cnt { display: none; }
+.ed-ffwrap .facts .stack-ctl .dots { display: inline-flex; gap: 7px; padding: 0 .3rem; }
+.ed-ffwrap .facts .stack-ctl .dots i { width: 7px; height: 7px; border-radius: 50%; background: rgba(48,43,37,.22); transition: background .2s ease, transform .2s ease; }
+.ed-ffwrap .facts .stack-ctl .dots i.on { background: var(--ink-2); transform: scale(1.25); }
+.ed-ffwrap .facts .stack-ctl button { background: transparent; border-color: rgba(48,43,37,.22); color: var(--ink-2); }
+.ed-ffwrap .facts .stack-ctl .ed-end { font-size: .78rem; color: var(--ink-3); margin-left: .4rem; }
+@media (max-width: 700px) { .ed-cat2 { right: 4%; bottom: calc(100% - 22px); width: 112px; } }
+/* hero without the intro line and buttons: tighter spacing */
+.ed-hero h1 { margin-bottom: 0; }
+@media (max-width: 900px) { .ed-hero .wrap { padding: 1rem 0 2.6rem; gap: 0; } .ed-hero-photo { margin-top: .2rem; } }
+
+/* "Ready to order?": hand-drawn arrow to the scalloped enquiry card, the cat holding it */
+.ed-order-in { min-height: 15rem; padding-bottom: 4.6rem; }
+.ed-order h2 { margin-bottom: 0; }
+.enq-arrow { display: block; width: clamp(90px, 9.5vw, 125px); height: auto; margin: .7rem 0 0 1rem; transform: rotate(6deg); opacity: .9; }
+.enq-group { position: absolute; right: 0; bottom: 1.6rem; display: flex; align-items: flex-end; }
+.enq-cat { position: relative; z-index: 1; width: clamp(120px, 13.5vw, 180px); height: auto; margin-left: -3rem; order: 2; pointer-events: none; }
+.enq-card { order: 1; position: relative; z-index: 2; container-type: inline-size; width: clamp(230px, 26vw, 330px); aspect-ratio: 900 / 605; border: 0; padding: 0; cursor: pointer; background: url(assets/enquiry-card.webp) center / 100% 100% no-repeat; transform: rotate(-3deg); filter: drop-shadow(0 8px 10px rgba(48,43,37,.2)); transition: transform .2s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6cqw; }
+.enq-card:hover, .enq-card:focus-visible { transform: rotate(-1deg) translateY(-3px); }
+.enq-card:focus-visible { outline: 1.5px dotted var(--ink-d); outline-offset: 6px; }
+.enq-title { position: relative; font-family: var(--serif); font-weight: 600; font-size: 8.4cqw; letter-spacing: .03em; text-transform: uppercase; color: var(--ink-d); padding: .1em .45em; }
+.enq-title::before { content: ""; position: absolute; left: 0; right: 0; top: 18%; bottom: 8%; z-index: -1; background: radial-gradient(ellipse at 30% 40%, rgba(150,172,122,.8), rgba(183,196,160,.6) 60%, rgba(205,214,186,.42)); border-radius: 40% 60% 45% 55% / 60% 50% 50% 40%; filter: url(#brush); }
+.enq-open { display: inline-flex; align-items: center; gap: .5em; font-family: var(--serif); font-weight: 600; font-size: 5.8cqw; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-d); background: #A7B98A; border: 1.5px solid #4f5a3b; border-radius: 999px; padding: .35em 1.1em; }
+@media (max-width: 899px) {
+  .ed-order-in { min-height: 0; padding: 1.8rem 0 5.6rem; }
+  .ed-order h2 { font-size: 2.9rem; line-height: 1.02; margin-top: .5rem; }
+  .enq-arrow { position: static; display: block; width: 50px; margin: 1rem 0 0 4.4rem; transform: rotate(36deg); }
+  .enq-group { position: relative; right: auto; bottom: auto; justify-content: flex-start; margin: .7rem 0 0; }
+  .enq-card { width: 70vw; max-width: 300px; }
+  .enq-cat { width: 28vw; max-width: 120px; margin-left: -1.6rem; margin-bottom: .6rem; }
+}
+
+/* sold-out: a small paper tag in the corner instead of the ribbon, so the soap photo stays clear */
+.cg-ribbon { left: auto; right: -3%; top: auto; bottom: 3%; width: 70%; aspect-ratio: 420 / 246; padding: 0 17% 0 8%; isolation: isolate; transform: rotate(-5deg); align-content: center; gap: .08rem; }
+.cg-ribbon > svg:not(.hrt) { display: none; }
+.cg-ribbon b { font-family: var(--serif); font-weight: 600; font-size: .78rem; letter-spacing: .08em; white-space: nowrap; color: #3b2b25; }
+.cg-ribbon i { font-family: var(--serif); font-weight: 500; font-size: .52rem; letter-spacing: .03em; line-height: 1.2; color: #3b2b25; }
+.cg-ribbon i svg.hrt { width: 1em; height: 1em; }
+.cg-ribbon::before { content: ""; position: absolute; inset: 0; z-index: -1; background: url(assets/sold-tag.webp) center / 100% 100% no-repeat; filter: drop-shadow(0 3px 4px rgba(48,43,37,.22)); }
+
+/* round 35: new card wording, thin desktop arrow, cat ear visible, bigger sold-out label on desktop */
+.enq-arrow-d { display: none; }
+.enq-title { text-transform: none; font-size: 9.6cqw; letter-spacing: .01em; white-space: nowrap; }
+.enq-sub { font-family: var(--serif); font-weight: 500; font-size: 5.2cqw; line-height: 1.25; color: var(--ink-2); text-align: center; max-width: 84%; margin-top: -2cqw; }
+.enq-card { gap: 4cqw; }
+.enq-open { font-size: 5.6cqw; }
+@media (min-width: 900px) {
+  .enq-arrow { display: none; }
+  .enq-arrow-d { display: block; position: absolute; z-index: 2; left: 46%; top: 9.6rem; width: clamp(110px, 11vw, 150px); height: auto; overflow: visible; }
+  .enq-arrow-d path { fill: none; stroke: var(--ink-3); stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+  .enq-cat { width: clamp(110px, 11vw, 150px); margin-left: -2.6rem; }
+  .cg-ribbon { width: 78%; padding: 0 16% 0 8%; }
+  .cg-ribbon b { font-size: 1.12rem; }
+  .cg-ribbon i { font-size: .78rem; }
+}
+
+/* round 36: hand-drawn arrow, no card shadow, highlight only on the button, tidier card spacing, hero photo higher on phones */
+.enq-arrow { display: block; position: static; width: clamp(110px, 11vw, 150px); height: auto; overflow: visible; margin: 0; transform: none; opacity: 1; }
+.enq-arrow path { fill: none; stroke: var(--ink-3); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.enq-arrow path.s2 { opacity: .5; }
+.enq-card { filter: none; gap: 3.2cqw; }
+.enq-title { font-size: 8.4cqw; }
+.enq-title::before { display: none; }
+.enq-sub { font-size: 4.8cqw; margin-top: 0; }
+.enq-open { position: relative; z-index: 0; background: none; border: 0; border-radius: 0; padding: .55em 1.5em; font-size: 5.2cqw; letter-spacing: .06em; }
+.enq-open::before { content: ''; position: absolute; inset: 14% 4%; z-index: -1; background: radial-gradient(ellipse at 30% 40%, rgba(150,172,122,.85), rgba(183,196,160,.62) 60%, rgba(205,214,186,.45)); border-radius: 40% 60% 45% 55% / 60% 50% 50% 40%; filter: url(#brush); }
+.enq-open::after { content: ''; position: absolute; inset: 0; z-index: 1; background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 80' preserveAspectRatio='none'><g fill='none' stroke='%233a2f28' stroke-width='1.5' stroke-linecap='round'><path vector-effect='non-scaling-stroke' d='M100 5 C 140 3, 185 8, 195 30 C 201 52, 180 74, 140 76 C 100 79, 50 78, 22 72 C 3 66, 0 40, 10 24 C 20 8, 60 6, 100 5 Z'/><path vector-effect='non-scaling-stroke' opacity='.55' d='M96 3 C 138 1, 188 6, 197 33 C 202 56, 176 77, 136 78 C 96 81, 46 80, 18 73 C 0 66, 2 36, 12 21 C 24 6, 56 5, 96 3 Z'/></g></svg>") center / 100% 100% no-repeat; }
+@media (min-width: 900px) {
+  .enq-arrow { position: absolute; z-index: 2; left: 47%; top: 9.2rem; }
+}
+@media (max-width: 899px) {
+  .enq-arrow { position: static; width: 84px; margin: 2.5rem 0 .2rem 4rem; transform: rotate(34deg); }
+  .ed-hero-photo { margin-top: -1.6rem; }
+}
+
+/* phone menu: torn taped paper instead of a flat panel; plain "Enquire" link */
+@media (max-width: 900px) {
+  nav.pills { left: .9rem; right: .9rem; top: calc(100% - 2px); background: none; border: 0; box-shadow: none; padding: 2.4rem 1.6rem 2.7rem 1.9rem; gap: .3rem; isolation: isolate; }
+  nav.pills::before { content: ""; position: absolute; inset: 0; z-index: -1; background: url(assets/menu-paper.webp) center / 100% 100% no-repeat; filter: drop-shadow(0 6px 8px rgba(48,43,37,.16)); }
+  nav.pills::after { content: ""; position: absolute; top: -17px; left: 50%; width: 38%; aspect-ratio: 360 / 172; background: url(assets/menu-tape.webp) center / contain no-repeat; transform: translateX(-50%) rotate(-1.5deg); pointer-events: none; }
+  nav.pills a.ed-reserve::after { display: none; }
+  /* highlight and hand-drawn circle only appear when the link is hovered, focused or pressed */
+  nav.pills a.ed-reserve::before, nav.pills a.ed-reserve svg.ln { opacity: 0; transition: opacity .18s ease; }
+  nav.pills a.ed-reserve:hover::before, nav.pills a.ed-reserve:focus-visible::before, nav.pills a.ed-reserve:active::before, nav.pills a.ed-reserve:hover svg.ln, nav.pills a.ed-reserve:focus-visible svg.ln, nav.pills a.ed-reserve:active svg.ln { opacity: .95; }
+  nav.pills a.ed-reserve { padding: .7rem 1rem .55rem; }
+}
+
+/* phones: larger soap photo, and the cat sits below it instead of covering the soaps */
+@media (max-width: 700px) {
+  .ed-hero .wrap { padding-bottom: 4.9rem; }
+  .ed-hero-photo { margin: -1.2rem -9% 0 -3%; }
+  .ed-hero-photo img { width: 100%; }
+}
+
+/* the Christmas photo is wider than the cut-out soaps, so give it a little more size in its card */
+.cg-card[data-key="merry-berry"] .cg-pic img { transform: scale(1.2); }
+
+/* round 37: tighter card spacing, "Enquire now" highlight in the same rose as the menu button */
+.enq-card { gap: 1.6cqw; }
+.enq-open { margin-top: 1.2cqw; }
+.enq-open::before { background: radial-gradient(ellipse at 28% 34%, rgba(214,142,132,.82), rgba(226,178,168,.62) 55%, rgba(233,198,190,.42)); }
+
+/* fun facts: a card coming forward must be fully solid straight away, so the card behind it never shows through its paper mid-fade */
+.ed-ffwrap .facts .flip { transition: transform .55s cubic-bezier(.3,.7,.3,1), opacity 0s; }
+.ed-ffwrap .facts .flip[data-p="far"] { transition: transform .55s cubic-bezier(.3,.7,.3,1), opacity .25s ease .3s; }
+
+/* "Ready to order?" uses the same heading size as "Fun facts" */
+.ed-order h2 { font-size: clamp(1.25rem, 2.35vw, 2.1rem); line-height: 1.05; letter-spacing: .02em; }
+@media (max-width: 899px) { .ed-order h2 { font-size: 2rem; line-height: 1.05; } }
+
+/* order card: larger line under the heading */
+.enq-card .enq-sub { font-size: 5.6cqw; line-height: 1.2; max-width: 84%; text-wrap: balance; }
+.enq-card .enq-title { font-size: 8.8cqw; }
+
+/* fun facts: only the front card shows writing, so no card's text can ever show through another */
+.ed-ffwrap .facts .flip:not([data-p="0"]) .face * { visibility: hidden; }
+.ed-ffwrap .facts .flip[data-p="0"] .face * { visibility: visible; }
+.cg-card[data-key="rustic-sakura"] .cg-pic img { transform: scale(1.15); }
+@media (max-width: 899px) { .enq-group { margin-top: 1.7rem; } }
+@media (max-width: 899px) { .ed-order-in { padding-bottom: 1.6rem; } }
+
+/* round 41: desktop layout per the owner's outlines (bigger arrow in the gap, card and cat nudged left); no arrow on phones */
+@media (min-width: 900px) {
+  .enq-group { right: 7.5%; }
+  .enq-arrow { left: 37%; top: 6.4rem; width: clamp(150px, 15vw, 230px); }
+}
+@media (max-width: 899px) {
+  .enq-arrow { display: none; }
+  .enq-group { margin-top: .7rem; }
+  .ed-order h2 { margin-bottom: 0; }
+}
+
+/* phones: smaller FAQ row, less space before the order section */
+@media (max-width: 899px) {
+  details.faq-all > summary.faq-sum { font-size: 1.2rem; padding: .8rem 0; }
+  .ed-ffwrap { padding-bottom: .1rem; }
+  .ed-order-in { padding-top: .5rem; }
+}
+
+/* desktop: hero text block a little higher */
+@media (min-width: 900px) { .ed-hero-copy { position: relative; top: -4rem; } }
+
+/* ===== variant B: the "why cold-process" note is a small taped card by the catalogue heading ===== */
+section.cg .wrap { position: relative; }
+.ed-whywrap { position: relative; width: min(100%, 22rem); margin: 1.6rem auto 0; }
+.ed-whycard { position: relative; container-type: inline-size; aspect-ratio: 900 / 746; isolation: isolate; }
+.ed-whycard::before { content: ""; position: absolute; inset: 0; z-index: -1; background: url(assets/note-stitched.webp) center / 100% 100% no-repeat; filter: drop-shadow(0 6px 8px rgba(48,43,37,.14)); }
+.wc-body { position: absolute; left: 10.5%; right: 11.5%; top: 22%; bottom: 41%; display: flex; flex-direction: column; justify-content: center; }
+.wc-body { transform: rotate(-1.8deg); }
+.ed-whycard h3 { margin: 0 0 1.4cqw; font-family: var(--serif); font-weight: 600; font-size: 6.2cqw; line-height: 1.1; color: #2b211c; }
+.ed-whycard p { margin: 0; font-size: 3.8cqw; line-height: 1.32; color: #2b211c; font-weight: 500; }
+.wc-icons { position: absolute; left: 8%; right: 12%; bottom: 16%; display: flex; justify-content: space-between; gap: .1rem; transform: rotate(-2.4deg); }
+.wc-icons span { display: flex; flex-direction: column; align-items: center; gap: .1rem; flex: 1 1 0; min-width: 0; }
+.wc-icons img { width: 11cqw; height: 11cqw; object-fit: contain; }
+.wc-icons i { font-style: normal; font-size: 2.7cqw; letter-spacing: .02em; text-transform: uppercase; font-weight: 600; color: #2f241e; text-align: center; line-height: 1.1; }
+@media (min-width: 1000px) {
+  .ed-whywrap { position: absolute; top: .2rem; right: 1.2rem; width: min(21rem, 31%); margin: 0; }
+  section.cg #cgGrid { margin-top: 7rem; }
+}
 </style>
 </head>
 <body>
@@ -915,6 +1894,7 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
   <img src="assets/opt/logo-soapmerry.webp?v=loader" alt="" width="1411" height="528">
 </div>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="brush" x="-8%" y="-25%" width="116%" height="150%"><feTurbulence type="fractalNoise" baseFrequency="0.03 0.09" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="9" xChannelSelector="R" yChannelSelector="G"/><feGaussianBlur stdDeviation="0.6"/></filter></svg>
 <div class="grain" aria-hidden="true"></div>
 
 <!-- shared hand-drawn shapes -->
@@ -925,7 +1905,7 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
       <path vector-effect="non-scaling-stroke" d="M104 9 C 148 8, 190 22, 191 41 C 192 60, 146 73, 102 72 C 56 73, 9 60, 9 41 C 8 23, 56 10, 104 9" transform="rotate(-1.6 100 40)"/>
     </symbol>
     <symbol id="sym-uline" viewBox="0 0 200 8" preserveAspectRatio="none">
-      <path d="M2 5 C 40 2, 80 6.5, 120 4 S 180 2, 198 4.5" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+      <path d="M2 5.2 C 38 2.4, 82 6.4, 122 3.8 S 182 2.6, 198 4.4" fill="none" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" vector-effect="non-scaling-stroke"/><path d="M14 6.4 C 56 4.6, 108 7, 160 5.2" fill="none" stroke="currentColor" stroke-width="0.45" stroke-linecap="round" opacity=".55" vector-effect="non-scaling-stroke"/>
     </symbol>
     <symbol id="sym-leaf" viewBox="0 0 24 28" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round">
       <path d="M4 26 C 8 18, 12 12, 20 4"/>
@@ -967,45 +1947,33 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
         <span></span><span></span><span></span>
       </button>
       <nav class="pills" id="mainNav" aria-label="Sections">
-        <a href="#soaps" class="oval-wrap" data-nav="soaps"><svg class="oval"><use href="#sym-oval"/></svg>My soaps</a>
-        <a href="#ingredients" class="oval-wrap" data-nav="ingredients"><svg class="oval"><use href="#sym-oval"/></svg>Ingredients</a>
+        <a href="#soaps" class="oval-wrap" data-nav="soaps"><svg class="oval"><use href="#sym-oval"/></svg>Soaps</a>
         <a href="#catalogue" class="oval-wrap" data-nav="catalogue"><svg class="oval"><use href="#sym-oval"/></svg>Catalogue</a>
-        <a href="#enquire" class="oval-wrap" data-nav="enquire"><svg class="oval"><use href="#sym-oval"/></svg>Enquire<span class="count" id="noteCount">0</span></a>
+        <a href="#ingredients" class="oval-wrap" data-nav="ingredients"><svg class="oval"><use href="#sym-oval"/></svg>Ingredients</a>
+        <a href="#faq" class="oval-wrap" data-nav="faq"><svg class="oval"><use href="#sym-oval"/></svg>FAQ</a>
+        <a href="#enquire" class="oval-wrap ed-reserve" data-nav="enquire">Enquire<span class="count" id="noteCount">0</span></a>
       </nav>
     </div>
   </header>
 
   <!-- ============================ HERO ============================== -->
-  <section class="hero" id="soaps">
+  <section class="hero ed-hero" id="soaps">
+    <div class="ed-hero-scene" aria-hidden="true"></div>
+    <img class="ed-cat" src="assets/cat-peek.webp" alt="" aria-hidden="true" width="760" height="276">
     <div class="wrap">
-      <div class="hero-copy z">
-        <h1>Handmade soap<br>with merry little moments.</h1>
-        <svg class="uline"><use href="#sym-uline"/></svg>
-        <p class="lede">Turning natural ingredients into small batches of soap bars for different skin types.</p>
-        <a class="btn-olive" href="#catalogue">See the current batch <svg><use href="#sym-arrow"/></svg>
-          <i class="pt d" data-thread="6" style="--x:86%; --y:50%" data-pin></i>
-          <i class="pt d" data-thread="7" style="--x:58%; --y:140%"></i>
-        </a>
-        <i class="pt d" data-thread="3" style="--x:108%; --y:16%"></i>
-        <i class="pt d" data-thread="4" style="--x:98%; --y:56%"></i>
+      <div class="ed-hero-copy">
+        <p class="ed-label">01 / Handmade soap</p>
+        <p class="ed-sublabel">Small batches &middot; Cold-process &middot; Malaysia</p>
+        <h1>Handmade soap<br>with merry<br>little moments.</h1>
       </div>
-
-      <figure class="hero-photo z">
+      <figure class="ed-hero-photo">
         <img src="assets/hero-soaps-new.webp" alt="The full Soapmerry soap collection: Vinegar, Tomato, Pink Himalayan salt, Honey, Stout Beer, Goat Milk, Apple and Carrots, and more, grouped together" width="1448" height="1086" fetchpriority="high">
-        <i class="pt d" data-thread="1" style="--x:20%; --y:32%"></i>
-        <i class="pt d" data-thread="2" style="--x:-5%; --y:36%"></i>
-        <figcaption class="cookie-note">
-          <svg class="cookie-arrow" viewBox="0 0 60 60" aria-hidden="true">
-            <path d="M10 50 C 20 38, 32 24, 46 14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-            <path d="M30 16 L46 14 L44 30" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <span>psst&hellip; these are <em>soap</em>, not cookies &mdash; please don&rsquo;t nibble!</span>
-        </figcaption>
       </figure>
     </div>
     <i class="pt m" data-thread="1"  style="--x:2%; --y:10%"></i>
     <i class="pt m" data-thread="2"  style="--x:4.5%; --y:60%"></i>
   </section>
+  <div class="ed-tear ed-tear-hero" aria-hidden="true"></div>
 
   <!-- ============================ BATCHES =========================== -->
   <section class="batches">
@@ -1029,7 +1997,7 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
         <figure>
           <div class="ill"><img loading="lazy" decoding="async" src="assets/icons/time-cures.webp" alt="" width="1254" height="1254"></div>
           <h3>Curing</h3>
-          <p>Each batch needs at least 4&ndash;6 weeks to cure and harden before it&rsquo;s ready.</p>
+          <p>Each batch needs 4&ndash;8 weeks to cure and harden before it&rsquo;s ready.</p>
         </figure>
         <figure>
           <div class="ill"><img loading="lazy" decoding="async" src="assets/icons/one-batch.webp" alt="" width="1254" height="1254"></div>
@@ -1038,420 +2006,146 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
         </figure>
       </div>
     </div>
-    <i class="pt d" data-thread="13" style="--x:47%; --y:14%"></i>
-    <i class="pt m" data-thread="4"  style="--x:4.5%; --y:20%"></i>
-    <i class="pt m" data-thread="5"  style="--x:2%; --y:80%"></i>
+    <i class="pt m" data-thread="7"  style="--x:4.5%; --y:20%"></i>
+    <i class="pt m" data-thread="8"  style="--x:2%; --y:80%"></i>
   </section>
 
   <!-- ============================ INGREDIENTS ======================= -->
-  <section class="ingredients" id="ingredients">
+  <section class="cg" id="catalogue">
     <div class="wrap">
-      <div class="ing-copy z">
-        <h2>It starts with<br>what I have.</h2>
-        <svg class="uline"><use href="#sym-uline"/></svg>
-        <p>Sometimes it&rsquo;s an ingredient from the kitchen. Other times, it&rsquo;s something I&rsquo;m curious to try in my next batch.</p>
-      </div>
-
-      <div class="map z">
-        <svg class="spokes" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M50 24 C 49 33, 51 42, 50 50"/>
-          <path d="M76 24 C 67 30, 60 42, 50 50"/>
-          <path d="M50 76 C 49 68, 51 60, 50 50"/>
-          <path d="M76 76 C 67 71, 60 58, 50 50"/>
-        </svg>
-
-        <div class="ing">
-          <div class="ill"><img loading="lazy" decoding="async" src="assets/icons/oils.webp" alt="" width="1254" height="1254">
-            <i class="pt d" data-thread="22" style="--x:-30%; --y:62%"></i>
-            <i class="pt d" data-thread="23" style="--x:45%; --y:50%"></i>
-            <i class="pt d" data-thread="24" style="--x:110%; --y:96%"></i>
-          </div>
-          <div><h3>Oils</h3><p>Coconut, olive, sunflower, palm, castor &amp; more</p></div>
-        </div>
-        <div class="ing">
-          <div class="ill"><img loading="lazy" decoding="async" src="assets/icons/glycerin.webp" alt="" width="1254" height="1254"></div>
-          <div><h3>Glycerin</h3><p>Add in liquid soap<br>for gentle feel</p></div>
-        </div>
-        <div class="ing">
-          <div class="ill"><img loading="lazy" decoding="async" src="assets/icons/milk-and-oat.webp" alt="" width="1254" height="1254"></div>
-          <div><h3>Milk &amp; oat</h3><p>Oat milk, goat milk and other kinds for extra lather</p></div>
-        </div>
-
-        <div class="bubble oval-wrap">
-          <svg class="oval"><use href="#sym-oval"/></svg>
-          Ingredients
-          <i class="pt d" data-thread="25" style="--x:-4%; --y:50%"></i>
-          <i class="pt d" data-thread="26" style="--x:50%; --y:50%"></i>
-          <i class="pt d" data-thread="27" style="--x:4%; --y:96%"></i>
-        </div>
-
-        <div class="ing">
-          <div class="ill"><img loading="lazy" decoding="async" src="assets/icons/salts-and-clays.webp" alt="" width="1254" height="1254">
-            <i class="pt d" data-thread="28" style="--x:70%; --y:-14%"></i>
-            <i class="pt d" data-thread="29" style="--x:50%; --y:50%"></i>
-            <i class="pt d" data-thread="30" style="--x:40%; --y:115%"></i>
-          </div>
-          <div><h3>Salts &amp; clays</h3><p>Natural colour pigments, texture and purification properties</p></div>
-        </div>
-        <div class="ing">
-          <div class="ill"><img loading="lazy" decoding="async" src="assets/icons/fruits-and-juices.webp" alt="" width="1254" height="1254"></div>
-          <div><h3>Fruits &amp; juices</h3><p>Boost lather and nourish skin with vitamins</p></div>
-        </div>
-        <div class="ing">
-          <div class="ill"><img loading="lazy" decoding="async" src="assets/icons/herbs-and-botanicals.webp" alt="" width="1254" height="1254"></div>
-          <div><h3>Herbs &amp; botanicals</h3><p>Calendula, lavender,<br>rosemary &amp; more</p></div>
-        </div>
-      </div>
-    </div>
-    <i class="pt d" data-thread="19" style="--x:23%; --y:-8%" data-pin></i>
-    <i class="pt d" data-thread="20" style="--x:19.8%; --y:11%" data-pin></i>
-    <i class="pt d" data-thread="21" style="--x:23%; --y:27%" data-pin></i>
-    <i class="pt d" data-thread="31" style="--x:33%; --y:94%"></i>
-    <i class="pt d" data-thread="32" style="--x:28%; --y:100%"></i>
-    <i class="pt m" data-thread="6"  style="--x:4.5%; --y:30%"></i>
-    <i class="pt m" data-thread="7"  style="--x:2%; --y:85%"></i>
-  </section>
-
-  <!-- ============================ RANGE TEASER (DRAFT) ================ -->
-  <section class="range-teaser" id="catalogue">
-    <div class="wrap">
-      <div class="range-copy z">
+      <div class="cg-head z">
+        <p class="ed-label">02 / The soaps</p>
         <h2>My soap catalogue</h2>
-        <p>Here&rsquo;s everything I make. Each bar is a single batch. Limited stock available.</p>
-      </div>
-      <figure class="range-grid range-carousel" data-carousel data-autoplay="2500">
-        <div class="rc-track" id="rcTrack">
-          <div class="rc-slide"><img src="assets/preview/carousel/full-grid.webp" alt="A grid of nine Soapmerry soap bars, each shown individually on a clean reflective surface"></div>
-          <div class="rc-slide"><img loading="lazy" decoding="async" src="assets/preview/carousel/styled-trio.jpg" alt="Honey, goat milk and vegetable soap bars styled together on a tray"></div>
-          <div class="rc-slide"><img loading="lazy" decoding="async" src="assets/preview/carousel/styled-apple-carrot.jpg" alt="Fruit soap bars styled on a plate with apple slices and carrot peel"></div>
-          <div class="rc-slide"><img loading="lazy" decoding="async" src="assets/preview/carousel/styled-goatmilk.jpg" alt="Goat milk soap bar styled on a stone slab with oats"></div>
-          <div class="rc-slide"><img loading="lazy" decoding="async" src="assets/preview/carousel/styled-vinegar.jpg" alt="Vinegar soap bar styled with dried apple slices and oil"></div>
-          <div class="rc-slide"><img loading="lazy" decoding="async" src="assets/preview/carousel/styled-beer.jpg" alt="Beer soap bar styled with wheat and a glass of beer"></div>
-          <div class="rc-slide"><img loading="lazy" decoding="async" src="assets/opt/styled-vegetable.webp" alt="Two vegetable soap bars with foam on white marble, beside a sliced tomato and cherry tomatoes"></div>
-        </div>
-        <button type="button" class="rc-btn rc-prev" aria-label="Previous soap">&#8249;</button>
-        <button type="button" class="rc-btn rc-next" aria-label="Next soap">&#8250;</button>
-        <div class="rc-dots" id="rcDots"></div>
-      </figure>
-    </div>
-  </section>
-
-  <!-- ============================ CURING ============================ -->
-  <section class="curing" id="curing">
-    <div class="wrap">
-      <div class="tags z">
-        <button class="tag panel torn" aria-expanded="false" data-tag>
-          <i class="pt d" data-thread="33" style="--x:22%; --y:35%"></i>
-          <span class="num">01</span>
-          <span class="row"><h3>Coconut<br>Kitchen Bar</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
-          <span class="more">Staple kitchen soap. Best for hands and everyday kitchen use.</span>
-          <span class="full-note" data-batch="coconut">Full note <svg><use href="#sym-arrow"/></svg></span>
-        </button>
-        <button class="tag panel torn" aria-expanded="false" data-tag>
-          <i class="pt d" data-thread="34" style="--x:16%; --y:55%"></i>
-          <span class="num">02</span>
-          <span class="row"><h3>Apple and<br>Carrots</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
-          <span class="more">Bright and clean. Best for dull, uneven tone.</span>
-          <span class="full-note" data-batch="apple-carrot">Full note <svg><use href="#sym-arrow"/></svg></span>
-        </button>
-        <button class="tag panel torn" aria-expanded="false" data-tag>
-          <i class="pt d" data-thread="35" style="--x:24%; --y:40%"></i>
-          <span class="num">03</span>
-          <span class="row"><h3>Tomato</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
-          <span class="more">Green and earthy. Best for sensitive, dry skin.</span>
-          <span class="full-note" data-batch="tomato">Full note <svg><use href="#sym-arrow"/></svg></span>
-        </button>
-        <button class="tag panel torn" aria-expanded="false" data-tag>
-          <i class="pt d" data-thread="36" style="--x:15%; --y:60%"></i>
-          <span class="num">04</span>
-          <span class="row"><h3>Pink Himalayan<br>&amp; Sea Salt Spa</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
-          <span class="more">A gentle exfoliant with a creamy lather. Best for oily, sweaty, body-acne prone skin.</span>
-          <span class="full-note" data-batch="himalayan">Full note <svg><use href="#sym-arrow"/></svg></span>
-        </button>
-        <button class="tag panel torn" aria-expanded="false" data-tag>
-          <i class="pt d" data-thread="37" style="--x:23%; --y:35%"></i>
-          <span class="num">05</span>
-          <span class="row"><h3>Honey and<br>Turmeric</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
-          <span class="more">Soft and simple for dry and sensitive skin.</span>
-          <span class="full-note" data-batch="honey-turmeric">Full note <svg><use href="#sym-arrow"/></svg></span>
-        </button>
-        <button class="tag panel torn" aria-expanded="false" data-tag>
-          <i class="pt d" data-thread="38" style="--x:16%; --y:55%"></i>
-          <span class="num">06</span>
-          <span class="row"><h3>Stout Beer</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
-          <span class="more">Malty and moisturising. Best for dry, dull, itchy skin.</span>
-          <span class="full-note" data-batch="stout">Full note <svg><use href="#sym-arrow"/></svg></span>
-        </button>
-        <button class="tag panel torn" aria-expanded="false" data-tag>
-          <i class="pt d" data-thread="39" style="--x:24%; --y:40%"></i>
-          <span class="num">07</span>
-          <span class="row"><h3>Goat Milk<br>and Oat</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
-          <span class="more">Soft, creamy and mild. Best for sensitive, dry, mature skin.</span>
-          <span class="full-note" data-batch="goatmilk">Full note <svg><use href="#sym-arrow"/></svg></span>
-        </button>
-        <button class="tag panel torn" aria-expanded="false" data-tag>
-          <i class="pt d" data-thread="40" style="--x:15%; --y:70%"></i>
-          <span class="num">08</span>
-          <span class="row"><h3>Herbal<br>Vinegar</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
-          <span class="more">Herbal cleansing for oily and uneven skin.</span>
-          <span class="full-note" data-batch="vinegar">Full note <svg><use href="#sym-arrow"/></svg></span>
-        </button>
       </div>
 
-      <div class="shelf-unit z">
-        <div class="shelf-row">
-          <div class="shelf-items">
-            <button class="shelf-soap has-photo" type="button" data-batch="apple-carrot">
-              <span class="soap-label at-left">Apple and Carrots<img loading="lazy" decoding="async" class="hand-arrow" src="assets/pencil-arrow-curve-right.png" alt=""></span>
-              <img loading="lazy" decoding="async" src="assets/preview/brightened/soap-yellow.webp" alt="" width="383" height="360">
-            </button>
-            <button class="shelf-soap has-photo" type="button" data-batch="tomato">
-              <span class="soap-label at-right">Tomato<img loading="lazy" decoding="async" class="hand-arrow" src="assets/pencil-arrow-curve-left.png" alt=""></span>
-              <img loading="lazy" decoding="async" src="assets/preview/brightened/soap-tomato.webp" alt="" width="525" height="318">
-            </button>
-          </div>
-          <div class="plank"><img loading="lazy" decoding="async" src="assets/shelf-plank.webp" alt=""></div>
+      <p class="cg-label cg-skin z">Best for</p>
+      <div class="cg-chips z" id="cgChips" role="group" aria-label="Filters"></div>
+      <p class="cg-count" id="cgCount" aria-live="polite"></p>
+
+      <div class="cg-grid z" id="cgGrid"><noscript><p>Please turn on JavaScript to see the catalogue.</p></noscript></div>
+
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="ink" x="-2%" y="-3%" width="104%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="1.3" result="d"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2.6 0 0 0 -0.1" result="m"/><feComposite in="d" in2="m" operator="in"/></filter></svg>
+    <div class="ed-whywrap" id="ingredients">
+      <aside class="ed-whycard">
+        <div class="wc-body">
+          <h3>Why cold-process?</h3>
+          <p>I make my soap by the cold-process method. Over 4 to 8 weeks of curing, glycerin forms naturally and the ingredients bind together, so the bar lasts longer.</p>
         </div>
-        <div class="shelf-row">
-          <div class="shelf-items">
-            <button class="shelf-soap has-photo" type="button" data-batch="himalayan">
-              <span class="soap-label at-left">Pink Himalayan &amp; Sea Salt Spa<img loading="lazy" decoding="async" class="hand-arrow" src="assets/pencil-arrow-curve-right.png" alt=""></span>
-              <img loading="lazy" decoding="async" src="assets/preview/brightened/soap-himalayan.webp" alt="" width="1503" height="1181">
-            </button>
-            <button class="shelf-soap has-photo" type="button" data-batch="vinegar">
-              <span class="soap-label at-right">Herbal Vinegar<img loading="lazy" decoding="async" class="hand-arrow" src="assets/pencil-arrow-curve-left.png" alt=""></span>
-              <img loading="lazy" decoding="async" src="assets/preview/brightened/soap-vinegar.webp" alt="" width="671" height="391">
-            </button>
-          </div>
-          <div class="plank"><img loading="lazy" decoding="async" src="assets/shelf-plank.webp" alt=""></div>
-        </div>
-        <div class="shelf-row">
-          <div class="shelf-items">
-            <button class="shelf-soap has-photo" type="button" data-batch="coconut">
-              <span class="soap-label at-left">Coconut Kitchen Bar<img loading="lazy" decoding="async" class="hand-arrow" src="assets/pencil-arrow-curve-right.png" alt=""></span>
-              <img loading="lazy" decoding="async" src="assets/preview/brightened/soap-coconut.webp" alt="" width="370" height="330">
-            </button>
-            <button class="shelf-soap has-photo" type="button" data-batch="honey-turmeric">
-              <span class="soap-label at-right">Honey and Turmeric<img loading="lazy" decoding="async" class="hand-arrow" src="assets/pencil-arrow-curve-left.png" alt=""></span>
-              <img loading="lazy" decoding="async" src="assets/preview/brightened/soap-honey.webp" alt="" width="389" height="407">
-            </button>
-          </div>
-          <div class="plank"><img loading="lazy" decoding="async" src="assets/shelf-plank.webp" alt=""></div>
-        </div>
-        <div class="shelf-row">
-          <div class="shelf-items">
-            <button class="shelf-soap has-photo" type="button" data-batch="stout">
-              <span class="soap-label at-left">Stout Beer<img loading="lazy" decoding="async" class="hand-arrow" src="assets/pencil-arrow-curve-right.png" alt=""></span>
-              <img loading="lazy" decoding="async" src="assets/preview/brightened/soap-beer.webp" alt="" width="580" height="364">
-            </button>
-            <button class="shelf-soap has-photo" type="button" data-batch="goatmilk">
-              <span class="soap-label at-right">Goat Milk and Oat<img loading="lazy" decoding="async" class="hand-arrow" src="assets/pencil-arrow-curve-left.png" alt=""></span>
-              <img loading="lazy" decoding="async" src="assets/preview/brightened/soap-goatmilk.webp" alt="" width="949" height="415">
-            </button>
-          </div>
-          <div class="plank"><img loading="lazy" decoding="async" src="assets/shelf-plank.webp" alt=""></div>
-        </div>
+        <div class="wc-icons" role="list" aria-label="What goes in the soap">
+        <span role="listitem"><img loading="lazy" decoding="async" src="assets/icons/oils.webp" alt="" title="Oils" width="1254" height="1254"><i>Oils</i></span><span role="listitem"><img loading="lazy" decoding="async" src="assets/icons/glycerin.webp" alt="" title="Glycerin" width="1254" height="1254"><i>Glycerin</i></span><span role="listitem"><img loading="lazy" decoding="async" src="assets/icons/milk-and-oat.webp" alt="" title="Milk and oat" width="1254" height="1254"><i>Milk &amp; oat</i></span><span role="listitem"><img loading="lazy" decoding="async" src="assets/icons/salts-and-clays.webp" alt="" title="Salts and clays" width="1254" height="1254"><i>Salts &amp; clays</i></span><span role="listitem"><img loading="lazy" decoding="async" src="assets/icons/fruits-and-juices.webp" alt="" title="Fruits and juices" width="1254" height="1254"><i>Fruits &amp; juices</i></span><span role="listitem"><img loading="lazy" decoding="async" src="assets/icons/herbs-and-botanicals.webp" alt="" title="Herbs and botanicals" width="1254" height="1254"><i>Herbs</i></span>
       </div>
+      </aside>
     </div>
-    <i class="pt m" data-thread="8"  style="--x:4.5%; --y:30%"></i>
-    <i class="pt m" data-thread="9"  style="--x:2%; --y:85%"></i>
+    </div>
+    <div class="cg-send" id="cgSend" hidden><button type="button" class="loop loop-primary" id="cgSendBtn">My enquiry <span class="go"><svg><use href="#sym-arrow"/></svg></span></button></div>
+    <i class="pt m" data-thread="10"  style="--x:4.5%; --y:30%"></i>
+    <i class="pt m" data-thread="11"  style="--x:2%; --y:85%"></i>
   </section>
 
-  <!-- ============================ BATCH PANEL ======================= -->
-  <section class="batch" id="batch-notes">
-    <div class="wrap">
-      <!-- phone layout: one card per soap, tap for the batch details -->
-      <div class="batch-cards z">
-        <button class="scard panel torn" type="button" data-batch="apple-carrot">
-          <span class="pic"><img loading="lazy" decoding="async" src="assets/preview/brightened/soap-yellow.webp" alt="" width="383" height="360"></span>
-          <span class="num">01</span>
-          <span class="row"><h3>Apple and<br>Carrots</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
-        </button>
-        <button class="scard panel torn" type="button" data-batch="tomato">
-          <span class="pic"><img loading="lazy" decoding="async" src="assets/preview/brightened/soap-tomato.webp" alt="" width="525" height="318"></span>
-          <span class="num">02</span>
-          <span class="row"><h3>Tomato</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
-        </button>
-        <button class="scard panel torn" type="button" data-batch="himalayan">
-          <span class="pic"><img loading="lazy" decoding="async" src="assets/preview/brightened/soap-himalayan.webp" alt="" width="1503" height="1181"></span>
-          <span class="num">03</span>
-          <span class="row"><h3>Pink Himalayan<br>&amp; Sea Salt</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
-        </button>
-        <button class="scard panel torn" type="button" data-batch="vinegar">
-          <span class="pic"><img loading="lazy" decoding="async" src="assets/preview/brightened/soap-vinegar.webp" alt="" width="671" height="391"></span>
-          <span class="num">04</span>
-          <span class="row"><h3>Herbal<br>Vinegar</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
-        </button>
-        <button class="scard panel torn" type="button" data-batch="coconut">
-          <span class="pic"><img loading="lazy" decoding="async" src="assets/preview/brightened/soap-coconut.webp" alt="" width="370" height="330"></span>
-          <span class="num">05</span>
-          <span class="row"><h3>Coconut<br>Kitchen Bar</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
-        </button>
-        <button class="scard panel torn" type="button" data-batch="honey-turmeric">
-          <span class="pic"><img loading="lazy" decoding="async" src="assets/preview/brightened/soap-honey.webp" alt="" width="389" height="407"></span>
-          <span class="num">06</span>
-          <span class="row"><h3>Honey and<br>Turmeric</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
-        </button>
-        <button class="scard panel torn" type="button" data-batch="stout">
-          <span class="pic"><img loading="lazy" decoding="async" src="assets/preview/brightened/soap-beer.webp" alt="" width="580" height="364"></span>
-          <span class="num">07</span>
-          <span class="row"><h3>Stout Beer</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
-        </button>
-        <button class="scard panel torn" type="button" data-batch="goatmilk">
-          <span class="pic"><img loading="lazy" decoding="async" src="assets/preview/brightened/soap-goatmilk.webp" alt="" width="949" height="415"></span>
-          <span class="num">08</span>
-          <span class="row"><h3>Goat Milk<br>and Oat</h3><svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></span>
-        </button>
-      </div>
-    </div>
-    <i class="pt m" data-thread="10" style="--x:4.5%; --y:30%"></i>
-    <i class="pt m" data-thread="11" style="--x:2%; --y:85%"></i>
-  </section>
+  <!-- ============================ CATALOGUE + STOCK (DRAFT v2, Soap Stamp & Loop) ============================ -->
 
   <!-- ============================ FACT CARDS (DRAFT) ================= -->
+  <div class="ed-ffwrap"><div class="ed-row-label"><p class="ed-label">03 / Good to know</p></div>
+  <div class="ff-row">
   <section class="facts">
     <div class="wrap">
       <div class="facts-intro z">
-        <h2>Why a soap bar?</h2>
+        <h2>Fun facts</h2>
       </div>
-      <div class="fact-carousel" data-carousel data-autoplay="4500">
-        <div class="rc-track">
-          <div class="rc-slide">
-            <div class="fact-card fc-photo fc-dish">
-              <p class="fc-kicker">Lasts longer</p>
-              <p class="fc-text">Each wash uses more than 6 times less soap than liquid soap.</p>
-              <p class="fc-source">Source: Koehler &amp; Wildbolz, Environmental Science &amp; Technology, 2009</p>
-            </div>
-          </div>
-          <div class="rc-slide">
-            <div class="fact-card fc-photo fc-hands">
-              <p class="fc-kicker">Gentler without SLS</p>
-              <p class="fc-text">SLS and SLES can dry out your skin, and the more you use, the drier it gets. My soap is free from both.</p>
-              <p class="fc-source">Sources: Nardo et al., Contact Dermatitis, 1996; SLS vs SLES study, Food and Chemical Toxicology, 2000</p>
-            </div>
-          </div>
-          <div class="rc-slide">
-            <div class="fact-card fc-photo fc-cost">
-              <p class="fc-kicker">What it costs</p>
-              <p class="fc-text">Based on my experience, one bar lasts about 9&ndash;12 weeks of daily use in the shower. At RM 15&ndash;25 a bar, that works out to about RM 0.18&ndash;0.40 a day.</p>
-              <p class="fc-source">Based on my own use</p>
-            </div>
-          </div>
-          <div class="rc-slide">
-            <div class="fact-card fc-photo">
-              <p class="fc-kicker">Less packaging</p>
-              <p class="fc-text">Liquid soap needs nearly 20 times more energy to package than bar soap.</p>
-              <p class="fc-source">Source: Koehler &amp; Wildbolz, Environmental Science &amp; Technology, 2009</p>
-            </div>
-          </div>
-          <div class="rc-slide">
-            <div class="fact-card fc-photo fc-clean">
-              <p class="fc-kicker">Is it hygienic?</p>
-              <p class="fc-text">Lathering and rinsing with bar soap washes germs off your hands.</p>
-              <p class="fc-source">Source: Amin et al., American Journal of Tropical Medicine and Hygiene, 2014</p>
-            </div>
-          </div>
-          <div class="rc-slide">
-            <div class="fact-card fc-photo fc-oils">
-              <p class="fc-kicker">Naturally moisturizing</p>
-              <p class="fc-text">My soap is made from real oils, like olive, castor and sunflower. Turning oil into soap creates glycerin, a natural moisturizer.</p>
-              <p class="fc-source">Source: Fluhr et al., British Journal of Dermatology, 2008</p>
-            </div>
-          </div>
-        </div>
-        <button type="button" class="rc-btn rc-prev" aria-label="Previous fact">&#8249;</button>
-        <button type="button" class="rc-btn rc-next" aria-label="Next fact">&#8250;</button>
-        <div class="rc-dots"></div>
+      <div class="flips">
+        <button type="button" class="flip" aria-pressed="false" aria-label="Is bar soap hygienic?. Tap to flip the card for the details."><span class="flip-in"><span class="face front"><span class="ft">Is bar soap hygienic?</span><span class="fh">Tap to flip</span></span><span class="face back"><span class="bt">Good news: when you lather and rinse with bar soap, it washes the germs off your hands.</span><span class="bs">Source: Amin et al., American Journal of Tropical Medicine and Hygiene, 2014</span></span></span></button>
+        <button type="button" class="flip" aria-pressed="false" aria-label="Soft on your skin. Tap to flip the card for the details."><span class="flip-in"><span class="face front"><span class="ft">Soft on your skin</span><span class="fh">Tap to flip</span></span><span class="face back"><span class="bt">I make my soap from botanical oils like olive, castor, sunflower, sustainable palm oil, coconut oil, etc. When the oil turns into soap, it creates glycerin, a natural moisturizer for your skin.</span><span class="bs">Source: Fluhr et al., British Journal of Dermatology, 2008</span></span></span></button>
+        <button type="button" class="flip" aria-pressed="false" aria-label="A bar goes a long way. Tap to flip the card for the details."><span class="flip-in"><span class="face front"><span class="ft">A bar goes a long way</span><span class="fh">Tap to flip</span></span><span class="face back"><span class="bt">Each wash uses more than 6 times less soap than liquid soap, so one bar goes a long way.</span><span class="bs">Source: Koehler &amp; Wildbolz, Environmental Science &amp; Technology, 2009</span></span></span></button>
+        <button type="button" class="flip" aria-pressed="false" aria-label="What does it cost?. Tap to flip the card for the details."><span class="flip-in"><span class="face front"><span class="ft">What does it cost?</span><span class="fh">Tap to flip</span></span><span class="face back"><span class="bt">From my own use, one bar lasts about 9&ndash;12 weeks of daily showers. At RM 15&ndash;25 a bar, that works out to roughly RM 0.18&ndash;0.40 a day.</span><span class="bs">Based on my own use</span></span></span></button>
+        <button type="button" class="flip" aria-pressed="false" aria-label="Kinder to the planet. Tap to flip the card for the details."><span class="flip-in"><span class="face front"><span class="ft">Kinder to the planet</span><span class="fh">Tap to flip</span></span><span class="face back"><span class="bt">Packaging liquid soap takes nearly 20 times more energy than packaging bar soap, so a soap bar is more sustainable to the planet.</span><span class="bs">Source: Koehler &amp; Wildbolz, Environmental Science &amp; Technology, 2009</span></span></span></button>
+        <button type="button" class="flip" aria-pressed="false" aria-label="What does IFRA certified mean?. Tap to flip the card for the details."><span class="flip-in"><span class="face front"><span class="ft">What does IFRA certified mean?</span><span class="fh">Tap to flip</span></span><span class="face back"><span class="bt">IFRA is the International Fragrance Association. An IFRA certified fragrance oil meets their safety standards for use in soap, which means the fragrance has been checked for safe use in a bar like this.</span><span class="bs">Source: International Fragrance Association (IFRA) Standards</span></span></span></button>
       </div>
+      <p class="flip-cue">Tap a card to flip it</p>
     </div>
   </section>
 
   <!-- ============================ SHARE ============================= -->
-  <section class="share" id="enquire">
+  <section class="faq" id="faq">
     <div class="wrap">
-      <div class="tellus z">
-        <i class="pt d" data-thread="50" style="--x:-58%; --y:-30%"></i>
-        <i class="pt d" data-thread="51" style="--x:-48%; --y:45%"></i>
-        <i class="pt d" data-thread="52" style="--x:6%; --y:48%"></i>
-        <button class="ring oval-wrap" id="tellUs" type="button">
-          <svg class="oval"><use href="#sym-oval"/></svg>
-          Send me<br>an enquiry
-          <svg class="go" viewBox="0 0 26 26"><circle cx="13" cy="13" r="12"/><path d="M8 13 H18 M14.5 9.5 L18 13 L14.5 16.5"/></svg>
-        </button>
-        <p>I&rsquo;ll be happy to let you<br>know what&rsquo;s available.</p>
+      <h2 class="faq-h">FAQ</h2>
+      <details class="faq-all"><summary class="faq-sum">Frequently asked questions <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
+        <div class="faq-list">
+        <details>
+          <summary>1. Will bar soap dry out my skin? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
+          <p class="ans">My soap is made from plant oils, keeps its natural glycerin and has no SLS or SLES. If your skin feels tight after washing, tell me and I&rsquo;ll suggest a gentler bar.</p>
+        </details>
+        <details>
+          <summary>2. How should I store my soap? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
+          <p class="ans">Let it dry between uses on a dish that drains well, so it doesn&rsquo;t sit in water and go soft. Keep unused bars somewhere cool and dry, away from direct sunlight.</p>
+        </details>
+        <details>
+          <summary>3. Does handmade soap expire? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
+          <p class="ans">Handmade soap changes over time, so use it within a year of curing. The scent may fade, and the bar may soften a little in humid weather. A cool, dry spot helps it last.</p>
+        </details>
+        <details>
+          <summary>4. Can I order in bulk or request a custom batch? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
+          <p class="ans">Yes. Send me the scent, size and quantity you have in mind through the enquiry form, and I&rsquo;ll tell you what I can make and how long it will take, including curing time.</p>
+        </details>
+        </div>
+      </details>
+      
+    </div>
+    <i class="pt m" data-thread="30" style="--x:4.5%; --y:40%"></i>
+    <i class="pt m" data-thread="31" style="--x:2%; --y:100%"></i>
+  </section>
+  </div>
+  </div>
+  <section class="ed-order" id="enquire">
+    <div class="wrap ed-order-in">
+      <p class="ed-label">04 / Order</p>
+      <h2>Ready to order?</h2>
+      
+      <svg class="enq-arrow" viewBox="0 0 200 80" aria-hidden="true"><defs><filter id="hand" x="-5%" y="-20%" width="110%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3.2"/></filter></defs><g filter="url(#hand)"><path d="M6 16 C 38 60, 102 72, 172 40"/><path class="s2" d="M9 19 C 42 58, 104 68, 170 43"/><path d="M152 20 C 163 28, 175 34, 186 39"/><path d="M186 39 C 175 46, 164 55, 156 66"/><path class="s2" d="M154 24 C 165 30, 176 36, 183 40"/></g></svg>
+      <div class="enq-group">
+        <img class="enq-cat" src="assets/enquiry-cat.webp" alt="" aria-hidden="true" width="640" height="885">
+        <button class="enq-card" id="tellUs" type="button"><span class="enq-title">Let&rsquo;s get in touch</span><span class="enq-sub">Tell me which bars you&rsquo;d like to try!</span><span class="enq-open">Enquire Now <i aria-hidden="true">&nearr;</i></span></button>
       </div>
     </div>
-    <i class="pt m" data-thread="12" style="--x:4.5%; --y:30%"></i>
-    <i class="pt m" data-thread="13" style="--x:2%; --y:90%"></i>
+    <i class="pt m" data-thread="32" style="--x:4.5%; --y:30%"></i>
+    <i class="pt m" data-thread="33" style="--x:2%; --y:90%"></i>
   </section>
 
   <!-- ============================ FAQ =============================== -->
-  <section class="faq">
-    <div class="wrap">
-      <div class="faq-list">
-        <details>
-          <summary>What makes handmade soap different? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
-          <p class="ans">I make each batch myself using plant oils, trying different recipes to see how they lather and feel on skin. The glycerin formed naturally during soapmaking stays in the bars instead of being removed, and each batch is left to cure fully before it&rsquo;s ready to use.</p>
-        </details>
-        <details>
-          <summary>Are your soaps suitable for sensitive skin? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
-          <p class="ans">Everyone&rsquo;s skin reacts differently, so I can&rsquo;t promise that every bar will suit sensitive skin. If you&rsquo;re sensitive to fragrance or particular ingredients, let me know. I can share the full ingredient list for any batch and help you find an unscented or low-scent option that works for you.</p>
-        </details>
-        <details>
-          <summary>Will bar soap dry out my skin? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
-          <p class="ans">My soap is made from plant oils, keeps its natural glycerin, and is free from SLS and SLES. Everyone&rsquo;s skin is different, though. If your skin feels tight after washing, tell me and I can suggest a gentler bar.</p>
-        </details>
-        <details>
-          <summary>How long does the soap take to cure? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
-          <p class="ans">I make cold-process soap bars, which usually take four to six weeks to cure. During curing, water gradually evaporates from the bar, making it harder, longer-lasting and gentler on skin. I only list and package a batch once it&rsquo;s fully cured and ready to use.</p>
-        </details>
-        <details>
-          <summary>How should I store my soap? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
-          <p class="ans">Keep it somewhere it can dry between uses &mdash; a soap dish that drains well helps prevent the bar from sitting in water and turning soft. Store any unused bars in a cool, dry place away from direct sunlight, so they keep their shape and scent.</p>
-        </details>
-        <details>
-          <summary>Does handmade soap expire? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
-          <p class="ans">Handmade soap can change over time, so it&rsquo;s best used within a year of curing. The scent may fade and the bar may soften a little in humid weather. Keep it in a cool, dry place and let it dry fully between uses to help it last.</p>
-        </details>
-        <details>
-          <summary>Can I order in bulk or request a custom batch? <svg class="plus" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path class="h" d="M6.5 11H15.5"/><path class="v" d="M11 6.5V15.5"/></svg></summary>
-          <p class="ans">Yes. Send me the scent, size and quantity you have in mind through the enquiry form, and I&rsquo;ll let you know what I can make, along with how much time I&rsquo;ll need &mdash; including the curing period &mdash; so you know when to expect it.</p>
-        </details>
-      </div>
-    </div>
-    <i class="pt m" data-thread="14" style="--x:4.5%; --y:40%"></i>
-    <i class="pt m" data-thread="15" style="--x:2%; --y:100%"></i>
-  </section>
 
   <!-- ============================ FOOTER ============================ -->
-  <footer class="site">
-    <div class="wrap">
-      <div>
-        <div class="flogo">Soapmerry</div>
-        <div class="o8">Made by hand.<br>One batch at a time. <img loading="lazy" decoding="async" class="leaf" src="assets/icons/flower-original.webp" alt=""></div>
-      </div>
-      <div class="o8">Friends &amp; family enquiries<br>I&rsquo;ll reply personally.</div>
-      <div class="o8">Thank you for supporting<br>small and handmade products in Malaysia.</div>
-      <svg class="heart" viewBox="0 0 26 24"><path d="M13 22 C 6 17, 1 13, 1 8 C 1 4.5, 3.5 2, 6.8 2 C 9.4 2, 11.6 3.6, 13 5.8 C 14.4 3.6, 16.6 2, 19.2 2 C 22.5 2, 25 4.5, 25 8 C 25 13, 20 17, 13 22 Z"/></svg>
-    </div>
-  </footer>
 
 </div>
 
 <!-- batch details (opened from the phone cards) -->
 <dialog class="batch-dialog" id="batchDialog" aria-labelledby="dlgTitle">
-  <div class="dlg">
+  <div class="dlg paper">
+    <img class="clip" src="assets/paperclip.webp" alt="" aria-hidden="true">
     <button class="close" type="button" data-close aria-label="Close">&times;</button>
-    <p class="kicker">Selected batch</p>
+    <div class="dlg-car" id="dlgCar">
+      <div class="dlg-track" id="dlgTrack"></div>
+      <button type="button" class="car-btn prev" aria-label="Previous photo">&#8249;</button>
+      <button type="button" class="car-btn next" aria-label="Next photo">&#8250;</button>
+      <div class="car-dots" id="dlgDots"></div>
+    </div>
     <h3 id="dlgTitle"></h3>
     <p class="desc" id="dlgDesc"></p>
-    <dl>
+    <dl class="rows">
+      <div><dt>Stock</dt><dd id="dlgStock"></dd></div>
       <div><dt>Price</dt><dd id="dlgPrice"></dd></div>
-      <div><dt>Ingredients</dt><dd id="dlgIngs"></dd></div>
-      <div><dt>Fragrance</dt><dd id="dlgFrag"></dd></div>
-      <div><dt>Good for</dt><dd id="dlgGood"></dd></div>
+      <div><dt>Recommended for</dt><dd id="dlgGood"></dd></div>
+      <div><dt>Scent</dt><dd id="dlgFrag"></dd></div>
     </dl>
-    <button class="btn-olive" type="button" id="dlgAdd">Add to enquiry note <svg><use href="#sym-arrow"/></svg></button>
+    <div class="free">
+      <p class="free-h">Free from</p>
+      <ul>
+        <li><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="12" cy="19" r="6"/><circle cx="21" cy="11" r="4"/><circle cx="23" cy="22" r="3"/><path class="x" d="M5 27 L27 5"/></svg><span>Foaming agents</span></li>
+        <li><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="9" y="12" width="14" height="14" rx="3"/><path d="M11 12v-3h10v3"/><path d="M12.5 19h7"/><path class="x" d="M5 27 L27 5"/></svg><span>Preservatives</span></li>
+        <li><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="9" y="6" width="14" height="20" rx="3"/><path d="M9 12h14M9 20h14"/><path class="x" d="M5 27 L27 5"/></svg><span>Petroleum-derived ingredients</span></li>
+        <li><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="9" cy="16" r="3.5"/><path d="M12.5 16 C 16 11, 18 21, 22 16 S 27 14, 29 16"/><path class="x" d="M5 27 L27 5"/></svg><span>Synthetic surfactants</span></li>
+      </ul>
+    </div>
+    <details class="inci"><summary>Ingredient list</summary><p id="dlgIngs"></p></details>
+    <div class="dlg-foot"><button class="loop loop-sec" type="button" id="dlgAdd">I&rsquo;d like this <span class="go" aria-hidden="true"></span></button></div>
   </div>
 </dialog>
 
@@ -1461,8 +2155,8 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
     <button class="close" type="button" id="enqClose" aria-label="Close">&times;</button>
 
     <div id="enqFormView">
-      <p class="kicker">Enquiry</p>
-      <h3 id="enqDlgTitle">Which soaps would you like?<br>I&rsquo;ll be happy to let you know what&rsquo;s available.</h3>
+      <h3 id="enqDlgTitle"><span class="enq-hl">Let&rsquo;s get in touch</span></h3>
+      <p class="enq-dlg-sub">Tell me which bars you&rsquo;d like to try!</p>
 
       <form class="enquiry" id="enquiryForm" name="enquiry" method="POST" data-netlify="true" netlify-honeypot="company">
         <input type="hidden" name="form-name" value="enquiry">
@@ -1492,72 +2186,7 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
 
         <div class="field">
           <label>Which soap bars, and how many?</label>
-          <div class="qty-list" id="enqQtyList">
-            <div class="qty-row" data-name="Coconut Kitchen Bar">
-              <span class="qty-label">Coconut Kitchen Bar</span>
-              <div class="stepper">
-                <button type="button" class="step-btn minus" aria-label="Decrease Coconut Kitchen Bar">&minus;</button>
-                <input type="text" inputmode="numeric" class="step-input" value="0" readonly aria-label="Coconut Kitchen Bar quantity">
-                <button type="button" class="step-btn plus" aria-label="Increase Coconut Kitchen Bar">+</button>
-              </div>
-            </div>
-            <div class="qty-row" data-name="Apple and Carrots">
-              <span class="qty-label">Apple and Carrots</span>
-              <div class="stepper">
-                <button type="button" class="step-btn minus" aria-label="Decrease Apple and Carrots">&minus;</button>
-                <input type="text" inputmode="numeric" class="step-input" value="0" readonly aria-label="Apple and Carrots quantity">
-                <button type="button" class="step-btn plus" aria-label="Increase Apple and Carrots">+</button>
-              </div>
-            </div>
-            <div class="qty-row" data-name="Tomato">
-              <span class="qty-label">Tomato</span>
-              <div class="stepper">
-                <button type="button" class="step-btn minus" aria-label="Decrease Tomato">&minus;</button>
-                <input type="text" inputmode="numeric" class="step-input" value="0" readonly aria-label="Tomato quantity">
-                <button type="button" class="step-btn plus" aria-label="Increase Tomato">+</button>
-              </div>
-            </div>
-            <div class="qty-row" data-name="Pink Himalayan &amp; Sea Salt">
-              <span class="qty-label">Pink Himalayan &amp; Sea Salt</span>
-              <div class="stepper">
-                <button type="button" class="step-btn minus" aria-label="Decrease Pink Himalayan &amp; Sea Salt">&minus;</button>
-                <input type="text" inputmode="numeric" class="step-input" value="0" readonly aria-label="Pink Himalayan &amp; Sea Salt quantity">
-                <button type="button" class="step-btn plus" aria-label="Increase Pink Himalayan &amp; Sea Salt">+</button>
-              </div>
-            </div>
-            <div class="qty-row" data-name="Honey and Turmeric">
-              <span class="qty-label">Honey and Turmeric</span>
-              <div class="stepper">
-                <button type="button" class="step-btn minus" aria-label="Decrease Honey and Turmeric">&minus;</button>
-                <input type="text" inputmode="numeric" class="step-input" value="0" readonly aria-label="Honey and Turmeric quantity">
-                <button type="button" class="step-btn plus" aria-label="Increase Honey and Turmeric">+</button>
-              </div>
-            </div>
-            <div class="qty-row" data-name="Stout Beer">
-              <span class="qty-label">Stout Beer</span>
-              <div class="stepper">
-                <button type="button" class="step-btn minus" aria-label="Decrease Stout Beer">&minus;</button>
-                <input type="text" inputmode="numeric" class="step-input" value="0" readonly aria-label="Stout Beer quantity">
-                <button type="button" class="step-btn plus" aria-label="Increase Stout Beer">+</button>
-              </div>
-            </div>
-            <div class="qty-row" data-name="Goat Milk and Oat">
-              <span class="qty-label">Goat Milk and Oat</span>
-              <div class="stepper">
-                <button type="button" class="step-btn minus" aria-label="Decrease Goat Milk and Oat">&minus;</button>
-                <input type="text" inputmode="numeric" class="step-input" value="0" readonly aria-label="Goat Milk and Oat quantity">
-                <button type="button" class="step-btn plus" aria-label="Increase Goat Milk and Oat">+</button>
-              </div>
-            </div>
-            <div class="qty-row" data-name="Herbal Vinegar">
-              <span class="qty-label">Herbal Vinegar</span>
-              <div class="stepper">
-                <button type="button" class="step-btn minus" aria-label="Decrease Herbal Vinegar">&minus;</button>
-                <input type="text" inputmode="numeric" class="step-input" value="0" readonly aria-label="Herbal Vinegar quantity">
-                <button type="button" class="step-btn plus" aria-label="Increase Herbal Vinegar">+</button>
-              </div>
-            </div>
-          </div>
+          <div class="qty-list" id="enqQtyList"></div>
           <p class="total-ref">For your reference <strong id="enqTotalCount">0 bars</strong></p>
         </div>
 
@@ -1566,11 +2195,10 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
           <textarea id="enqNotes" name="notes" placeholder="Scent preferences, timing or custom requests are all welcome."></textarea>
         </div>
 
-        <p class="enq-error" id="enqError" hidden>Something went wrong sending this &mdash; you can email me directly at <a id="enqFallbackMail" href="mailto:hello@example.com">hello@example.com</a> instead.</p>
+        <p class="enq-error" id="enqError" hidden>Something went wrong sending your enquiry. Please try again in a moment.</p>
 
-        <button class="btn-olive" type="submit" id="enqSubmitBtn">
-          <span id="enqSubmitLabel">Send enquiry</span>
-          <svg><use href="#sym-arrow"/></svg>
+        <button class="loop loop-primary" type="submit" id="enqSubmitBtn">
+          <span id="enqSubmitLabel">Enquire Now</span> <span class="go"><svg><use href="#sym-arrow"/></svg></span>
         </button>
       </form>
     </div>
@@ -1625,7 +2253,7 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
     setTimeout(function () { loader.remove(); }, 800);
   }
   if (reduceMotion) { document.body.classList.add('no-loader'); loader.remove(); }
-  else { setTimeout(reveal, 3700); }
+  else { setTimeout(reveal, 1800); }
 
   /* ------------------------------------------------------------------
      THREAD: one curve through every [data-thread] anchor
@@ -1791,52 +2419,64 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
      ------------------------------------------------------------------ */
   var BATCHES = {
     coconut: {
-      title: 'Coconut Kitchen Bar', batch: 'Ready to use now', img: 'assets/preview/brightened/soap-coconut.webp',
+      title: 'Kitchen Dish Bar', batch: 'Ready to use now', img: 'assets/preview/brightened/soap-coconut.webp',
       desc: 'Staple kitchen soap.',
       ings: 'Coconut oil, palm oil, castor oil, brewed coffee, lime fragrance oil (IFRA certified).',
-      price: 15, frag: 'Lime', cure: 'Ready to use now', good: 'Hands, everyday kitchen use'
+      price: 15, frag: 'Citrus, lime', cure: 'Ready to use now', good: 'Hands, everyday kitchen use'
     },
     'apple-carrot': {
       title: 'Apple and Carrots', batch: 'Ready 26 Sept', img: 'assets/preview/brightened/soap-yellow.webp',
       desc: 'Bright and clean.',
       ings: 'Coconut oil, palm oil, camellia oil, sweet almond oil, sunflower oil, apple and carrot juice, island escape fragrance oil (IFRA certified).',
-      price: 18, frag: 'Island escape', cure: 'Ready 26 Sept', good: 'Dull, uneven tone'
+      price: 18, frag: 'Tropical, island escape', cure: 'Ready 26 Sept', good: 'Dull, uneven tone'
     },
     tomato: {
       title: 'Tomato', batch: 'Ready 26 Sept', img: 'assets/preview/brightened/soap-tomato.webp',
       desc: 'Green and earthy.',
       ings: 'Coconut oil, palm oil, olive oil, green tea seed oil, apricot kernel oil, tomato juice, pomegranate powder, after the rain fragrance oil (IFRA certified).',
-      price: 18, frag: 'After the rain', cure: 'Ready 26 Sept', good: 'Sensitive, dry skin'
+      price: 18, frag: 'Fresh, after the rain', cure: 'Ready 26 Sept', good: 'Sensitive, dry skin'
     },
     himalayan: {
-      title: 'Pink Himalayan and Sea Salt Spa', batch: 'Ready to use now', img: 'assets/preview/brightened/soap-himalayan.webp',
+      title: 'Pink Himalayan & Sea Salt Spa', batch: 'Ready to use now', img: 'assets/preview/brightened/soap-himalayan.webp',
       desc: 'A gentle exfoliant with a creamy lather.',
       ings: 'Himalayan salt, calamine powder, coconut oil, castor oil, camellia sugar fragrance oil (IFRA certified).',
-      price: 15, frag: 'Camellia sugar', cure: 'Ready to use now', good: 'Oily, sweaty, body-acne prone'
+      price: 15, frag: 'Floral, camellia sugar', cure: 'Ready to use now', good: 'Oily, sweaty, body-acne prone'
     },
     'honey-turmeric': {
       title: 'Honey and Turmeric', batch: 'Ready 26 Sept', img: 'assets/preview/brightened/soap-honey.webp',
       desc: 'Soft and simple for dry and sensitive skin.',
       ings: 'Coconut oil, palm oil, camellia oil, sweet almond oil, sunflower oil, turmeric powder, pomegranate powder, honey, pink peony fragrance oil (IFRA certified).',
-      price: 20, frag: 'Pink peony', cure: 'Ready 26 Sept', good: 'Dry, sensitive skin'
+      price: 20, frag: 'Floral, pink peony', cure: 'Ready 26 Sept', good: 'Dry, sensitive skin'
     },
     stout: {
       title: 'Stout Beer', batch: 'Ready 26 Sept', img: 'assets/preview/brightened/soap-beer.webp',
       desc: 'Malty and moisturising.',
       ings: 'Beer, coconut oil, shea butter, olive oil, grapeseed oil, macadamia oil, brewer’s yeast, cocoa butter, cashmere fragrance oil (IFRA certified).',
-      price: 20, frag: 'Cocoa butter cashmere', cure: 'Ready 26 Sept', good: 'Dry, dull, itchy skin'
+      price: 20, frag: 'Warm, cocoa butter cashmere', cure: 'Ready 26 Sept', good: 'Dry, dull, itchy skin'
     },
     goatmilk: {
       title: 'Goat Milk and Oat', batch: 'Ready 4 Oct 2026', img: 'assets/preview/brightened/soap-goatmilk.webp',
       desc: 'Soft, creamy and mild.',
       ings: 'Goat milk, coconut oil, palm oil, sweet almond oil, olive oil, sunflower oil, oat powder, baby powder fragrance oil (IFRA certified).',
-      price: 23, frag: 'Baby powder', cure: 'Ready 4 Oct 2026', good: 'Sensitive, dry, mature skin'
+      price: 23, frag: 'Powdery, baby powder', cure: 'Ready 4 Oct 2026', good: 'Sensitive, dry, mature skin'
+    },
+    'rustic-sakura': {
+      title: 'Rustic Sakura', batch: 'Ready about 20 Dec 2026', img: 'assets/preview/brightened/soap-sakura.webp',
+      desc: 'Soft coral and white swirls with a cherry blossom scent.',
+      ings: 'Olive oil, shea butter, coconut oil, castor oil, sakura fragrance oil (IFRA certified).',
+      price: 18, frag: 'Floral, sakura (cherry blossom)', cure: 'Ready to use from 20 Dec', good: 'Normal to dry skin'
+    },
+    'merry-berry': {
+      title: 'Merry Berry Christmas', batch: 'Ready about 20 Dec 2026', img: 'assets/preview/brightened/soap-christmas.webp',
+      desc: 'Cream, orange and green layers, pressed with a little Christmas scene.',
+      ings: 'Olive oil, palm oil, coconut oil, castor oil, green iron oxide, red iron oxide, white titanium dioxide, Bramble Berry fragrance oil (IFRA certified).',
+      price: 18, frag: 'Festive (Bramble Berry fragrance oil)', cure: 'Ready to use from 20 Dec', good: 'Normal skin'
     },
     vinegar: {
       title: 'Herbal Vinegar', batch: 'Ready 26 Sept', img: 'assets/preview/brightened/soap-vinegar.webp',
       desc: 'Herbal cleansing for oily and uneven skin.',
-      ings: 'Coconut oil, palm oil, olive oil, green tea seed oil, apricot kernel oil, gromwell root powder, artemisia powder, cocoa butter cashmere fragrance oil (IFRA certified).',
-      price: 16, frag: 'Cocoa butter cashmere', cure: 'Ready 26 Sept', good: 'Oily, congested, uneven tone'
+      ings: 'Coconut oil, palm oil, olive oil, green tea seed oil, apricot kernel oil, vinegar, gromwell root powder, artemisia powder, cocoa butter cashmere fragrance oil (IFRA certified).',
+      price: 16, frag: 'Warm, cocoa butter cashmere', cure: 'Ready 26 Sept', good: 'Oily, congested, uneven tone'
     }
   };
   var dlg = document.getElementById('batchDialog');
@@ -1844,14 +2484,17 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
   var current = null;
   function openBatch(key) {
     var b = BATCHES[key]; if (!b || !dlg.showModal) return;
-    current = b.title;
+    current = b.title; currentKey = key;
     $('dlgTitle').textContent = b.title;
     $('dlgDesc').textContent = b.desc;
     $('dlgPrice').textContent = 'RM ' + b.price;
-    $('dlgIngs').textContent = b.ings;
+    $('dlgIngs').textContent = plainIngredients(b);
     $('dlgFrag').textContent = b.frag;
     $('dlgGood').textContent = b.good;
-    $('dlgAdd').firstChild.textContent = note.indexOf(current) > -1 ? 'Added to enquiry note ' : 'Add to enquiry note ';
+    var st = STOCK[key] || 0, img = $('dlgImg');
+    $('dlgStock').textContent = COMING[key] ? st + ' pcs · order now, ' + COMING[key].replace('Ready', 'ready') : st === 0 ? 'Sold out' : st === 1 ? '1 pc (last bar)' : st + ' pcs';
+    buildCarousel(key);
+    refreshAdd();
     dlg.showModal();
   }
 
@@ -1869,10 +2512,337 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
       openBatch(c.getAttribute('data-batch'));
     });
   });
+  /* ------------------------------------------------------------------
+     CATALOGUE GRID + STOCK
+     To update stock: change the numbers in STOCK.
+     (0 = sold out, 1 = "Last bar"). The catalogue, the filters, the pop-up,
+     the hero line and the enquiry list all read from this one block.
+     ------------------------------------------------------------------ */
+  var NEXT_BATCH = 'about 20 Dec';
+  /* soaps still curing: shown in the "Coming soon" box, not in the main grid. They can already be added to an enquiry. */
+  /* soaps that can be ordered now but are still curing: shown with a "ready to use" date */
+  var COMING = { 'rustic-sakura': 'Ready to use from 20 Dec', 'merry-berry': 'Ready to use from 20 Dec' };
+  /* short skin-type line on each card (the pop-up keeps the longer note) */
+  var SKIN = { coconut: 'Hands and kitchen', 'apple-carrot': 'Normal skin', tomato: 'Dry, sensitive skin', himalayan: 'Oily skin', 'honey-turmeric': 'Dry, sensitive skin', stout: 'Normal to dry skin', goatmilk: 'Dry, sensitive skin', vinegar: 'Oily skin', 'rustic-sakura': 'Normal to dry skin', 'merry-berry': 'Normal skin' };
+  var STOCK = { 'rustic-sakura': 9, 'merry-berry': 9, 'honey-turmeric': 5, goatmilk: 4, coconut: 3, tomato: 3, stout: 3, vinegar: 1, himalayan: 0, 'apple-carrot': 0 };
+  /* Extra photos for the pop-up carousel. Save the picture in assets/products/ and list it here, e.g.
+     goatmilk: ['assets/products/goatmilk-2.jpg', 'assets/products/goatmilk-3.jpg']  (they appear after the first photo) */
+  /* The first photo in each pop-up (cropped and brightened). Soaps without an entry here keep the old photos. */
+  var PRIMARY_PHOTO = {
+    coconut: 'assets/products/coconut-1.webp', 'honey-turmeric': 'assets/products/honey-turmeric-1.webp', goatmilk: 'assets/products/goatmilk-1.webp', tomato: 'assets/products/tomato-1.webp',
+    stout: 'assets/products/stout-1.webp', vinegar: 'assets/products/vinegar-1.webp', 'apple-carrot': 'assets/products/apple-carrot-1.webp',
+    himalayan: 'assets/products/himalayan-1.webp',
+    'rustic-sakura': 'assets/products/sakura-1.webp', 'merry-berry': 'assets/products/christmas-1.webp'
+  };
+  var EXTRA_PHOTOS = { 'rustic-sakura': ['assets/products/sakura-2.webp'], 'merry-berry': ['assets/products/christmas-2.webp'] };
+  /* Ingredient list shown in the pop-up, in everyday words: water and lye first, then your own ingredient list.
+     The scent name is dropped from "fragrance oil" because the Scent row already shows it. */
+  function plainIngredients(b) {
+    var s = b.ings.replace(/,\s*[^,]*?fragrance oil\s*\(IFRA certified\)\.?$/i, ', fragrance oil (IFRA certified)').replace(/\.$/, '');
+    if (!/^Himalayan/.test(s)) s = s.charAt(0).toLowerCase() + s.slice(1);
+    return 'Distilled water, sodium hydroxide (lye), ' + s + '.';
+  }
+  var STYLED = {
+    'honey-turmeric': 'assets/preview/carousel/styled-trio.jpg', goatmilk: 'assets/preview/carousel/styled-goatmilk.jpg',
+    tomato: 'assets/opt/styled-vegetable.webp', vinegar: 'assets/preview/carousel/styled-vinegar.jpg',
+    stout: 'assets/preview/carousel/styled-beer.jpg', 'apple-carrot': 'assets/preview/carousel/styled-apple-carrot.jpg'
+  };
+  var FILTERS = {
+    avail: [['Ready now', 'in'], ['Sold out', 'out']],
+    skin: [['Normal skin', ['apple-carrot', 'stout', 'rustic-sakura', 'merry-berry']], ['Dry & sensitive skin', ['tomato', 'honey-turmeric', 'goatmilk', 'rustic-sakura']], ['Oily skin', ['vinegar', 'himalayan']], ['Kitchen', ['coconut']]]
+  };
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+  function inStock(k) { return (STOCK[k] || 0) > 0; }
+
+  /* ---- hand-drawn strokes (pencil loops), injected into every .loop ---- */
+  var LOOP_SVG = '<svg class="ln" viewBox="0 0 200 80" preserveAspectRatio="none" aria-hidden="true">' +
+    '<path class="a" d="M100 5 C 140 3, 185 8, 195 30 C 201 52, 180 74, 140 76 C 100 79, 50 78, 22 72 C 3 66, 0 40, 10 24 C 20 8, 60 6, 100 5 Z"/>' +
+    '<path class="b" d="M96 3 C 138 1, 188 6, 197 33 C 202 56, 176 77, 136 78 C 96 81, 46 80, 18 73 C 0 66, 2 36, 12 21 C 24 6, 56 5, 96 3 Z"/>' +
+    '</svg>';
+  var BOX_SVG = '<svg class="ln box" viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true">' +
+    '<path class="a" d="M6 8 C 50 5, 150 9, 194 6 C 196 22, 195 40, 193 53 C 150 56, 50 54, 7 56 C 5 40, 6 22, 6 8 Z"/>' +
+    '<path class="b" d="M3 5 C 60 8, 140 3, 197 7 C 199 24, 197 42, 196 57 C 140 54, 60 58, 4 55 C 6 40, 3 22, 3 5 Z"/>' +
+    '</svg>';
+  var RIBBON = '<span class="cg-ribbon"><svg viewBox="0 0 200 70" preserveAspectRatio="none" aria-hidden="true">' +
+    '<path class="f" d="M4 12 C 50 6, 140 14, 196 8 L 187 36 L 197 62 C 140 68, 60 58, 3 64 L 12 38 Z"/>' +
+    '<path class="s" d="M5 11 C 52 5, 138 13, 195 9 L 186 35 L 196 61 C 138 66, 62 59, 4 63 L 13 38 Z"/>' +
+    '<path class="s s2" d="M9 15 C 56 10, 140 17, 192 12 M10 60 C 60 55, 140 63, 190 58"/>' +
+    '</svg><b>Sold out</b><i>thank you for your support! ' +
+    '<svg class="hrt" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21 C 5 15.5, 1.5 11, 4.5 6.5 C 7 3.5, 10.5 5, 12 8 C 13.5 4.8, 17.5 3.5, 19.8 6.6 C 22.5 11, 18.5 15.5, 12 21 Z"/></svg></i></span>';
+  function decorate(root) {
+    (root || document).querySelectorAll('.loop').forEach(function (el) {
+      if (!el.querySelector(':scope > svg.ln')) el.insertAdjacentHTML('beforeend', LOOP_SVG);
+    });
+  }
+
+  var cgGrid = document.getElementById('cgGrid');
+  var order = Object.keys(BATCHES).sort(function (a, b) { return ((STOCK[b] > 0) - (STOCK[a] > 0)) || (STOCK[b] - STOCK[a]); });
+  var currentKey = null;
+
+  /* the request button rotates through a few friendly wordings, one per card */
+  var WORDS = ['I\u2019d like this', 'I want this!', 'Mine, please'];
+  var wordFor = {}; var wi = 0;
+  order.forEach(function (k) { if ((STOCK[k] || 0) > 0) { wordFor[k] = WORDS[wi % WORDS.length]; wi++; } });
+  cgGrid.innerHTML = order.map(function (k) {
+    var b = BATCHES[k], n = STOCK[k] || 0, cls = n === 0 ? 'out' : n === 1 ? 'last' : '';
+    return '<article class="cg-card ' + cls + '" data-key="' + k + '">' +
+      '<button type="button" class="cg-open" data-open="' + k + '" aria-label="' + esc(b.title) + ', RM ' + b.price + ', ' + (n === 0 ? 'sold out' : n + ' left') + (COMING[k] ? ', ' + COMING[k].toLowerCase() : '') + '. See details">' +
+        '<span class="cg-pic"><img loading="lazy" decoding="async" src="' + b.img + '" alt="">' + (n === 0 ? RIBBON : '') + '</span>' +
+        '<span class="cg-body"><h3>' + esc(b.title) + '</h3><span class="cg-good">Best for: ' + esc((SKIN[k] || b.good).toLowerCase()) + '</span></span>' +
+      '</button>' +
+      '<div class="cg-meta"><span class="cg-price">RM ' + b.price + '</span>' + (n === 0 ? '' : '<span class="cg-status">' + (n === 1 ? 'Last bar' : n + ' left') + '</span>') + '</div>' + (COMING[k] ? '<p class="cg-cure">Order now. ' + esc(COMING[k]) + '</p>' : '') +
+      '<button type="button" class="loop loop-sec cg-add" data-add-key="' + k + '" aria-pressed="false">' + (n === 0 ? 'Notify me' : esc(wordFor[k])) + ' <span class="go" aria-hidden="true"></span></button>' +
+    '</article>';
+  }).join('');
+  /* the "+" / tick inside the request button */
+  var goStyle = document.createElement('style');
+  goStyle.textContent = '.cg-grid .cg-add .go::before{content:"+"} .cg-grid .cg-add.is-on .go::before{content:"\\2713"; font-size:.85rem}';
+  document.head.appendChild(goStyle);
+
+  var bars = 0, inCount = 0;
+  Object.keys(STOCK).forEach(function (k) { if (COMING[k]) return; bars += STOCK[k]; if (STOCK[k] > 0) inCount++; });
+  var heroStock = document.getElementById('heroStock');
+  if (heroStock) heroStock.innerHTML = '<span><b>' + bars + ' bars ready now</b> across ' + inCount + ' soaps &middot; next batch ' + NEXT_BATCH + '</span>';
+
+
+  /* hand-drawn "free from" icons (your artwork), labels as in your icon guide */
+  (function () {
+    var box = document.querySelector('.free'); if (!box) return;
+    var items = [['no-sls.webp', 'No added SLS/SLES'], ['no-preservatives.webp', 'No added preservatives'], ['no-petroleum.webp', 'No petroleum-derived ingredients'], ['silicone-free.webp', 'Silicone-free']];
+    box.innerHTML = '<ul>' + items.map(function (it) { return '<li><img src="assets/free/' + it[0] + '" alt="" width="48" height="48" loading="lazy"><span>' + it[1] + '</span></li>'; }).join('') + '</ul>';
+  })();
+
+  /* ---- pop-up photo carousel (swipe on a phone, arrows on desktop) ---- */
+  function buildCarousel(key) {
+    var b = BATCHES[key], slides = [];
+    if (PRIMARY_PHOTO[key]) {
+      slides.push({ s: PRIMARY_PHOTO[key], f: !!COMING[key] });                       // new photo first
+      /* the styled (AI) photos are no longer shown next to the real ones; add more real photos in EXTRA_PHOTOS */
+      (EXTRA_PHOTOS[key] || []).forEach(function (p) { slides.push({ s: p, f: !!COMING[key] }); });
+    } else {
+      if (STYLED[key]) slides.push({ s: STYLED[key] });
+      (EXTRA_PHOTOS[key] || []).forEach(function (p) { slides.push({ s: p }); });
+      slides.push({ s: b.img, c: 1 });
+    }
+    var track = $('dlgTrack'), dots = $('dlgDots'), car = $('dlgCar');
+    track.innerHTML = slides.map(function (it) { return '<img src="' + it.s + '" alt="' + esc(b.title) + ' photo"' + (it.c ? ' class="contain"' : it.f ? ' class="fit"' : '') + '>'; }).join('');
+    dots.innerHTML = slides.map(function (_, i) { return '<i class="' + (i === 0 ? 'on' : '') + '"></i>'; }).join('');
+    car.classList.toggle('single', slides.length < 2);
+    track.scrollLeft = 0;
+  }
+  /* small photo note under the picture */
+  $('dlgCar').insertAdjacentHTML('afterend', '<p class="dlg-note">Photos are taken in natural light. Each bar is handmade, shape and colour may vary a little.</p>');
+  (function () {
+    var track = $('dlgTrack'), dots = $('dlgDots');
+    track.addEventListener('scroll', function () {
+      var i = Math.round(track.scrollLeft / Math.max(1, track.clientWidth));
+      dots.querySelectorAll('i').forEach(function (d, n) { d.classList.toggle('on', n === i); });
+    });
+    $('dlgCar').querySelector('.prev').addEventListener('click', function () { track.scrollBy({ left: -track.clientWidth, behavior: 'smooth' }); });
+    $('dlgCar').querySelector('.next').addEventListener('click', function () { track.scrollBy({ left: track.clientWidth, behavior: 'smooth' }); });
+  })();
+
+  /* ---- request / undo (a second tap removes it) ---- */
+  function removeFromNote(item) {
+    var i = note.indexOf(item); if (i > -1) note.splice(i, 1); syncNote();
+    var row = document.querySelector('#enqQtyList .qty-row[data-name="' + item.replace(/"/g, '\\"') + '"]');
+    if (row && row.querySelector('.step-input').value === '1') row.querySelector('.minus').click();
+  }
+  function toggleNote(item) { if (note.indexOf(item) > -1) removeFromNote(item); else addToNote(item); refreshAdd(); }
+  var sendEl = document.getElementById('cgSend'), catVisible = false;
+  function updateSend() {
+    sendEl.hidden = !(note.length > 0 && catVisible);
+    sendEl.querySelector('#cgSendBtn').firstChild.textContent = 'My enquiry (' + note.length + ') ';
+  }
+  function refreshAdd() {
+    cgGrid.querySelectorAll('.cg-add').forEach(function (btn) {
+      var k = btn.getAttribute('data-add-key'), on = note.indexOf(BATCHES[k].title) > -1;
+      btn.classList.toggle('is-on', on); btn.setAttribute('aria-pressed', String(on));
+      btn.firstChild.textContent = (on ? 'Added, undo' : (STOCK[k] === 0 ? 'Notify me' : wordFor[k])) + ' ';
+    });
+    if (currentKey) {
+      var d = $('dlgAdd'), on2 = note.indexOf(BATCHES[currentKey].title) > -1;
+      d.classList.toggle('is-on', on2);
+      d.firstChild.textContent = (on2 ? 'Added, undo' : (STOCK[currentKey] === 0 && !COMING[currentKey] ? 'Tell me when it’s back' : 'I\u2019d like this')) + ' ';
+    }
+    updateSend();
+  }
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) { catVisible = es[0].isIntersecting; updateSend(); }, { threshold: 0.05 }).observe(document.getElementById('catalogue'));
+  } else { catVisible = true; }
+  document.getElementById('cgSendBtn').addEventListener('click', function () { document.getElementById('tellUs').click(); });
+
+  cgGrid.addEventListener('click', function (e) {
+    var add = e.target.closest('.cg-add'), open = e.target.closest('[data-open]');
+    if (add) toggleNote(BATCHES[add.getAttribute('data-add-key')].title);
+    else if (open) openBatch(open.getAttribute('data-open'));
+  });
+  
+  /* ---- tabs + chips ---- */
+  var cgTab = 'skin', cgSel = null;
+  var chipsEl = document.getElementById('cgChips');
+  function renderChips() {
+    chipsEl.innerHTML = FILTERS[cgTab].map(function (f, i) {
+      return '<button type="button" class="loop chip" data-i="' + i + '" aria-pressed="' + (cgSel === i) + '">' + esc(f[0]) + '<span class="x" aria-hidden="true">×</span></button>';
+    }).join('');
+    decorate(chipsEl);
+  }
+  function applyFilter() {
+    var shown = 0, f = cgSel === null ? null : FILTERS[cgTab][cgSel][1];
+    cgGrid.querySelectorAll('.cg-card').forEach(function (card) {
+      var k = card.getAttribute('data-key');
+      var ok = f === null || (f === 'in' ? inStock(k) : f === 'out' ? !inStock(k) : f.indexOf(k) > -1);
+      card.hidden = !ok; if (ok) shown++;
+    });
+    document.getElementById('cgCount').textContent = f === null ? '' : 'Showing ' + shown + ' of ' + order.length + ' soaps';
+    var old = cgGrid.querySelector('.cg-empty'); if (old) old.remove();
+    if (!shown) cgGrid.insertAdjacentHTML('beforeend', '<p class="cg-empty">Nothing here right now.</p>');
+  }
+  chipsEl.addEventListener('click', function (e) {
+    var c = e.target.closest('.chip'); if (!c) return;
+    var i = +c.getAttribute('data-i'); cgSel = (cgSel === i) ? null : i; renderChips(); applyFilter();
+  });
+  renderChips();
+  decorate(document);
+
+  /* sold-out soaps are not in the quantity list, so "notify me" requests go into the notes box */
+  document.getElementById('tellUs').addEventListener('click', function () {
+    var ta = document.getElementById('enqNotes'); if (!ta) return;
+    var out = order.filter(function (k) { return (STOCK[k] || 0) === 0 && note.indexOf(BATCHES[k].title) > -1; }).map(function (k) { return BATCHES[k].title; });
+    var lines = ta.value.split('\n').filter(function (l) { return l.indexOf('Notify me when back:') !== 0; });
+    if (out.length) lines.unshift('Notify me when back: ' + out.join(', '));
+    ta.value = lines.join('\n').replace(/^\s+|\s+$/g, '');
+  });
+
+  /* ---- enquiry form list, built from the same data (caps the quantity at what is in stock) ---- */
+  function qtyRow(name, max, hint, out) {
+    var n = esc(name);
+    return '<div class="qty-row" data-name="' + n + '" data-max="' + max + '"' + (out ? ' data-out="1"' : '') + '>' +
+      '<span class="qty-label">' + n + '<small>' + hint + '</small></span>' +
+      '<div class="stepper"><button type="button" class="step-btn minus" aria-label="Decrease ' + n + '">&minus;</button>' +
+      '<input type="text" inputmode="numeric" class="step-input" value="0" readonly aria-label="' + n + ' quantity">' +
+      '<button type="button" class="step-btn plus" aria-label="Increase ' + n + '">+</button></div></div>';
+  }
+  document.getElementById('enqQtyList').innerHTML = order.filter(function (k) { return (STOCK[k] || 0) > 0; }).map(function (k) {
+    var n = STOCK[k] || 0;
+    return qtyRow(BATCHES[k].title, n > 0 ? n : 5, n > 0 ? n + ' left' + (COMING[k] ? ' · ' + COMING[k].replace('Ready', 'ready') : '') : 'Sold out, I’ll let you know', n === 0);
+  }).join('');
+
+  document.querySelectorAll('.faq-list details').forEach(function (d) {
+    d.addEventListener('toggle', function () {
+      if (d.open) document.querySelectorAll('.faq-list details[open]').forEach(function (o) { if (o !== d) o.open = false; });
+    });
+  });
+
+  /* footer: hand-drawn heart next to the last word, so it can never wrap on its own */
+  (function () {
+    var p = document.querySelector('.foot-thanks'); if (!p) return;
+    var old = document.querySelector('footer.site svg.heart'); if (old) old.remove();
+    p.innerHTML = 'Thank you for supporting small and handmade products in <span class="nb">Malaysia.<svg class="hh" viewBox="0 0 24 24" aria-hidden="true">' +
+      '<path class="hf" d="M12.4 21 C 6 16.2, 2.6 12.4, 3.2 8.6 C 3.8 5.6, 7 4.4, 9.4 5.8 C 10.8 6.6, 11.8 7.8, 12.3 9 C 13.2 6.6, 15.6 5, 18 5.6 C 20.8 6.4, 21.8 9.6, 20.6 12.6 C 19.2 16, 15.6 18.8, 12.4 21 Z"/>' +
+      '<path class="hl" d="M12 20.6 C 5.6 16, 2 12, 2.6 8.2 C 3.2 4.8, 6.8 3.6, 9.4 4.8 C 10.8 5.4, 11.7 6.6, 12.2 7.8 C 13 5.4, 15.2 3.8, 17.8 4.2 C 21 4.8, 22.4 8.2, 21.2 11.6 C 20 15, 16.2 18, 12.4 21 C 12.2 21.2, 12 21, 11.8 20.8"/>' +
+      '<path class="hl hl2" d="M5 9.2 C 5.6 7.4, 7.4 6.6, 9 7.4"/></svg></span>';
+  })();
+
+  /* washi tape across the top of the enquiry note */
+  (function () {
+    var tl = document.querySelector('.tellus'); if (!tl) return;
+    tl.insertAdjacentHTML('afterbegin', '<img class="washi" src="assets/washi.webp" alt="" aria-hidden="true" width="190" height="34">');
+  })();
+
+  /* ingredients row: swipe cue with dots (phones) */
+  (function () {
+    var map = document.querySelector('section.ingredients .map'); if (!map) return;
+    var cards = map.querySelectorAll('.ing'); if (!cards.length) return;
+    var dots = ''; for (var i = 0; i < cards.length; i++) dots += '<i' + (i === 0 ? ' class="on"' : '') + '></i>';
+    map.insertAdjacentHTML('afterend', '<div class="swipe-cue" aria-hidden="true"><span>Swipe to see more</span><span class="sdots">' + dots + '</span></div>');
+    var cue = map.nextElementSibling;
+    map.addEventListener('scroll', function () {
+      var stride = cards[1] ? cards[1].offsetLeft - cards[0].offsetLeft : 1;
+      var idx = Math.round(map.scrollLeft / Math.max(1, stride));
+      cue.querySelectorAll('i').forEach(function (d, n) { d.classList.toggle('on', n === idx); });
+    });
+  })();
+
+  /* fun facts: tap a card to flip it */
+  (function () {
+    var wrap = document.querySelector('.flips'); if (!wrap) return;
+    var cards = Array.prototype.slice.call(wrap.querySelectorAll('.flip')), n = cards.length, top = 0, moved = false;
+    var cue = document.querySelector('.flip-cue');
+    cue.insertAdjacentHTML('beforebegin', '<div class="stack-ctl"><button type="button" class="sp" aria-label="Previous card">&lsaquo;</button><span class="cnt" aria-live="polite"></span><button type="button" class="sn" aria-label="Next card">&rsaquo;</button></div>');
+    var cnt = document.querySelector('.stack-ctl .cnt');
+    cue.textContent = 'Tap the card to flip it';
+    function render() {
+      cards.forEach(function (c, i) {
+        var p = (i - top + n) % n;
+        c.setAttribute('data-p', p < 4 ? p : 'far');
+        c.tabIndex = p === 0 ? 0 : -1;
+        c.setAttribute('aria-hidden', p === 0 ? 'false' : 'true');
+        if (p !== 0) c.setAttribute('aria-pressed', 'false');
+      });
+      cnt.textContent = (top + 1) + ' / ' + n;
+    }
+    function go(d) { top = (top + d + n) % n; render(); }
+    document.querySelector('.stack-ctl .sn').addEventListener('click', function () { go(1); });
+    document.querySelector('.stack-ctl .sp').addEventListener('click', function () { go(-1); });
+    cards.forEach(function (b, i) {
+      b.addEventListener('click', function () {
+        if (moved) { moved = false; return; }
+        if (i !== top) { top = i; render(); return; }
+        b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true'));
+      });
+    });
+    var sx = null;
+    wrap.addEventListener('touchstart', function (e) { sx = e.touches[0].clientX; }, { passive: true });
+    wrap.addEventListener('touchend', function (e) {
+      if (sx === null) return; var dx = e.changedTouches[0].clientX - sx; sx = null;
+      if (Math.abs(dx) > 40) { moved = true; go(dx < 0 ? 1 : -1); setTimeout(function () { moved = false; }, 350); }
+    });
+    render();
+  })();
+
+  /* desktop: the FAQ list is always open beside the cards; on small screens it goes back to one collapsed row */
+  (function () {
+    var all = document.querySelector('details.faq-all'); if (!all) return;
+    var mq = window.matchMedia('(min-width: 1000px)');
+    function sync() { all.open = mq.matches; }
+    sync();
+    if (mq.addEventListener) mq.addEventListener('change', sync); else mq.addListener(sync);
+  })();
+
+  /* ingredients (desktop): a hand-drawn arrow from the "Ingredients" oval to each item, stopping short of the text */
+  (function () {
+    var map = document.querySelector('section.ingredients .map'); if (!map) return;
+    var sv = map.querySelector('.spokes'), bub = map.querySelector('.bubble'), items = map.querySelectorAll('.ing');
+    if (!sv || !bub || !items.length) return;
+    var NS = 'http://www.w3.org/2000/svg';
+    function draw() {
+      if (!sv.getClientRects().length) return;
+      var m = map.getBoundingClientRect(), W = map.offsetWidth, H = map.offsetHeight, sx = W / (m.width || 1), sy = H / (m.height || 1);
+      var b = bub.getBoundingClientRect(), cx = (b.left + b.width / 2 - m.left) * sx, cy = (b.top + b.height / 2 - m.top) * sy, rx = b.width * sx / 2, ry = b.height * sy / 2;
+      sv.setAttribute('viewBox', '0 0 ' + W + ' ' + H); sv.setAttribute('preserveAspectRatio', 'none');
+      while (sv.firstChild) sv.removeChild(sv.firstChild);
+      Array.prototype.forEach.call(items, function (it) {
+        var tb = it.lastElementChild.getBoundingClientRect(), top = tb.top + tb.height / 2 < b.top + b.height / 2;
+        var ex = (tb.left - m.left) * sx - 6, ey = (top ? tb.bottom - m.top + 12 : tb.top - m.top - 12) * sy;
+        var dx = ex - cx, dy = ey - cy, k = 1 / Math.sqrt((dx * dx) / (rx * rx) + (dy * dy) / (ry * ry));
+        var s0x = cx + dx * k * 1.04, s0y = cy + dy * k * 1.04;
+        var qx = (s0x + ex) / 2 + (top ? 8 : -8), qy = (s0y + ey) / 2 + (dx > 0 ? -10 : 10) * (top ? 1 : -1);
+        var a = Math.atan2(ey - qy, ex - qx), L = 11, sp = .5;
+        var d = 'M' + s0x.toFixed(1) + ' ' + s0y.toFixed(1) + ' Q' + qx.toFixed(1) + ' ' + qy.toFixed(1) + ' ' + ex.toFixed(1) + ' ' + ey.toFixed(1) +
+          ' M' + (ex - L * Math.cos(a - sp)).toFixed(1) + ' ' + (ey - L * Math.sin(a - sp)).toFixed(1) + ' L' + ex.toFixed(1) + ' ' + ey.toFixed(1) +
+          ' L' + (ex - L * Math.cos(a + sp)).toFixed(1) + ' ' + (ey - L * Math.sin(a + sp)).toFixed(1);
+        var p = document.createElementNS(NS, 'path'); p.setAttribute('d', d); p.setAttribute('stroke-linecap', 'round'); p.setAttribute('stroke-linejoin', 'round'); sv.appendChild(p);
+      });
+    }
+    draw(); window.addEventListener('resize', draw); window.addEventListener('load', draw); setTimeout(draw, 1200); setTimeout(draw, 3000);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+  })();
+
   dlg.querySelector('[data-close]').addEventListener('click', function () { dlg.close(); });
   dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });   // click on backdrop
   $('dlgAdd').addEventListener('click', function () {
-    if (current) { addToNote(current); this.firstChild.textContent = 'Added to enquiry note '; }
+    if (current) toggleNote(current);
   });
 
   /* ------------------------------------------------------------------
@@ -1891,7 +2861,6 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
   var note = [];
   var countEl = document.getElementById('noteCount');
   var tell = document.getElementById('tellUs');
-  var MAIL = 'hello@example.com';            // <-- your address
   function syncNote() {
     countEl.textContent = note.length;
     countEl.classList.toggle('on', note.length > 0);
@@ -1925,7 +2894,6 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
   var enqTotalCount = document.getElementById('enqTotalCount');
   var enqQtyRows = Array.prototype.slice.call(document.querySelectorAll('#enqQtyList .qty-row'));
   var enqError = document.getElementById('enqError');
-  document.getElementById('enqFallbackMail').href = 'mailto:' + MAIL;
 
   function openEnquiry() {
     if (!enqDlg.showModal) return;
@@ -1952,7 +2920,7 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
   enqQtyRows.forEach(function (row) {
     var input = row.querySelector('.step-input');
     function setQty(n) {
-      n = Math.max(0, Math.min(99, n));
+      n = Math.max(0, Math.min(+row.getAttribute('data-max') || 99, n));
       input.value = n;
       row.classList.toggle('has-qty', n > 0);
       recalcEnqTotal();
@@ -1984,7 +2952,7 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
 
     var picked = enqQtyRows
       .filter(function (row) { return parseInt(row.querySelector('.step-input').value, 10) > 0; })
-      .map(function (row) { return row.querySelector('.step-input').value + '× ' + row.getAttribute('data-name'); });
+      .map(function (row) { return row.querySelector('.step-input').value + '× ' + row.getAttribute('data-name') + (row.getAttribute('data-out') ? ' (sold out, notify me)' : ''); });
 
     enqError.hidden = true;
     enqSubmitBtn.disabled = true;
@@ -2015,7 +2983,7 @@ form.enquiry .hint { font-size: .85rem; color: var(--ink-2); }
       })
       .then(function () {
         enqSubmitBtn.disabled = false;
-        enqSubmitLabel.textContent = 'Send enquiry';
+        enqSubmitLabel.textContent = 'Enquire Now';
       });
   });
 
@@ -2148,5 +3116,101 @@ document.querySelectorAll('[data-carousel]').forEach(initRcCarousel);
 </script>
 <!-- Visit counter (GoatCounter: no cookies, no personal data) -->
 <script data-goatcounter="https://shimay.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script>
+/* editorial preview: soft torn-paper edges (rolling waves with a fine fibrous fuzz; the lining is only slightly lighter than the paper; the hero itself is cut along the same line) */
+(function () {
+  var PROFILE = [16,16,17,17,17,17,17,18,19,20,19,20,22,22,22,22,22,22,23,24,24,25,24,25,25,25,25,25,25,24,24,23,22,21,21,22,24,24,26,26,26,28,28,29,28,29,29,28,28,28,29,27,28,27,26,25,25,25,25,25,26,26,26,27,27,29,30,31,31,33,30,29,28,27,28,28,27,27,29,29,30,31,33,32,32,30,30,30,29,29,30,29,30,31,32,31,32,32,33,35,35,35,34,34,34,33,31,32,31,30,30,29,29,28,27,26,26,26,28,28,27,27,27,28,28,26,24,25,25,26,26,27,28,29,30,30,30,32,32,32,32,33,33,33,33,33,33,32,30,29,28,28,27,26,26,25,25,25,25,25,25,24,24,24,25,25,26,27,27,28,28,28,29,29,29,29,28,28,28,27,26,26,25,24,24,23,22,22,22,22,21,20,19,19,18,17,17,18,18,16,16];
+  var tears = document.querySelectorAll('.ed-tear'), OFF = 26;
+  function rng(seed) { return function () { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
+  function build(el, i) {
+    var w = el.offsetWidth; if (!w) return;
+    var r = rng(41 + i * 131), ph = r() * 6, ph2 = r() * 6, ph3 = r() * 6, ph4 = r() * 6, x = 0, pts = [], fuzz = 0;
+    while (x <= w) {
+      fuzz = fuzz * .55 + (r() - .5) * 1.7;
+      var y = 19 + 7 * Math.sin(x / 160 + ph) + 4 * Math.sin(x / 62 + ph2) + 2.2 * Math.sin(x / 21 + ph3) + fuzz;
+      var t = 3.4 + 1.3 * Math.sin(x / 33 + ph4) + r() * 1.4;
+      pts.push({ x: x, y: y, t: t });
+      x += 2.2 + r() * 2.3;
+    }
+    function poly(top, bot) {
+      var a = pts.map(function (p) { return p.x.toFixed(1) + 'px ' + top(p).toFixed(1) + 'px'; });
+      var d = pts.slice().reverse().map(function (p) { return p.x.toFixed(1) + 'px ' + bot(p).toFixed(1) + 'px'; });
+      return 'polygon(' + a.concat(d).join(',') + ')';
+    }
+    el.style.setProperty('--band', poly(function (p) { return p.y; }, function (p) { return p.y + p.t; }));
+    el.style.setProperty('--shade', poly(function (p) { return p.y - 3; }, function (p) { return p.y; }));
+    var layers = el.querySelectorAll('.ed-layer');
+    layers.forEach(function (L, k) {
+      var r2 = rng(97 + i * 53 + k * 211), a1 = r2() * 6, a2 = r2() * 6, a3 = r2() * 6, a4 = r2() * 6, xx = 0, fz = 0, lp = [];
+      var base = 30 + k * 17;
+      while (xx <= w) {
+        fz = fz * .55 + (r2() - .5) * 1.7;
+        var yy = base + 6 * Math.sin(xx / (170 - k * 25) + a1) + 3.5 * Math.sin(xx / 61 + a2) + 2 * Math.sin(xx / 22 + a3) + fz;
+        lp.push({ x: xx, y: yy, t: 3 + 1.2 * Math.sin(xx / 31 + a4) + r2() * 1.3 });
+        xx += 2.4 + r2() * 2.4;
+      }
+      var top = lp.map(function (p) { return p.x.toFixed(1) + 'px ' + p.y.toFixed(1) + 'px'; });
+      var band = top.concat(lp.slice().reverse().map(function (p) { return p.x.toFixed(1) + 'px ' + (p.y + p.t).toFixed(1) + 'px'; }));
+      L.style.setProperty('--fill', 'polygon(' + top.concat(['100% 100%', '0 100%']).join(',') + ')');
+      L.style.setProperty('--band', 'polygon(' + band.join(',') + ')');
+    });
+    var prev = el.previousElementSibling;
+    if (prev && prev.classList.contains('ed-hero')) {
+      var H = prev.offsetHeight, sc = w / 2000, c = ['0px 0px', '100% 0px'], k2;
+      for (k2 = PROFILE.length - 1; k2 >= 0; k2--) c.push(Math.min(w, k2 * 10 * sc).toFixed(1) + 'px ' + (H - OFF + (PROFILE[k2] + 1) * sc).toFixed(1) + 'px');
+      prev.style.clipPath = 'polygon(' + c.join(',') + ')';
+    }
+  }
+  function all() { tears.forEach(build); }
+  all(); window.addEventListener('resize', all); window.addEventListener('load', all);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(all);
+  var hero = document.querySelector('.ed-hero');
+  if (hero && window.ResizeObserver) new ResizeObserver(all).observe(hero);
+  setTimeout(all, 1500);
+})();
+
+/* editorial preview: hand-drawn pencil box outline inside the solid buttons */
+(function () {
+  var BOX = '<svg class="ln" viewBox="0 0 200 80" preserveAspectRatio="none" aria-hidden="true"><path class="a" d="M100 5 C 140 3, 185 8, 195 30 C 201 52, 180 74, 140 76 C 100 79, 50 78, 22 72 C 3 66, 0 40, 10 24 C 20 8, 60 6, 100 5 Z"/><path class="b" d="M96 3 C 138 1, 188 6, 197 33 C 202 56, 176 77, 136 78 C 96 81, 46 80, 18 73 C 0 66, 2 36, 12 21 C 24 6, 56 5, 96 3 Z"/></svg>';
+  document.querySelectorAll('.ed-btn, nav.pills a.ed-reserve').forEach(function (el) {
+    if (!el.querySelector(':scope > svg.ln')) el.insertAdjacentHTML('beforeend', BOX);
+  });
+})();
+
+/* trial: the orange cat reaches up from behind the Fun facts card pile (the top card hides its body) */
+(function () {
+  var fl = document.querySelector('.ed-ffwrap .flips'); if (!fl || fl.querySelector('.ed-cat2')) return;
+  var im = document.createElement('img'); im.className = 'ed-cat2'; im.src = 'assets/cat-orange.webp'; im.alt = ''; im.setAttribute('aria-hidden', 'true'); im.width = 568; im.height = 414;
+  fl.insertBefore(im, fl.firstChild);
+})();
+
+/* fun facts, one gesture: tap = flip, tap again = next card; the hint on the card says what the next tap does; dots show progress */
+(function () {
+  var wrap = document.querySelector('.ed-ffwrap .flips'), ctl = document.querySelector('.ed-ffwrap .stack-ctl');
+  if (!wrap || !ctl) return;
+  var next = ctl.querySelector('.sn'), cnt = ctl.querySelector('.cnt'), cards = wrap.querySelectorAll('.flip');
+  cards.forEach(function (c) {
+    var back = c.querySelector('.back'); if (back && !back.querySelector('.fn')) back.insertAdjacentHTML('beforeend', '<span class="fn">Tap for the next fact &rarr;</span>');
+    var fh = c.querySelector('.fh'); if (fh) fh.textContent = 'Tap to flip';
+  });
+  var dots = document.createElement('span'); dots.className = 'dots'; dots.setAttribute('aria-hidden', 'true');
+  for (var i = 0; i < cards.length; i++) dots.appendChild(document.createElement('i'));
+  var end = document.createElement('span'); end.className = 'ed-end'; end.setAttribute('aria-live', 'polite');
+  cnt.parentNode.insertBefore(dots, cnt); ctl.appendChild(end);
+  function idx() { return parseInt(cnt.textContent, 10) || 1; }
+  function paint() { var n = idx() - 1; dots.querySelectorAll('i').forEach(function (d, k) { d.classList.toggle('on', k === n); }); }
+  new MutationObserver(paint).observe(cnt, { childList: true, characterData: true, subtree: true }); paint();
+  wrap.addEventListener('click', function (e) {
+    var card = e.target.closest('.flip'); if (!card || card.getAttribute('data-p') !== '0') return;
+    if (card.getAttribute('aria-pressed') === 'true') {
+      e.stopPropagation(); e.preventDefault();
+      var wrapped = idx() === cards.length;
+      next.click();
+      if (wrapped) { end.textContent = 'That was all six. Back to the first.'; setTimeout(function () { end.textContent = ''; }, 2600); }
+    }
+  }, true);
+})();
+
+</script>
 </body>
 </html>
