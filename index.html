@@ -9,10 +9,9 @@
 <!-- Link preview (WhatsApp, Instagram, iMessage, Facebook, etc.) -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Soapmerry">
-<meta property="og:url" content="https://soapmerry.netlify.app/">
 <meta property="og:title" content="Soapmerry">
 <meta property="og:description" content="Handmade soap with merry little moments. Made in small batches.">
-<meta property="og:image" content="https://soapmerry.netlify.app/assets/og-image-soapmerry.jpg">
+<meta property="og:image" content="https://soapmerry.netlify.app/assets/og-image-soapmerry-2.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:type" content="image/jpeg">
@@ -22,7 +21,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Soapmerry">
 <meta name="twitter:description" content="Handmade soap with merry little moments. Made in small batches.">
-<meta name="twitter:image" content="https://soapmerry.netlify.app/assets/og-image-soapmerry.jpg">
+<meta name="twitter:image" content="https://soapmerry.netlify.app/assets/og-image-soapmerry-2.jpg">
 <link rel="preload" as="image" href="assets/opt/logo-soapmerry.webp?v=loader">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1805,9 +1804,9 @@ section.cg { padding-bottom: 1.6rem !important; }
 
 /* phone menu: torn taped paper instead of a flat panel; plain "Enquire" link */
 @media (max-width: 900px) {
-  nav.pills { left: .9rem; right: .9rem; top: calc(100% - 2px); background: none; border: 0; box-shadow: none; padding: 2.4rem 1.6rem 2.7rem 1.9rem; gap: .3rem; isolation: isolate; }
+  nav.pills { left: 50%; right: auto; width: min(calc(100% - 1.8rem), 24rem); transform: translateX(-50%); top: calc(100% - 2px); background: none; border: 0; box-shadow: none; padding: 3.5rem 1.6rem 2.7rem 1.9rem; gap: .3rem; isolation: isolate; }
   nav.pills::before { content: ""; position: absolute; inset: 0; z-index: -1; background: url(assets/menu-paper.webp) center / 100% 100% no-repeat; filter: drop-shadow(0 6px 8px rgba(48,43,37,.16)); }
-  nav.pills::after { content: ""; position: absolute; top: -17px; left: 50%; width: 38%; aspect-ratio: 360 / 172; background: url(assets/menu-tape.webp) center / contain no-repeat; transform: translateX(-50%) rotate(-1.5deg); pointer-events: none; }
+  nav.pills::after { content: ""; position: absolute; top: -17px; left: 50%; width: 7.5rem; aspect-ratio: 360 / 172; background: url(assets/menu-tape.webp) center / contain no-repeat; transform: translateX(-50%) rotate(-1.5deg); pointer-events: none; }
   nav.pills a.ed-reserve::after { display: none; }
   /* highlight and hand-drawn circle only appear when the link is hovered, focused or pressed */
   nav.pills a.ed-reserve::before, nav.pills a.ed-reserve svg.ln { opacity: 0; transition: opacity .18s ease; }
@@ -2483,7 +2482,7 @@ section.ed-order:not(.bgr) .enq-card { background-image: none; }
     'merry-berry': {
       title: 'Merry Berry Christmas', batch: 'Ready about 20 Dec 2026', img: 'assets/preview/brightened/soap-christmas.webp',
       desc: 'Cream, orange and green layers, pressed with a little Christmas scene.',
-      ings: 'Olive oil, palm oil, coconut oil, castor oil, green iron oxide, red iron oxide, white titanium dioxide, Bramble Berry fragrance oil (IFRA certified).',
+      ings: 'Olive oil, palm oil, coconut oil, castor oil, cosmetic grade colorants (red, green and white), Bramble Berry fragrance oil (IFRA certified).',
       price: 18, frag: 'Festive (Bramble Berry fragrance oil)', cure: 'Ready to use from 20 Dec', good: 'Normal skin'
     },
     vinegar: {
@@ -2630,9 +2629,9 @@ section.ed-order:not(.bgr) .enq-card { background-image: none; }
   function buildCarousel(key) {
     var b = BATCHES[key], slides = [];
     if (PRIMARY_PHOTO[key]) {
-      slides.push({ s: PRIMARY_PHOTO[key], f: !!COMING[key] });                       // new photo first
+      slides.push({ s: PRIMARY_PHOTO[key], f: false });                       // new photo first
       /* the styled (AI) photos are no longer shown next to the real ones; add more real photos in EXTRA_PHOTOS */
-      (EXTRA_PHOTOS[key] || []).forEach(function (p) { slides.push({ s: p, f: !!COMING[key] }); });
+      (EXTRA_PHOTOS[key] || []).forEach(function (p) { slides.push({ s: p, f: false }); });
     } else {
       if (STYLED[key]) slides.push({ s: STYLED[key] });
       (EXTRA_PHOTOS[key] || []).forEach(function (p) { slides.push({ s: p }); });
